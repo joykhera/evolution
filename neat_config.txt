@@ -54,7 +54,7 @@ node_delete_prob        = 0.1
 
 # network parameters
 num_hidden              = 0
-num_inputs              = 75
+num_inputs              = 7500
 num_outputs             = 5
 
 # node response options

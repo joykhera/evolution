@@ -1,7 +1,7 @@
 import gym
 from gym import spaces
 import numpy as np
-from game import Game
+from game.game import Game
 
 class AgarioEnv(gym.Env):
     """Custom Environment that follows gym interface"""
