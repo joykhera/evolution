@@ -3,22 +3,30 @@ from IPython.display import display, clear_output
 import matplotlib.pyplot as plt
 
 class PlotReporter(neat.reporting.BaseReporter):
+    def __init__(self):
+        self.best_fitnesses = []
+        self.average_fitnesses = []
+        self.fig, self.ax = plt.subplots()
+
     def post_evaluate(self, config, population, species, best_genome):
-        print('xxxp', config, population, species, best_genome)
-        plt.ion()
-        fig, ax = plt.subplots()
+        self.best_fitnesses.append(best_genome.fitness)
+        fitnesses = []
+        for genome in population.values():
+            fitnesses.append(genome.fitness)
+        average_fitness = sum(fitnesses) / len(fitnesses)
+        self.average_fitnesses.append(average_fitness)
+
         plt.xlabel("Generations")
         plt.ylabel("Fitness")
         plt.title("Best Fitness Over Generations")
 
         clear_output(wait=True)
+        self.ax.clear()
+        self.ax.plot(self.best_fitnesses, label="Best Fitness")
+        self.ax.plot(self.average_fitnesses, label="Average Fitness")
+        self.ax.set_xlabel("Generations")
+        self.ax.set_ylabel("Fitness")
+        self.ax.set_title("Fitness Over Generations")
 
-        fitnesses = [c.fitness for c in stats.most_fit_genomes]
-        ax.clear()
-        ax.plot(fitnesses, label="Best Fitness")
-        ax.set_xlabel("Generations")
-        ax.set_ylabel("Fitness")
-        ax.set_title("Best Fitness Over Generations")
-
-        display(fig)
+        display(self.fig)
         plt.pause(0.001)

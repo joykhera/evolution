@@ -1,10 +1,8 @@
 import pygame
 import random
 import numpy as np
-# import cupy as np
 from game.food import Food
 from game.player import Player
-#import matplotlib.pyplot as plt
 
 # Constants
 SIZE = 50
@@ -18,7 +16,7 @@ PLAYER_SIZE = SIZE / 50
 PLAYER_SIZE_INCREASE = PLAYER_SIZE / 10
 PLAYER_SPEED = SIZE / 100
 GRID_SIZE = 5
-EPISODE_STEPS = 4
+EPISODE_STEPS = 100
 SCALE = 10
 
 class Game:
@@ -120,39 +118,9 @@ class Game:
         """Applies a function to all agents and return"""
         return [function(i) for i in range(len(self.players))]
 
-    # def get_observation(self):
-    #     """Returns the entire screen as a numpy array of pixel values."""
-    #     # This will capture the entire screen.
-    #     screen_pixels = pygame.surfarray.array3d(self.screen)
-    #     observation = np.transpose(screen_pixels, (2, 0, 1))
-    #     print(screen_pixels.shape, observation.shape)
-    #     return observation
-
     def get_observation(self):
         """Returns the entire screen as a flattened numpy array of pixel values for NEAT."""
-        # Capture the entire screen as a 3D array.
-        # screen_pixels = pygame.surfarray.array3d(self.screen)
-        # print(np.unique(screen_pixels, return_counts=True))
-        # Optionally, you could downsample the image here to reduce the input size
-        # For example, using scipy to resize: screen_pixels = scipy.misc.imresize(screen_pixels, (60, 60))
-
-        # Flatten the 3D array to a 1D array.
-        # observation = screen_pixels.flatten()
-
-        # Normalize pixel values to the range [0, 1] if required by NEAT configuration.
-        # This can help with the training process.
-        # observation = observation
-        # return observation
-        # return (
-        #     observation.tolist()
-        # )  # NEAT typically expects a list of inputs rather than a numpy array.
-
         arr = self.render()
-        # arr = np.transpose(arr, (2, 0, 1))
-        # plt.ion()
-        # plt.imshow(arr, interpolation="nearest")
-        # plt.show()
-        # print(arr.shape)
         return arr / 255.0
 
     def get_reward(self, playerIdx):
@@ -181,49 +149,24 @@ class Game:
         self.done = False
         observations = [self.get_observation()] * self.num_agents
         return observations
-        """
+
     def render(self, mode="human", scale=1):
-        """
-        # Renders the game to the Pygame window.
-        """
-        if mode == "human":
-            canvas = pygame.Surface((SIZE * scale, SIZE * scale))
-            canvas.fill(WHITE)
-            for food in self.foods:
-                food.draw(canvas, scale)
-            for player in self.players:
-                player.draw(canvas, scale)
-            # pygame.display.flip()
-            self.window.blit(canvas, canvas.get_rect())
-            pygame.event.pump()
-            pygame.display.update()
-            self.clock.tick(60)
+        canvas = pygame.Surface((SIZE, SIZE))
 
-        return np.transpose(np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2))
-
-        """
-    def render(self, mode="human", scale=1):
-        canvas = pygame.Surface((SIZE, SIZE))  # Create an unscaled canvas
-
-        # Draw game elements on the unscaled canvas
         canvas.fill(WHITE)
         for food in self.foods:
-            food.draw(canvas, 1)  # Draw without scaling
+            food.draw(canvas, 1)
         for player in self.players:
-            player.draw(canvas, 1)  # Draw without scaling
+            player.draw(canvas, 1)
 
-        # Scale the unscaled canvas for rendering to the Pygame window
         scaled_canvas = pygame.Surface((SIZE * scale, SIZE * scale))
         scaled_canvas.blit(pygame.transform.scale(canvas, (SIZE * scale, SIZE * scale)), scaled_canvas.get_rect())
 
         if mode == "human":
-            # Display scaled canvas in the Pygame window
             self.window.blit(scaled_canvas, scaled_canvas.get_rect())
             pygame.event.pump()
-            # pygame.display.update()
             self.clock.tick(60)
 
-        # Return the unscaled canvas array without rendering to the window
         return np.transpose(np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2))
 
 
@@ -242,12 +185,11 @@ class Game:
                     quit()
             self.screen.fill(WHITE)
 
-            observation = self.get_observation()  # Assuming one agent for testing
+            observation = self.get_observation()
             output = net.activate(observation.flatten())
-            # action = self.output_to_action(output)
-            self.step([output])  # Step environment with the chosen action
+            self.step([output])
 
-            self.render(scale=SCALE)  # Render the game to the screen
+            self.render(scale=SCALE)
             pygame.display.flip()
             self.clock.tick(FPS)
 
@@ -255,7 +197,6 @@ class Game:
                 break
 
     def output_to_action(self, output):
-        # Convert the neural network output to a game action
         return output.index(max(output))
 
 
@@ -263,7 +204,5 @@ def run_game_with_human():
     game = Game(human_player=True)
     game.run()
 
-
-# This allows the file to be imported without running the game immediately
 if __name__ == "__main__":
     run_game_with_human()
