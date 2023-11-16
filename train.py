@@ -4,6 +4,7 @@ from game.game import Game
 import pickle
 import pygame
 import numpy as np
+import time
 
 # Define any additional NEAT or training-specific constants and functions here
 
@@ -19,7 +20,10 @@ def evaluate_genomes(genomes, config):
     observations = env.reset()
     while not done:
         # Get actions for all agents from their respective networks
+        start = time.perf_counter()
         actions = [net.activate(obs.flatten()) for net, obs in zip(nets, observations)]
+        end = time.perf_counter()
+        print("Time taken: ", end - start)
         # print("observations: ", [np.unique(observation, return_counts=True) for observation in observations])
         # print("Observations:")
         # for i, observation in enumerate(observations, 1):

@@ -6,7 +6,7 @@ from game.player import Player
 import matplotlib.pyplot as plt
 
 # Constants
-SIZE = 50
+SIZE = 20
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
