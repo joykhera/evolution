@@ -9,10 +9,10 @@ class GameObject:
         self.size = size
         self.color = color
 
-    def draw(self, surface):
+    def draw(self, surface, scale=1):
         pygame.draw.circle(
             surface,
             self.color,
-            (int(self.position.x), int(self.position.y)),
-            self.size,  #! change later
+            (int(self.position.x * scale), int(self.position.y * scale)),
+            self.size * scale,  #! change later
         )

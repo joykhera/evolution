@@ -1,9 +1,10 @@
 import pygame
 import random
 import numpy as np
+# import cupy as np
 from game.food import Food
 from game.player import Player
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 # Constants
 SIZE = 50
@@ -17,8 +18,8 @@ PLAYER_SIZE = SIZE / 50
 PLAYER_SIZE_INCREASE = PLAYER_SIZE / 10
 PLAYER_SPEED = SIZE / 100
 GRID_SIZE = 5
-EPISODE_STEPS = 100
-
+EPISODE_STEPS = 4
+SCALE = 10
 
 class Game:
     """Main game class that handles game logic."""
@@ -27,7 +28,7 @@ class Game:
         pygame.init()
         pygame.display.init()
         self.human_player = human_player
-        self.screen = pygame.display.set_mode((SIZE, SIZE))
+        self.screen = pygame.display.set_mode((SIZE * SCALE, SIZE * SCALE))
         pygame.display.set_caption("Evolution Environment")
         self.clock = pygame.time.Clock()
         self.num_agents = num_agents
@@ -46,7 +47,7 @@ class Game:
         ]
         self.running = True
         self.steps = 0
-        self.window = pygame.display.set_mode((SIZE, SIZE))
+        self.window = pygame.display.set_mode((SIZE * SCALE, SIZE * SCALE))
 
     def handle_events(self):
         """Handles game events, such as input and quitting."""
@@ -59,8 +60,8 @@ class Game:
         actions = [
             pygame.Vector2(0, 0),  # None
             pygame.Vector2(1, 0),  # Right
-            pygame.Vector2(-1, 0),  # Left
-            pygame.Vector2(0, -1),  # Up
+            pygame.Vector2(-1, 0), # Left
+            pygame.Vector2(0, -1), # Up
             pygame.Vector2(0, 1),  # Down
         ]
         return actions[action] if action is not None else pygame.Vector2(0, 0)
@@ -152,7 +153,7 @@ class Game:
         # plt.imshow(arr, interpolation="nearest")
         # plt.show()
         # print(arr.shape)
-        return arr
+        return arr / 255.0
 
     def get_reward(self, playerIdx):
         """Returns the reward after an action."""
@@ -180,16 +181,18 @@ class Game:
         self.done = False
         observations = [self.get_observation()] * self.num_agents
         return observations
-
-    def render(self, mode="human"):
-        """Renders the game to the Pygame window."""
+        """
+    def render(self, mode="human", scale=1):
+        """
+        # Renders the game to the Pygame window.
+        """
         if mode == "human":
-            canvas = pygame.Surface((SIZE, SIZE))
+            canvas = pygame.Surface((SIZE * scale, SIZE * scale))
             canvas.fill(WHITE)
             for food in self.foods:
-                food.draw(canvas)
+                food.draw(canvas, scale)
             for player in self.players:
-                player.draw(canvas)
+                player.draw(canvas, scale)
             # pygame.display.flip()
             self.window.blit(canvas, canvas.get_rect())
             pygame.event.pump()
@@ -197,6 +200,33 @@ class Game:
             self.clock.tick(60)
 
         return np.transpose(np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2))
+
+        """
+    def render(self, mode="human", scale=1):
+        canvas = pygame.Surface((SIZE, SIZE))  # Create an unscaled canvas
+
+        # Draw game elements on the unscaled canvas
+        canvas.fill(WHITE)
+        for food in self.foods:
+            food.draw(canvas, 1)  # Draw without scaling
+        for player in self.players:
+            player.draw(canvas, 1)  # Draw without scaling
+
+        # Scale the unscaled canvas for rendering to the Pygame window
+        scaled_canvas = pygame.Surface((SIZE * scale, SIZE * scale))
+        scaled_canvas.blit(pygame.transform.scale(canvas, (SIZE * scale, SIZE * scale)), scaled_canvas.get_rect())
+
+        if mode == "human":
+            # Display scaled canvas in the Pygame window
+            self.window.blit(scaled_canvas, scaled_canvas.get_rect())
+            pygame.event.pump()
+            # pygame.display.update()
+            self.clock.tick(60)
+
+        # Return the unscaled canvas array without rendering to the window
+        return np.transpose(np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2))
+
+
 
     def close(self):
         """Closes the Pygame window."""
@@ -214,10 +244,10 @@ class Game:
 
             observation = self.get_observation()  # Assuming one agent for testing
             output = net.activate(observation.flatten())
-            action = self.output_to_action(output)
-            self.step([action])  # Step environment with the chosen action
+            # action = self.output_to_action(output)
+            self.step([output])  # Step environment with the chosen action
 
-            self.render()  # Render the game to the screen
+            self.render(scale=SCALE)  # Render the game to the screen
             pygame.display.flip()
             self.clock.tick(FPS)
 

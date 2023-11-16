@@ -4,6 +4,8 @@ from game.game import Game
 import pickle
 import pygame
 import numpy as np
+import time
+from plot import PlotReporter
 
 # Define any additional NEAT or training-specific constants and functions here
 
@@ -19,7 +21,10 @@ def evaluate_genomes(genomes, config):
     observations = env.reset()
     while not done:
         # Get actions for all agents from their respective networks
+        start = time.perf_counter()
         actions = [net.activate(obs.flatten()) for net, obs in zip(nets, observations)]
+        end = time.perf_counter()
+        print("Time taken: ", end - start)
         # print("observations: ", [np.unique(observation, return_counts=True) for observation in observations])
         # print("Observations:")
         # for i, observation in enumerate(observations, 1):
@@ -48,7 +53,11 @@ def evaluate_genomes(genomes, config):
             # print(rewards, genomes)
 
 
-def run_neat(config):
+def run_neat(config, checkpoint=None):
+    if checkpoint is None:
+        p = neat.Population(config)
+    else:
+        p = neat.Checkpointer.restore_checkpoint(checkpoint)
     # Create the population from the configuration
     p = neat.Population(config)
 
@@ -57,24 +66,15 @@ def run_neat(config):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
     p.add_reporter(neat.Checkpointer(1))
+    p.add_reporter(PlotReporter())
 
     # Run NEAT for a certain number of generations
-    winner = p.run(evaluate_genomes, 50)
+    winner = p.run(evaluate_genomes, 49)
     with open("best.pickle", "wb") as f:
         pickle.dump(winner, f)
 
     # Save or display the winning genome
     print("\nBest genome:\n{!s}".format(winner))
-
-
-def test_best_network(config):
-    with open("best.pickle", "rb") as f:
-        winner = pickle.load(f)
-    winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
-
-    game = Game(num_agents=1, human_player=False)
-    game.test_ai(winner_net)
-
 
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
@@ -88,5 +88,6 @@ if __name__ == "__main__":
         config_path,
     )
 
+    checkpoint_file = 'neat-checkpoint-36'
+    # run_neat(config, checkpoint=checkpoint_file)
     run_neat(config)
-    # test_best_network(config)
