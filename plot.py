@@ -30,3 +30,4 @@ class PlotReporter(neat.reporting.BaseReporter):
 
         display(self.fig)
         plt.pause(0.001)
+        self.fig.savefig("fitness.png")

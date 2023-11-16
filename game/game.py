@@ -19,6 +19,7 @@ GRID_SIZE = 5
 EPISODE_STEPS = 100
 SCALE = 10
 
+
 class Game:
     """Main game class that handles game logic."""
 
@@ -58,8 +59,8 @@ class Game:
         actions = [
             pygame.Vector2(0, 0),  # None
             pygame.Vector2(1, 0),  # Right
-            pygame.Vector2(-1, 0), # Left
-            pygame.Vector2(0, -1), # Up
+            pygame.Vector2(-1, 0),  # Left
+            pygame.Vector2(0, -1),  # Up
             pygame.Vector2(0, 1),  # Down
         ]
         return actions[action] if action is not None else pygame.Vector2(0, 0)
@@ -160,7 +161,10 @@ class Game:
             player.draw(canvas, 1)
 
         scaled_canvas = pygame.Surface((SIZE * scale, SIZE * scale))
-        scaled_canvas.blit(pygame.transform.scale(canvas, (SIZE * scale, SIZE * scale)), scaled_canvas.get_rect())
+        scaled_canvas.blit(
+            pygame.transform.scale(canvas, (SIZE * scale, SIZE * scale)),
+            scaled_canvas.get_rect(),
+        )
 
         if mode == "human":
             self.window.blit(scaled_canvas, scaled_canvas.get_rect())
@@ -169,13 +173,11 @@ class Game:
 
         return np.transpose(np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2))
 
-
-
     def close(self):
         """Closes the Pygame window."""
         pygame.quit()
 
-    def test_ai(self, net, num_steps=1000):
+    def test_ai(self, nets, num_steps=1000):
         """Test the AI's performance in the game for a certain number of steps."""
         self.reset()
         pygame.display.set_caption("NEAT Test AI")
@@ -186,8 +188,17 @@ class Game:
             self.screen.fill(WHITE)
 
             observation = self.get_observation()
-            output = net.activate(observation.flatten())
-            self.step([output])
+            observations = [observation] * len(nets)
+            print("observations.shape", observations[0].shape)
+            actions = [
+                net.activate(obs.flatten()) for net, obs in zip(nets, observations)
+            ]
+            self.step(actions)
+
+            # observation = self.get_observation()
+            # print("observation.shape", observation.shape)
+            # output = net.activate(observation.flatten())
+            # self.step([output])
 
             self.render(scale=SCALE)
             pygame.display.flip()
@@ -203,6 +214,7 @@ class Game:
 def run_game_with_human():
     game = Game(human_player=True)
     game.run()
+
 
 if __name__ == "__main__":
     run_game_with_human()
