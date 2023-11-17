@@ -14,7 +14,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
-FOOD_COUNT = 50
+FOOD_COUNT = 100
 FPS = 60
 FOOD_SIZE = SIZE / 50
 PLAYER_SIZE = SIZE / 50
@@ -22,11 +22,12 @@ PLAYER_SIZE_INCREASE = PLAYER_SIZE / 10
 PLAYER_SPEED = SIZE / 100
 GRID_SIZE = 10
 EPISODE_STEPS = 100
-SCALE = 10
+SCALE = 1
 WINDOW_SIZE = SIZE + GRID_SIZE
 
-# plt.ion()  # Interactive mode on
-# fig, ax = plt.subplots()  # Create a new figure and set of subplots
+plt.ion()  # Interactive mode on
+print("Interactive mode on")
+fig, ax = plt.subplots()  # Create a new figure and set of subplots
 # fig1, ax1 = plt.subplots()  # Create a new figure and set of subplots
 # image = ax1.imshow(np.zeros((100, 100)), "BrBG")
 # plt.show()  # Show the figure
@@ -36,6 +37,7 @@ class Game:
     """Main game class that handles game logic."""
 
     def __init__(self, num_agents=50, human_player=True):
+        print('initttttt')
         pygame.init()
         pygame.display.init()
         self.human_player = human_player
@@ -58,6 +60,7 @@ class Game:
             )
             for _ in range(num_agents)
         ]
+        self.players[0].color = (0, 0, 255)
         self.foods = [
             Food(
                 position=(
@@ -149,24 +152,22 @@ class Game:
                 return True
 
         return False
-    
+
     def is_on_black(self, player_idx):
         """Returns True if the player is on a black pixel, otherwise False."""
         player = self.players[player_idx]
         # Convert player's position to integer for pixel access
         player_pos = (int(player.position.x), int(player.position.y))
-        
+
         # Get the pixel array from the canvas
         pixels = pygame.surfarray.array3d(self.canvas)
-        
+
         # Check the color at the player's position
         # Since the pixel array is transposed, access it with y first, x second
         if tuple(pixels[player_pos[1], player_pos[0]]) == BLACK:
             return True
         else:
             return False
-
-        
 
     def apply_function_to_all_agents(self, function):
         """Applies a function to all agents and return"""
@@ -238,7 +239,6 @@ class Game:
         #     # Create a rectangle patch
         #     rect = patches.Rectangle(
         #         (top_left.x * SCALE, top_left.y * SCALE),
-        #         # (0, 0),
         #         GRID_SIZE * SCALE,
         #         GRID_SIZE * SCALE,  # Rectangle size
         #         linewidth=1,
@@ -261,7 +261,8 @@ class Game:
 
     def get_reward(self, player_idx):
         """Returns the reward after an action."""
-        return (int(self.check_collisions(player_idx)) - int(self.is_on_black(player_idx))) * 100
+        # return int(self.check_collisions(player_idx)) - int(self.is_on_black(player_idx)) / 10
+        return int(not self.is_on_black(player_idx))
 
     def is_done(self):
         """Checks if the game is finished."""
@@ -293,7 +294,7 @@ class Game:
             )
             for _ in range(self.num_agents)
         ]
-
+        self.players[0].color = (0, 0, 255)
         observations = [
             self.get_observation(player_idx=i) for i in range(self.num_agents)
         ] * self.num_agents

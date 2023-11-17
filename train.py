@@ -13,6 +13,7 @@ def evaluate_genome(genome_data):
 
 
 def evaluate_genomes(genomes, config):
+    print('game created')
     env = Game(num_agents=len(genomes), human_player=False)
 
     nets = [neat.nn.FeedForwardNetwork.create(genome, config) for _, genome in genomes]
@@ -34,11 +35,11 @@ def evaluate_genomes(genomes, config):
         start = time.perf_counter()
         actions = pool.map(evaluate_genome, net_obs_pairs)
         end = time.perf_counter()
-        print("NN time: ", end - start)
+        # print("NN time: ", end - start)
 
         # Step through the environment using the actions
         observations, rewards, done = env.step(actions)
-        env.render(scale=10)
+        env.render(scale=1)
 
         # Update fitness for each genome
         for i, (_, genome) in enumerate(genomes):
