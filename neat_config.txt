@@ -1,17 +1,17 @@
 [NEAT]
 fitness_criterion     = max
 fitness_threshold     = 400
-pop_size              = 50
+pop_size              = 100
 reset_on_extinction   = False
 
 [DefaultStagnation]
 species_fitness_func = max
-max_stagnation       = 15
+max_stagnation       = 10
 species_elitism      = 2
 
 [DefaultReproduction]
 elitism            = 2
-survival_threshold = 0.2
+survival_threshold = 0.3
 
 [DefaultGenome]
 # node activation options
@@ -21,16 +21,16 @@ activation_options      = sigmoid tanh relu
 
 # node aggregation options
 aggregation_default     = sum
-aggregation_mutate_rate = 0.0
-aggregation_options     = sum
+aggregation_mutate_rate = 0.1
+aggregation_options     = sum product min max
 
 # node bias options
 bias_init_mean          = 0.0
-bias_init_stdev         = 1.0
-bias_max_value          = 30.0
-bias_min_value          = -30.0
+bias_init_stdev         = 0.5
+bias_max_value          = 8.0
+bias_min_value          = -8.0
 bias_mutate_power       = 0.5
-bias_mutate_rate        = 0.2
+bias_mutate_rate        = 0.3
 bias_replace_rate       = 0.1
 
 # genome compatibility options
@@ -38,8 +38,8 @@ compatibility_disjoint_coefficient = 1.0
 compatibility_weight_coefficient   = 0.5
 
 # connection add/remove rates
-conn_add_prob           = 0.1
-conn_delete_prob        = 0.1
+conn_add_prob           = 0.2
+conn_delete_prob        = 0.2
 
 # connection enable options
 enabled_default         = True
@@ -49,8 +49,8 @@ feed_forward            = True
 initial_connection      = full_direct
 
 # node add/remove rates
-node_add_prob           = 0.1
-node_delete_prob        = 0.1
+node_add_prob           = 0.2
+node_delete_prob        = 0.2
 
 # network parameters
 num_hidden              = 0
@@ -68,11 +68,11 @@ response_replace_rate   = 0.0
 
 # connection weight options
 weight_init_mean        = 0.0
-weight_init_stdev       = 0.5
-weight_max_value        = 30
-weight_min_value        = -30
+weight_init_stdev       = 0.3
+weight_max_value        = 8
+weight_min_value        = -8
 weight_mutate_power     = 0.5
-weight_mutate_rate      = 0.7
+weight_mutate_rate      = 0.8
 weight_replace_rate     = 0.1
 
 [DefaultSpeciesSet]

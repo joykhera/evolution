@@ -4,6 +4,13 @@ from game.game import Game
 import pickle
 import time
 from plot import PlotReporter
+import multiprocessing
+
+
+def evaluate_genome(genome_data):
+    net, obs = genome_data
+    return net.activate(obs.flatten())
+
 
 def evaluate_genomes(genomes, config):
     env = Game(num_agents=len(genomes), human_player=False)
@@ -12,20 +19,35 @@ def evaluate_genomes(genomes, config):
     done = False
     observations = env.reset()
 
-    for i, (genome_id, genome) in enumerate(genomes):
+    # Set initial fitness to 0 for all genomes
+    for _, genome in genomes:
         genome.fitness = 0
 
-    while not done:
-        start = time.perf_counter()
-        actions = [net.activate(obs.flatten()) for net, obs in zip(nets, observations)]
-        end = time.perf_counter()
-        # print("NN time: ", end - start)
+    # Use multiprocessing Pool to parallelize action computation
+    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
 
+    while not done:
+        # Pair each neural network with the corresponding observation
+        net_obs_pairs = zip(nets, observations)
+
+        # Use pool.map to compute in parallel
+        start = time.perf_counter()
+        actions = pool.map(evaluate_genome, net_obs_pairs)
+        end = time.perf_counter()
+        print("NN time: ", end - start)
+
+        # Step through the environment using the actions
         observations, rewards, done = env.step(actions)
         env.render(scale=10)
 
-        for i, (genome_id, genome) in enumerate(genomes):
+        # Update fitness for each genome
+        for i, (_, genome) in enumerate(genomes):
             genome.fitness += rewards[i]
+
+    # Close the Pool to release resources
+    pool.close()
+    pool.join()
+
 
 def run_neat(config, checkpoint=None):
     if checkpoint is None:
@@ -37,7 +59,11 @@ def run_neat(config, checkpoint=None):
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    p.add_reporter(neat.Checkpointer(generation_interval=1, filename_prefix="checkpoints/neat-checkpoint-"))
+    p.add_reporter(
+        neat.Checkpointer(
+            generation_interval=1, filename_prefix="checkpoints/neat-checkpoint-"
+        )
+    )
     p.add_reporter(PlotReporter())
 
     winner = p.run(evaluate_genomes, 100)
@@ -45,6 +71,7 @@ def run_neat(config, checkpoint=None):
         pickle.dump(winner, f)
 
     print("\nBest genome:\n{!s}".format(winner))
+
 
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)

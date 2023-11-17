@@ -15,7 +15,7 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 FOOD_COUNT = 50
-FPS = 500
+FPS = 60
 FOOD_SIZE = SIZE / 50
 PLAYER_SIZE = SIZE / 50
 PLAYER_SIZE_INCREASE = PLAYER_SIZE / 10
@@ -25,11 +25,11 @@ EPISODE_STEPS = 100
 SCALE = 10
 WINDOW_SIZE = SIZE + GRID_SIZE
 
-plt.ion()  # Interactive mode on
-fig, ax = plt.subplots()  # Create a new figure and set of subplots
-fig1, ax1 = plt.subplots()  # Create a new figure and set of subplots
-image = ax1.imshow(np.zeros((100, 100)), "BrBG")
-plt.show()  # Show the figure
+# plt.ion()  # Interactive mode on
+# fig, ax = plt.subplots()  # Create a new figure and set of subplots
+# fig1, ax1 = plt.subplots()  # Create a new figure and set of subplots
+# image = ax1.imshow(np.zeros((100, 100)), "BrBG")
+# plt.show()  # Show the figure
 
 
 class Game:
@@ -110,9 +110,9 @@ class Game:
             observation = self.get_observation(player_idx=i)
             reward = self.get_reward(i)
 
-            if i == 0:
-                image.set_data(observation)
-                plt.pause(0.001)
+            # if i == 0:
+            #     image.set_data(observation)
+            #     plt.pause(0.001)
 
             observations.append(observation)
             rewards.append(reward)
@@ -228,28 +228,28 @@ class Game:
             observation = np.transpose(observation, axes=(1, 0, 2))
         # print("after", observation)
 
-        if player_idx == 0:
-            # Clear any previous rectangle
-            # print("after clamp", player_center, top_left, bottom_right)
-            ax.clear()
-            # Display the observation
-            # ax.imshow(observation)
-            ax.imshow(screen_pixels_scaled)
-            # Create a rectangle patch
-            rect = patches.Rectangle(
-                (top_left.x * SCALE, top_left.y * SCALE),
-                # (0, 0),
-                GRID_SIZE * SCALE,
-                GRID_SIZE * SCALE,  # Rectangle size
-                linewidth=1,
-                edgecolor="r",
-                facecolor="none",
-            )
-            # Add the rectangle to the plot
-            ax.add_patch(rect)
-            # Draw the plot
-            fig.canvas.draw_idle()
-            plt.pause(0.001)
+        # if player_idx == 0:
+        #     # Clear any previous rectangle
+        #     # print("after clamp", player_center, top_left, bottom_right)
+        #     ax.clear()
+        #     # Display the observation
+        #     # ax.imshow(observation)
+        #     ax.imshow(screen_pixels_scaled)
+        #     # Create a rectangle patch
+        #     rect = patches.Rectangle(
+        #         (top_left.x * SCALE, top_left.y * SCALE),
+        #         # (0, 0),
+        #         GRID_SIZE * SCALE,
+        #         GRID_SIZE * SCALE,  # Rectangle size
+        #         linewidth=1,
+        #         edgecolor="r",
+        #         facecolor="none",
+        #     )
+        #     # Add the rectangle to the plot
+        #     ax.add_patch(rect)
+        #     # Draw the plot
+        #     fig.canvas.draw_idle()
+        #     plt.pause(0.001)
 
         return observation
 
@@ -261,7 +261,7 @@ class Game:
 
     def get_reward(self, player_idx):
         """Returns the reward after an action."""
-        return int(self.check_collisions(player_idx)) - int(self.is_on_black(player_idx))
+        return (int(self.check_collisions(player_idx)) - int(self.is_on_black(player_idx))) * 100
 
     def is_done(self):
         """Checks if the game is finished."""
@@ -293,10 +293,11 @@ class Game:
             )
             for _ in range(self.num_agents)
         ]
-        self.done = False
+
         observations = [
             self.get_observation(player_idx=i) for i in range(self.num_agents)
         ] * self.num_agents
+        self.steps = 0
         return observations
 
     def render(self, mode="human", scale=1):
