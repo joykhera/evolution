@@ -3,21 +3,33 @@ import random
 import numpy as np
 from game.food import Food
 from game.player import Player
+import time
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 # Constants
+
 SIZE = 50
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
+BLACK = (0, 0, 0)
 FOOD_COUNT = 50
 FPS = 500
 FOOD_SIZE = SIZE / 50
 PLAYER_SIZE = SIZE / 50
 PLAYER_SIZE_INCREASE = PLAYER_SIZE / 10
 PLAYER_SPEED = SIZE / 100
-GRID_SIZE = 5
+GRID_SIZE = 10
 EPISODE_STEPS = 100
 SCALE = 10
+WINDOW_SIZE = SIZE + GRID_SIZE
+
+plt.ion()  # Interactive mode on
+fig, ax = plt.subplots()  # Create a new figure and set of subplots
+fig1, ax1 = plt.subplots()  # Create a new figure and set of subplots
+image = ax1.imshow(np.zeros((100, 100)), "BrBG")
+plt.show()  # Show the figure
 
 
 class Game:
@@ -27,14 +39,19 @@ class Game:
         pygame.init()
         pygame.display.init()
         self.human_player = human_player
-        self.screen = pygame.display.set_mode((SIZE * SCALE, SIZE * SCALE))
+        self.screen = pygame.display.set_mode(
+            (WINDOW_SIZE * SCALE, WINDOW_SIZE * SCALE)
+        )
         pygame.display.set_caption("Evolution Environment")
         self.clock = pygame.time.Clock()
         self.num_agents = num_agents
         self.players = [
             Player(
-                position=(random.randint(0, SIZE), random.randint(0, SIZE)),
-                map_size=SIZE,
+                position=(
+                    random.randint(GRID_SIZE // 2, SIZE),
+                    random.randint(GRID_SIZE // 2, SIZE),
+                ),
+                map_size=WINDOW_SIZE,
                 size=PLAYER_SIZE,
                 speed=PLAYER_SPEED,
                 color=RED,
@@ -42,11 +59,23 @@ class Game:
             for _ in range(num_agents)
         ]
         self.foods = [
-            Food(map_size=SIZE, size=FOOD_SIZE, color=GREEN) for _ in range(FOOD_COUNT)
+            Food(
+                position=(
+                    random.randint(GRID_SIZE // 2, SIZE),
+                    random.randint(GRID_SIZE // 2, SIZE),
+                ),
+                size=FOOD_SIZE,
+                color=GREEN,
+            )
+            for _ in range(FOOD_COUNT)
         ]
         self.running = True
         self.steps = 0
-        self.window = pygame.display.set_mode((SIZE * SCALE, SIZE * SCALE))
+        self.window = pygame.display.set_mode(
+            (WINDOW_SIZE * SCALE, WINDOW_SIZE * SCALE)
+        )
+        self.canvas = pygame.Surface((WINDOW_SIZE, WINDOW_SIZE))
+        self.prev_step_time = time.perf_counter()
 
     def handle_events(self):
         """Handles game events, such as input and quitting."""
@@ -70,7 +99,6 @@ class Game:
         observations = []
         rewards = []
 
-        print(self.steps)
         for i, action in enumerate(actions):
             if self.human_player:
                 direction_vector = self.get_input()
@@ -79,14 +107,21 @@ class Game:
                 direction_vector = self.get_action_vector(max_action)
 
             self.players[i].move(direction_vector)
-            new_observation = self.get_observation()
+            observation = self.get_observation(player_idx=i)
             reward = self.get_reward(i)
 
-            observations.append(new_observation)
+            if i == 0:
+                image.set_data(observation)
+                plt.pause(0.001)
+
+            observations.append(observation)
             rewards.append(reward)
 
         done = self.is_done()
         self.steps += 1
+        cur_time = time.perf_counter()
+        # print("Step:", self.steps, " Step time: ", cur_time - self.prev_step_time)
+        self.prev_step_time = cur_time
         return observations, rewards, done
 
     def get_input(self):
@@ -102,31 +137,131 @@ class Game:
             else direction_vector
         )
 
-    def check_collisions(self, playerIdx):
+    def check_collisions(self, player_idx):
         """Checks for collisions between player and food."""
         for food in self.foods[:]:
             if (
-                self.players[playerIdx].position.distance_to(food.position)
-                < self.players[playerIdx].size
+                self.players[player_idx].position.distance_to(food.position)
+                < self.players[player_idx].size
             ):
                 self.foods.remove(food)
-                print("Food eaten by player ", playerIdx)
+                # print("Food eaten by player ", player_idx)
                 return True
 
         return False
+    
+    def is_on_black(self, player_idx):
+        """Returns True if the player is on a black pixel, otherwise False."""
+        player = self.players[player_idx]
+        # Convert player's position to integer for pixel access
+        player_pos = (int(player.position.x), int(player.position.y))
+        
+        # Get the pixel array from the canvas
+        pixels = pygame.surfarray.array3d(self.canvas)
+        
+        # Check the color at the player's position
+        # Since the pixel array is transposed, access it with y first, x second
+        if tuple(pixels[player_pos[1], player_pos[0]]) == BLACK:
+            return True
+        else:
+            return False
+
+        
 
     def apply_function_to_all_agents(self, function):
         """Applies a function to all agents and return"""
         return [function(i) for i in range(len(self.players))]
 
-    def get_observation(self):
-        """Returns the entire screen as a flattened numpy array of pixel values for NEAT."""
-        arr = self.render()
-        return arr / 255.0
+    # def get_observation(self):
+    #     """Returns the entire screen as a flattened numpy array of pixel values for NEAT."""
+    #     canvas_arr = np.transpose(
+    #         np.array(pygame.surfarray.pixels3d(self.canvas)), axes=(1, 0, 2)
+    #     )
+    #     norm_observation = canvas_arr / 255
+    #     return norm_observation
 
-    def get_reward(self, playerIdx):
+    def get_observation(self, player_idx):
+        player_center = self.players[player_idx].position
+        top_left = player_center - pygame.Vector2(GRID_SIZE // 2, GRID_SIZE // 2)
+        bottom_right = player_center + pygame.Vector2(GRID_SIZE // 2, GRID_SIZE // 2)
+        # print("before clamp", player_center, top_left, bottom_right)
+        # Make sure we don't go out of bounds
+        top_left = self._clamp_vector(
+            top_left,
+            pygame.Vector2(0, 0),
+            pygame.Vector2(WINDOW_SIZE, WINDOW_SIZE) + pygame.Vector2(1, 1),
+        )
+        bottom_right = self._clamp_vector(
+            bottom_right,
+            pygame.Vector2(0, 0),
+            pygame.Vector2(WINDOW_SIZE, WINDOW_SIZE) - pygame.Vector2(1, 1),
+        )
+
+        # self.render()
+
+        # Extract the rectangle of the screen
+        screen_pixels = pygame.surfarray.array3d(self.canvas)
+        screen_pixels = np.transpose(np.array(screen_pixels), axes=(1, 0, 2))
+
+        screen_pixels_scaled = pygame.surfarray.array3d(self.screen)
+        screen_pixels_scaled = np.transpose(
+            np.array(screen_pixels_scaled), axes=(1, 0, 2)
+        )
+        # print("screen_pixels.shape", screen_pixels.shape)
+        # print("screen_pixels_scaled.shape", screen_pixels_scaled.shape)
+
+        observation = screen_pixels[
+            # int(top_left.x) : int(bottom_right.x), int(top_left.y) : int(bottom_right.y)
+            int(top_left.y) : int(bottom_right.y),
+            int(top_left.x) : int(bottom_right.x),
+            :,
+        ]
+
+        # Resize the observation to a 10x10 image
+        if observation.shape != (GRID_SIZE, GRID_SIZE, 3):
+            # print("before", observation)
+            # observation = np.resize(observation, (GRID_SIZE, GRID_SIZE, 3))
+            observation = pygame.transform.smoothscale(
+                pygame.surfarray.make_surface(observation), (GRID_SIZE, GRID_SIZE)
+            )
+            observation = pygame.surfarray.array3d(observation)
+            observation = np.transpose(observation, axes=(1, 0, 2))
+        # print("after", observation)
+
+        if player_idx == 0:
+            # Clear any previous rectangle
+            # print("after clamp", player_center, top_left, bottom_right)
+            ax.clear()
+            # Display the observation
+            # ax.imshow(observation)
+            ax.imshow(screen_pixels_scaled)
+            # Create a rectangle patch
+            rect = patches.Rectangle(
+                (top_left.x * SCALE, top_left.y * SCALE),
+                # (0, 0),
+                GRID_SIZE * SCALE,
+                GRID_SIZE * SCALE,  # Rectangle size
+                linewidth=1,
+                edgecolor="r",
+                facecolor="none",
+            )
+            # Add the rectangle to the plot
+            ax.add_patch(rect)
+            # Draw the plot
+            fig.canvas.draw_idle()
+            plt.pause(0.001)
+
+        return observation
+
+    def _clamp_vector(self, vector, min_vector, max_vector):
+        return pygame.Vector2(
+            max(min_vector.x, min(vector.x, max_vector.x)),
+            max(min_vector.y, min(vector.y, max_vector.y)),
+        )
+
+    def get_reward(self, player_idx):
         """Returns the reward after an action."""
-        return int(self.check_collisions(playerIdx))
+        return int(self.check_collisions(player_idx)) - int(self.is_on_black(player_idx))
 
     def is_done(self):
         """Checks if the game is finished."""
@@ -135,12 +270,23 @@ class Game:
     def reset(self):
         """Resets the game to an initial state."""
         self.foods = [
-            Food(map_size=SIZE, size=FOOD_SIZE, color=GREEN) for _ in range(FOOD_COUNT)
+            Food(
+                position=(
+                    random.randint(GRID_SIZE // 2, SIZE),
+                    random.randint(GRID_SIZE // 2, SIZE),
+                ),
+                size=FOOD_SIZE,
+                color=GREEN,
+            )
+            for _ in range(FOOD_COUNT)
         ]
         self.players = [
             Player(
-                position=(random.randint(0, SIZE), random.randint(0, SIZE)),
-                map_size=SIZE,
+                position=(
+                    random.randint(GRID_SIZE // 2, SIZE),
+                    random.randint(GRID_SIZE // 2, SIZE),
+                ),
+                map_size=WINDOW_SIZE,
                 size=PLAYER_SIZE,
                 speed=PLAYER_SPEED,
                 color=RED,
@@ -148,30 +294,36 @@ class Game:
             for _ in range(self.num_agents)
         ]
         self.done = False
-        observations = [self.get_observation()] * self.num_agents
+        observations = [
+            self.get_observation(player_idx=i) for i in range(self.num_agents)
+        ] * self.num_agents
         return observations
 
     def render(self, mode="human", scale=1):
-        canvas = pygame.Surface((SIZE, SIZE))
-
-        canvas.fill(WHITE)
+        self.canvas.fill(BLACK)
+        pygame.draw.rect(
+            self.canvas,
+            WHITE,
+            pygame.Rect(GRID_SIZE // 2, GRID_SIZE // 2, SIZE, SIZE),
+        )
         for food in self.foods:
-            food.draw(canvas, 1)
+            food.draw(self.canvas, 1)
         for player in self.players:
-            player.draw(canvas, 1)
+            player.draw(self.canvas, 1)
 
-        scaled_canvas = pygame.Surface((SIZE * scale, SIZE * scale))
+        scaled_canvas = pygame.Surface((WINDOW_SIZE * scale, WINDOW_SIZE * scale))
         scaled_canvas.blit(
-            pygame.transform.scale(canvas, (SIZE * scale, SIZE * scale)),
+            pygame.transform.scale(
+                self.canvas, (WINDOW_SIZE * scale, WINDOW_SIZE * scale)
+            ),
             scaled_canvas.get_rect(),
         )
 
         if mode == "human":
             self.window.blit(scaled_canvas, scaled_canvas.get_rect())
             pygame.event.pump()
-            self.clock.tick(60)
-
-        return np.transpose(np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2))
+            self.clock.tick(FPS)
+            pygame.display.flip()
 
     def close(self):
         """Closes the Pygame window."""
@@ -187,21 +339,17 @@ class Game:
                     quit()
             self.screen.fill(WHITE)
 
-            observation = self.get_observation()
-            observations = [observation] * len(nets)
-            print("observations.shape", observations[0].shape)
+            # observation = self.get_observation()
+            observations = [
+                self.get_observation(player_idx=i) for i in range(self.num_agents)
+            ]
+
             actions = [
                 net.activate(obs.flatten()) for net, obs in zip(nets, observations)
             ]
+
             self.step(actions)
-
-            # observation = self.get_observation()
-            # print("observation.shape", observation.shape)
-            # output = net.activate(observation.flatten())
-            # self.step([output])
-
             self.render(scale=SCALE)
-            pygame.display.flip()
             self.clock.tick(FPS)
 
             if self.is_done():

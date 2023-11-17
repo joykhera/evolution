@@ -19,10 +19,10 @@ def evaluate_genomes(genomes, config):
         start = time.perf_counter()
         actions = [net.activate(obs.flatten()) for net, obs in zip(nets, observations)]
         end = time.perf_counter()
-        print("Time taken: ", end - start)
+        # print("NN time: ", end - start)
 
         observations, rewards, done = env.step(actions)
-        env.render()
+        env.render(scale=10)
 
         for i, (genome_id, genome) in enumerate(genomes):
             genome.fitness += rewards[i]
@@ -58,6 +58,6 @@ if __name__ == "__main__":
         config_path,
     )
 
-    # checkpoint_file = 'neat-checkpoint-36'
+    # checkpoint_file = 'checkpoints/neat-checkpoint-41'
     # run_neat(config, checkpoint=checkpoint_file)
     run_neat(config)

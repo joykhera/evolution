@@ -2,6 +2,7 @@ import neat
 from IPython.display import display, clear_output
 import matplotlib.pyplot as plt
 
+
 class PlotReporter(neat.reporting.BaseReporter):
     def __init__(self):
         self.best_fitnesses = []
@@ -11,8 +12,10 @@ class PlotReporter(neat.reporting.BaseReporter):
     def post_evaluate(self, config, population, species, best_genome):
         self.best_fitnesses.append(best_genome.fitness)
         fitnesses = []
+
         for genome in population.values():
             fitnesses.append(genome.fitness)
+
         average_fitness = sum(fitnesses) / len(fitnesses)
         self.average_fitnesses.append(average_fitness)
 
@@ -27,6 +30,7 @@ class PlotReporter(neat.reporting.BaseReporter):
         self.ax.set_xlabel("Generations")
         self.ax.set_ylabel("Fitness")
         self.ax.set_title("Fitness Over Generations")
+        self.ax.legend(loc="upper left")
 
         display(self.fig)
         plt.pause(0.001)
