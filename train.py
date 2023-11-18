@@ -4,16 +4,16 @@ from game.game import Game
 import pickle
 import time
 from plot import PlotReporter
-import multiprocessing
+import threading
 
 
-def evaluate_genome(genome_data):
+def evaluate_genome(genome_data, results, index):
     net, obs = genome_data
-    return net.activate(obs.flatten())
+    action = net.activate(obs.flatten())
+    results[index] = action
 
 
 def evaluate_genomes(genomes, config):
-    print('game created')
     env = Game(num_agents=len(genomes), human_player=False)
 
     nets = [neat.nn.FeedForwardNetwork.create(genome, config) for _, genome in genomes]
@@ -24,30 +24,32 @@ def evaluate_genomes(genomes, config):
     for _, genome in genomes:
         genome.fitness = 0
 
-    # Use multiprocessing Pool to parallelize action computation
-    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
+    results = [None] * len(genomes)  # Placeholder for results
 
     while not done:
-        # Pair each neural network with the corresponding observation
-        net_obs_pairs = zip(nets, observations)
+        # Create threads for each genome's evaluation
+        threads = []
+        for i, net_obs_pair in enumerate(zip(nets, observations)):
+            thread = threading.Thread(
+                target=evaluate_genome, args=(net_obs_pair, results, i)
+            )
+            threads.append(thread)
+            thread.start()
 
-        # Use pool.map to compute in parallel
-        start = time.perf_counter()
-        actions = pool.map(evaluate_genome, net_obs_pairs)
-        end = time.perf_counter()
-        # print("NN time: ", end - start)
+        # Wait for all threads to complete
+        for thread in threads:
+            thread.join()
+            # print('thread', thread)
+
+        actions = results
 
         # Step through the environment using the actions
         observations, rewards, done = env.step(actions)
-        env.render(scale=1)
+        env.render(scale=5)
 
         # Update fitness for each genome
         for i, (_, genome) in enumerate(genomes):
             genome.fitness += rewards[i]
-
-    # Close the Pool to release resources
-    pool.close()
-    pool.join()
 
 
 def run_neat(config, checkpoint=None):
@@ -62,12 +64,12 @@ def run_neat(config, checkpoint=None):
     p.add_reporter(stats)
     p.add_reporter(
         neat.Checkpointer(
-            generation_interval=1, filename_prefix="checkpoints/neat-checkpoint-"
+            generation_interval=10, filename_prefix="checkpoints/neat-checkpoint-"
         )
     )
     p.add_reporter(PlotReporter())
 
-    winner = p.run(evaluate_genomes, 100)
+    winner = p.run(evaluate_genomes, 1000)
     with open("best.pickle", "wb") as f:
         pickle.dump(winner, f)
 
