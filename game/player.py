@@ -10,8 +10,10 @@ class Player(GameObject):
         self.ate = False
         self.map_size = map_size
         self.speed = speed
+        self.previous_position = position
 
     def move(self, direction_vector):
+        self.previous_position = self.position
         self.position += direction_vector * self.speed
         # self.position.x = max(
         #     self.size, min(self.position.x, self.map_size - self.size)

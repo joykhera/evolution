@@ -2,6 +2,8 @@ import neat
 from IPython.display import display, clear_output
 import matplotlib.pyplot as plt
 
+PLOT_NAME = "reset_food"
+
 
 class PlotReporter(neat.reporting.BaseReporter):
     def __init__(self):
@@ -29,9 +31,10 @@ class PlotReporter(neat.reporting.BaseReporter):
         self.ax.plot(self.average_fitnesses, label="Average Fitness")
         self.ax.set_xlabel("Generations")
         self.ax.set_ylabel("Fitness")
-        self.ax.set_title("Fitness Over Generations")
+        # self.ax.set_title("Fitness Over Generations")
+        self.ax.set_title(PLOT_NAME)
         self.ax.legend(loc="upper left")
 
         display(self.fig)
         plt.pause(0.001)
-        self.fig.savefig("fitness.png")
+        self.fig.savefig(f"plots/{PLOT_NAME}.png")

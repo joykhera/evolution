@@ -58,7 +58,7 @@ for i in range(episode_num):
 
         observations, rewards, done = env.step(actions)
         fitness += rewards[0]
-        env.render(scale=10)
+        env.render(scale=5)
 
     print('fitness', fitness, done)
     fitness = 0

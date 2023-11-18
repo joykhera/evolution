@@ -15,20 +15,20 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
-FOOD_COUNT = 100
+FOOD_COUNT = 50
 FPS = 60
 FOOD_SIZE = SIZE / 50
 PLAYER_SIZE = SIZE / 50
 PLAYER_SIZE_INCREASE = PLAYER_SIZE / 10
 PLAYER_SPEED = SIZE / 100
-EPISODE_STEPS = 100
+EPISODE_STEPS = 200
 SCALE = 5
 
 
 class Game:
     """Main game class that handles game logic."""
 
-    def __init__(self, num_agents=50, human_player=True):
+    def __init__(self, num_agents=50, human_player=True, training_name="best"):
         pygame.init()
         pygame.display.init()
         self.human_player = human_player
@@ -43,23 +43,7 @@ class Game:
         self.window = pygame.display.set_mode((SIZE * SCALE, SIZE * SCALE))
         self.canvas = pygame.Surface((SIZE, SIZE))
         self.prev_step_time = time.perf_counter()
-
-    def handle_events(self):
-        """Handles game events, such as input and quitting."""
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-
-    def get_action_vector(self, action):
-        """Converts an action number into a direction vector."""
-        actions = [
-            pygame.Vector2(0, 0),  # None
-            pygame.Vector2(1, 0),  # Right
-            pygame.Vector2(-1, 0),  # Left
-            pygame.Vector2(0, -1),  # Up
-            pygame.Vector2(0, 1),  # Down
-        ]
-        return actions[action] if action is not None else pygame.Vector2(0, 0)
+        self.training_name = training_name
 
     def step(self, actions):
         """Executes a step for each agent in the environment."""
@@ -86,132 +70,6 @@ class Game:
         # print("Step:", self.steps, " Step time: ", cur_time - self.prev_step_time)
         self.prev_step_time = cur_time
         return observations, rewards, done
-
-    def get_input(self):
-        """Processes player input and returns a direction vector."""
-        keys = pygame.key.get_pressed()
-        direction_vector = pygame.Vector2(
-            keys[pygame.K_RIGHT] - keys[pygame.K_LEFT],
-            keys[pygame.K_DOWN] - keys[pygame.K_UP],
-        )
-        return (
-            direction_vector.normalize()
-            if direction_vector.length() > 0
-            else direction_vector
-        )
-
-    def check_collisions(self, player_idx):
-        """Checks for collisions between player and food."""
-        for food in self.foods[:]:
-            if (
-                self.players[player_idx].position.distance_to(food.position)
-                < self.players[player_idx].size
-            ):
-                # self.foods.remove(food)
-                # print("Food eaten by player ", player_idx)
-                return True
-
-        return False
-
-    def apply_function_to_all_agents(self, function):
-        """Applies a function to all agents and return"""
-        return [function(i) for i in range(len(self.players))]
-
-    def get_observation(self, player_idx):
-        """
-        Get the observation for a player.
-
-        :param player_idx: Index of the player for which to get the observation
-        :return: An array of observations including the player's normalized position,
-                the normalized position of the nearest food item,
-                and the distances to each wall from the player's position.
-        """
-        player_position = self.players[player_idx].position
-
-        # Normalize player's position
-        normalized_player_position = (
-            player_position.x / SIZE,
-            player_position.y / SIZE,
-        )
-
-        # Find the nearest food and its normalized position
-        nearest_food_position = min(
-            self.foods, key=lambda food: player_position.distance_to(food.position)
-        ).position
-
-        normalized_nearest_food_position = (
-            nearest_food_position.x / SIZE,
-            nearest_food_position.y / SIZE,
-        )
-
-        # Calculate distances to walls
-        distance_to_top_wall = player_position.y / SIZE
-        distance_to_bottom_wall = (SIZE - player_position.y) / SIZE
-        distance_to_left_wall = player_position.x / SIZE
-        distance_to_right_wall = (SIZE - player_position.x) / SIZE
-
-        # Find the distance to the closest wall
-        distance_to_closest_wall = (
-            min(
-                distance_to_top_wall,
-                distance_to_bottom_wall,
-                distance_to_left_wall,
-                distance_to_right_wall,
-            )
-            / SIZE
-        )
-
-        # Construct the observation array
-        observation = np.array(
-            [
-                normalized_player_position[0],
-                normalized_player_position[1],  # Player's position
-                normalized_player_position[0] - normalized_nearest_food_position[0],
-                normalized_player_position[1] - normalized_nearest_food_position[1],
-                distance_to_closest_wall
-                # distance_to_top_wall,
-                # distance_to_bottom_wall,
-                # distance_to_left_wall,
-                # distance_to_right_wall,  # Distances to walls
-            ]
-        )
-        # if player_idx == 0:
-        #     print("Observation: ", observation)
-        return observation
-
-    def _clamp_vector(self, vector, min_vector, max_vector):
-        return pygame.Vector2(
-            max(min_vector.x, min(vector.x, max_vector.x)),
-            max(min_vector.y, min(vector.y, max_vector.y)),
-        )
-
-    def get_reward(self, player_idx):
-        """Returns the reward after an action.
-
-        The player gets -1 reward for touching a wall.
-        """
-        # Check if the player has eaten food
-        food_reward = int(self.check_collisions(player_idx))
-
-        # Check if the player is touching a wall
-        player_position = self.players[player_idx].position
-        wall_penalty = (
-            -1
-            if player_position.x <= 0
-            or player_position.x >= SIZE
-            or player_position.y <= 0
-            or player_position.y >= SIZE
-            else 0
-        )
-
-        # Combine the rewards
-        reward = food_reward * 10 + wall_penalty
-        return reward
-
-    def is_done(self):
-        """Checks if the game is finished."""
-        return self.steps >= EPISODE_STEPS
-        # return self.steps >= EPISODE_STEPS or self.foods == []
 
     def reset(self):
         """Resets the game to an initial state."""
@@ -266,6 +124,100 @@ class Game:
         self.steps = 0
         return observations
 
+    def get_observation(self, player_idx):
+        """
+        Get the observation for a player.
+
+        :param player_idx: Index of the player for which to get the observation
+        :return: An array of observations including the player's normalized position,
+                the normalized position of the nearest food item,
+                and the distances to each wall from the player's position.
+        """
+        player_position = self.players[player_idx].position
+
+        # Normalize player's position
+        normalized_player_position = (
+            player_position.x / SIZE,
+            player_position.y / SIZE,
+        )
+
+        # Find the nearest food and its normalized position
+        nearest_food_position = min(
+            self.foods, key=lambda food: player_position.distance_to(food.position)
+        ).position
+
+        normalized_nearest_food_position = (
+            nearest_food_position.x / SIZE,
+            nearest_food_position.y / SIZE,
+        )
+
+        # Calculate distances to walls
+        distance_to_top_wall = player_position.y / SIZE
+        distance_to_bottom_wall = (SIZE - player_position.y) / SIZE
+        distance_to_left_wall = player_position.x / SIZE
+        distance_to_right_wall = (SIZE - player_position.x) / SIZE
+
+        # Find the distance to the closest wall
+        distance_to_closest_wall = (
+            min(
+                distance_to_top_wall,
+                distance_to_bottom_wall,
+                distance_to_left_wall,
+                distance_to_right_wall,
+            )
+            / SIZE
+        )
+
+        # Construct the observation array
+        observation = np.array(
+            [
+                normalized_player_position[0],
+                normalized_player_position[1],  # Player's position
+                normalized_player_position[0] - normalized_nearest_food_position[0],
+                normalized_player_position[1] - normalized_nearest_food_position[1],
+                # distance_to_closest_wall
+                distance_to_top_wall,
+                distance_to_bottom_wall,
+                distance_to_left_wall,
+                distance_to_right_wall,  # Distances to walls
+            ]
+        )
+        # if player_idx == 0:
+        #     print("Observation: ", observation)
+        return observation
+
+    def get_reward(self, player_idx):
+        """Returns the reward after an action.
+
+        The player gets -0.1 reward for not moving.
+        The player gets a larger penalty for touching a wall.
+        """
+        # Check if the player has eaten food
+        food_reward = int(self.check_collisions(player_idx))
+
+        # Check if the player is touching a wall
+        player_position = self.players[player_idx].position
+        wall_penalty = (
+            -1
+            if player_position.x <= 0
+            or player_position.x >= SIZE
+            or player_position.y <= 0
+            or player_position.y >= SIZE
+            else 0
+        )
+
+        # Check if the player did not move (assuming you have a way to check the previous position)
+        move_penalty = 0
+        if (
+            self.players[player_idx].position
+            == self.players[player_idx].previous_position
+        ):
+            move_penalty = -0.1
+
+        # Combine the rewards
+        reward = food_reward + wall_penalty + move_penalty
+        return reward
+
     def render(self, mode="human", scale=1):
         # Clear the canvas with a black color
         self.canvas.fill(WHITE)
@@ -273,12 +225,6 @@ class Game:
             food.draw(self.canvas, 1)
 
         for player in self.players:
-            # pygame.draw.circle(
-            #     self.canvas,
-            #     RED,
-            #     (int(player.position.x), int(player.position.y)),
-            #     int(PLAYER_SIZE),
-            # )
             player.draw(self.canvas, 1)
 
             # Find the nearest food
@@ -300,6 +246,66 @@ class Game:
             pygame.event.pump()
             self.clock.tick(FPS)
             pygame.display.flip()
+
+    def handle_events(self):
+        """Handles game events, such as input and quitting."""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+
+    def get_action_vector(self, action):
+        """Converts an action number into a direction vector."""
+        actions = [
+            pygame.Vector2(0, 0),  # None
+            pygame.Vector2(1, 0),  # Right
+            pygame.Vector2(-1, 0),  # Left
+            pygame.Vector2(0, -1),  # Up
+            pygame.Vector2(0, 1),  # Down
+        ]
+        return actions[action] if action is not None else pygame.Vector2(0, 0)
+
+    def get_input(self):
+        """Processes player input and returns a direction vector."""
+        keys = pygame.key.get_pressed()
+        direction_vector = pygame.Vector2(
+            keys[pygame.K_RIGHT] - keys[pygame.K_LEFT],
+            keys[pygame.K_DOWN] - keys[pygame.K_UP],
+        )
+        return (
+            direction_vector.normalize()
+            if direction_vector.length() > 0
+            else direction_vector
+        )
+
+    def check_collisions(self, player_idx):
+        """Checks for collisions between player and food."""
+        for food in self.foods[:]:
+            if (
+                self.players[player_idx].position.distance_to(food.position)
+                < self.players[player_idx].size
+            ):
+                # self.foods.remove(food)
+                # print("Food eaten by player ", player_idx)
+                food.set_position((random.randint(0, SIZE), random.randint(0, SIZE)))
+                # print(food.position)
+                return True
+
+        return False
+
+    def apply_function_to_all_agents(self, function):
+        """Applies a function to all agents and return"""
+        return [function(i) for i in range(len(self.players))]
+
+    def _clamp_vector(self, vector, min_vector, max_vector):
+        return pygame.Vector2(
+            max(min_vector.x, min(vector.x, max_vector.x)),
+            max(min_vector.y, min(vector.y, max_vector.y)),
+        )
+
+    def is_done(self):
+        """Checks if the game is finished."""
+        return self.steps >= EPISODE_STEPS
+        # return self.steps >= EPISODE_STEPS or self.foods == []
 
     def close(self):
         """Closes the Pygame window."""

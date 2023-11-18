@@ -77,6 +77,7 @@ def run_neat(config, checkpoint=None):
 
 
 if __name__ == "__main__":
+    training_name = 'best'
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, "neat_config.txt")
 

@@ -16,3 +16,6 @@ class GameObject:
             (int(self.position.x * scale), int(self.position.y * scale)),
             self.size * scale,  #! change later
         )
+
+    def set_position(self, position):
+        self.position = pygame.Vector2(position)
