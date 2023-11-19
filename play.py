@@ -1,10 +1,9 @@
 import neat
 import os
-from game.game import Game
-import time
+from gym_env.evolution_env import EvolutionEnv
 import pygame
 
-env = Game(num_agents=1, human_player=False)
+env = EvolutionEnv(num_agents=1, human_player=False)
 local_dir = os.path.dirname(__file__)
 config_path = os.path.join(local_dir, "neat_config.txt")
 
@@ -58,10 +57,10 @@ for i in range(episode_num):
 
         observations, rewards, done = env.step(actions)
         fitness += rewards[0]
-        env.render(scale=10)
+        env.render(scale=5)
 
-    print('fitness', fitness, done)
+    print("fitness", fitness, done)
     fitness = 0
     env.reset()
     done = False
-    print('reset', done)
+    print("reset", done)
