@@ -1,5 +1,5 @@
 import random
-from game.game_object import GameObject
+from gym_env.game_object import GameObject
 
 
 class Player(GameObject):
