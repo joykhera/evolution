@@ -1,5 +1,5 @@
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
 
 
