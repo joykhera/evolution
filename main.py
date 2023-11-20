@@ -14,8 +14,9 @@ log_dir = os.path.join(os.getcwd(), "training")
 # check_env(EvolutionEnv())
 
 env_config = {
-    "num_agents": 5,
-    "human_player": False,
+    "num_agents": 10,
+    # "render_mode": None,
+    "render_mode": 'human',
     "map_size": 100,
     "grid_size": 42,
 }
@@ -27,7 +28,7 @@ episode_length = 200
 def env_creator(env_config):
     return EvolutionEnv(
         num_agents=env_config["num_agents"],
-        human_player=env_config["human_player"],
+        render_mode=env_config["render_mode"],
         map_size=env_config["map_size"],
         grid_size=env_config["grid_size"],
     )
@@ -45,7 +46,7 @@ ray.init()
 # Configure the environment and the PPO agent
 config = {
     "env": "EvolutionEnv",
-    "num_workers": 1,
+    "num_workers": 0,
     "framework": "tf",
     "timesteps_per_iteration": episode_length,
     # "min_sample_timesteps_per_reporting": episode_length,
@@ -76,9 +77,9 @@ env = EvolutionEnv()
 tune.run(
     PPO,
     config=config,
-    stop={"training_iteration": 100},
+    stop={"training_iteration": 50},
     local_dir=log_dir,
-    # checkpoint_freq=1,
+    checkpoint_freq=10,
     checkpoint_at_end=True,
     reuse_actors=True,
 )

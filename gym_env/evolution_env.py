@@ -8,6 +8,7 @@ from gymnasium import spaces
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import os
 
 # Constants
 
@@ -27,33 +28,45 @@ EPISODE_STEPS = 200
 SCALE = 5
 GRID_SIZE = 10
 
-plt.ion()  # Interactive mode on
-fig, ax = plt.subplots()  # Create a new figure and set of subplots
-image = ax.imshow(np.zeros((100, 100)), "BrBG")
+# if os.getpid() == os.getppid():
+# plt.ion()  # Interactive mode on
+# fig, ax = plt.subplots()  # Create a new figure and set of subplots
+# image = ax.imshow(np.zeros((100, 100)), "BrBG")
 
 
 class EvolutionEnv(MultiAgentEnv):
     """Main game class that handles game logic."""
 
     def __init__(
-        self, num_agents=50, human_player=True, map_size=SIZE, grid_size=GRID_SIZE
+        self,
+        num_agents=50,
+        render_mode="human",
+        human_player=False,
+        map_size=SIZE,
+        grid_size=GRID_SIZE,
     ):
         super().__init__()
-        pygame.init()
-        pygame.display.init()
+        self.num_agents = num_agents
+        self.render_mode = render_mode
+        self.human_player = human_player
         self.map_size = map_size
         self.grid_size = grid_size
-        self.human_player = human_player
-        self.screen = pygame.display.set_mode((map_size * SCALE, map_size * SCALE))
-        pygame.display.set_caption("Evolution Environment")
-        self.clock = pygame.time.Clock()
-        self.num_agents = num_agents
+
+        if self.render_mode == "human":
+            pygame.init()
+            pygame.display.init()
+            self.screen = pygame.display.set_mode((map_size * SCALE, map_size * SCALE))
+            pygame.display.set_caption("Evolution Environment")
+            self.clock = pygame.time.Clock()
+            self.window = pygame.display.set_mode((map_size * SCALE, map_size * SCALE))
+            pygame.font.init()
+            self.font = pygame.font.SysFont(None, 24)
+        self.canvas = pygame.Surface((map_size, map_size))
+
         self.players = []
         self.foods = []
         self.running = True
         self.steps = 0
-        self.window = pygame.display.set_mode((map_size * SCALE, map_size * SCALE))
-        self.canvas = pygame.Surface((map_size, map_size))
         self.prev_step_time = time.perf_counter()
         self.observation_space = spaces.Box(
             low=0,
@@ -63,6 +76,7 @@ class EvolutionEnv(MultiAgentEnv):
         )
         self.action_space = spaces.Discrete(5)
         self._agent_ids = set(range(self.num_agents))
+        self.food_eaten = 0
 
     def step(self, action_dict):
         """Executes a step for each agent in the environment."""
@@ -87,7 +101,7 @@ class EvolutionEnv(MultiAgentEnv):
         cur_time = time.perf_counter()
         # print("Step:", self.steps, " Step time: ", cur_time - self.prev_step_time)
         self.prev_step_time = cur_time
-        self.render(scale=SCALE)
+        # self.render(scale=SCALE)
         return observations, rewards, dones, dones, infos
 
     def reset(self, seed=None, options=None):
@@ -119,6 +133,7 @@ class EvolutionEnv(MultiAgentEnv):
         ]
         # self.players[0].color = BLUE
         self.steps = 0
+        self.food_eaten = 0
         return self._get_obs(), {}
 
     def _get_obs(self):
@@ -127,59 +142,6 @@ class EvolutionEnv(MultiAgentEnv):
             agent_id: self._get_agent_obs(agent_id)
             for agent_id in range(self.num_agents)
         }
-
-    # def _get_agent_obs(self, player_idx):
-    #     player_center = self.players[player_idx].position
-    #     top_left = player_center - pygame.Vector2(
-    #         self.grid_size // 2, self.grid_size // 2
-    #     )
-    #     bottom_right = player_center + pygame.Vector2(
-    #         self.grid_size // 2, self.grid_size // 2
-    #     )
-    #     # print("before clamp", player_center, top_left, bottom_right)
-    #     # Make sure we don't go out of bounds
-    #     top_left = self._clamp_vector(
-    #         top_left,
-    #         pygame.Vector2(0, 0),
-    #         pygame.Vector2(self.map_size, self.map_size) + pygame.Vector2(1, 1),
-    #     )
-    #     bottom_right = self._clamp_vector(
-    #         bottom_right,
-    #         pygame.Vector2(0, 0),
-    #         pygame.Vector2(self.map_size, self.map_size) - pygame.Vector2(1, 1),
-    #     )
-
-    #     # Extract the rectangle of the screen
-    #     screen_pixels = pygame.surfarray.array3d(self.canvas)
-    #     screen_pixels = np.transpose(np.array(screen_pixels), axes=(1, 0, 2))
-
-    #     screen_pixels_scaled = pygame.surfarray.array3d(self.screen)
-    #     screen_pixels_scaled = np.transpose(
-    #         np.array(screen_pixels_scaled), axes=(1, 0, 2)
-    #     )
-    #     # print("screen_pixels.shape", screen_pixels.shape)
-    #     # print("screen_pixels_scaled.shape", screen_pixels_scaled.shape)
-
-    #     observation = screen_pixels[
-    #         int(top_left.y) : int(bottom_right.y),
-    #         int(top_left.x) : int(bottom_right.x),
-    #         :,
-    #     ]
-
-    #     # Resize the observation to a 10x10 image
-    #     if observation.shape != (self.grid_size, self.grid_size, 3):
-    #         observation = pygame.transform.smoothscale(
-    #             pygame.surfarray.make_surface(observation),
-    #             (self.grid_size, self.grid_size),
-    #         )
-    #         observation = pygame.surfarray.array3d(observation)
-    #         observation = np.transpose(observation, axes=(1, 0, 2))
-
-    #     # if player_idx == 0:
-    #     #     image.set_data(observation)
-    #     #     plt.pause(0.001)
-
-    #     return observation / 255
 
     def _get_agent_obs(self, player_idx):
         player_center = self.players[player_idx].position
@@ -193,30 +155,42 @@ class EvolutionEnv(MultiAgentEnv):
         # Calculate the slice sizes for the observation
         top_slice = int(max(0, -top_left[1]))
         left_slice = int(max(0, -top_left[0]))
-        bottom_slice = int(min(self.grid_size, self.grid_size + min(0, self.map_size - bottom_right[1])))
-        right_slice = int(min(self.grid_size, self.grid_size + min(0, self.map_size - bottom_right[0])))
 
         # Clamp the top left and bottom right to be within the screen bounds
         top_left_clamped = np.maximum(top_left, (0, 0)).astype(int)
-        bottom_right_clamped = np.minimum(bottom_right, (self.map_size, self.map_size)).astype(int)
+        bottom_right_clamped = np.minimum(
+            bottom_right, (self.map_size, self.map_size)
+        ).astype(int)
 
         # Extract the rectangle of the screen
+        self.render(scale=SCALE)
         screen_pixels = pygame.surfarray.array3d(self.canvas)
         screen_pixels = np.transpose(screen_pixels, axes=(1, 0, 2))
 
         # Copy the visible part of the screen to the observation canvas
         # Ensure that the slices do not go out of bounds
         top_left_slice = (max(0, top_left_clamped[1]), max(0, top_left_clamped[0]))
-        bottom_right_slice = (min(self.map_size, bottom_right_clamped[1]), min(self.map_size, bottom_right_clamped[0]))
+        bottom_right_slice = (
+            min(self.map_size, bottom_right_clamped[1]),
+            min(self.map_size, bottom_right_clamped[0]),
+        )
 
         # Adjust the slices based on the calculated indices
-        observation_slice = screen_pixels[top_left_slice[0]:bottom_right_slice[0], top_left_slice[1]:bottom_right_slice[1], :]
+        observation_slice = screen_pixels[
+            top_left_slice[0] : bottom_right_slice[0],
+            top_left_slice[1] : bottom_right_slice[1],
+            :,
+        ]
         observation_shape = observation_slice.shape
-        observation[top_slice:top_slice + observation_shape[0], left_slice:left_slice + observation_shape[1], :] = observation_slice
+        observation[
+            top_slice : top_slice + observation_shape[0],
+            left_slice : left_slice + observation_shape[1],
+            :,
+        ] = observation_slice
 
-        if player_idx == 0:
-            image.set_data(observation)
-            plt.pause(0.001)
+        # if player_idx == 0:
+        #     image.set_data(observation)
+        #     plt.pause(0.001)
 
         # Normalize the observation by 255 to get values between 0 and 1
         return observation / 255.0
@@ -253,7 +227,7 @@ class EvolutionEnv(MultiAgentEnv):
         reward = food_reward + wall_penalty + move_penalty
         return reward
 
-    def render(self, mode="human", scale=1):
+    def render(self, scale=1):
         # Clear the canvas with a black color
         self.canvas.fill(WHITE)
         for food in self.foods:
@@ -262,24 +236,19 @@ class EvolutionEnv(MultiAgentEnv):
         for player in self.players:
             player.draw(self.canvas, 1)
 
-            # # Find the nearest food
-            # nearest_food = min(
-            #     self.foods, key=lambda f: player.position.distance_to(f.position)
-            # )
-            # # Draw a line from the player to the nearest food item using Pygame
-            # pygame.draw.line(self.canvas, BLUE, player.position, nearest_food.position)
-        # self.draw_rays(self.canvas, self.players[0].position, self.foods, max_distance)
-
-        scaled_canvas = pygame.Surface((self.map_size * scale, self.map_size * scale))
-        scaled_canvas.blit(
-            pygame.transform.scale(
-                self.canvas, (self.map_size * scale, self.map_size * scale)
-            ),
-            scaled_canvas.get_rect(),
-        )
-
-        if mode == "human":
+        if self.render_mode == "human":
+            scaled_canvas = pygame.Surface(
+                (self.map_size * scale, self.map_size * scale)
+            )
+            scaled_canvas.blit(
+                pygame.transform.scale(
+                    self.canvas, (self.map_size * scale, self.map_size * scale)
+                ),
+                scaled_canvas.get_rect(),
+            )
             self.window.blit(scaled_canvas, scaled_canvas.get_rect())
+            text_surface = self.font.render(f'Food eaten: {self.food_eaten}', True, BLACK)
+            self.window.blit(text_surface, (10, 10))
             pygame.event.pump()
             self.clock.tick(FPS)
             pygame.display.flip()
@@ -332,7 +301,8 @@ class EvolutionEnv(MultiAgentEnv):
                 food.set_position(
                     (random.randint(0, self.map_size), random.randint(0, self.map_size))
                 )
-                # print(food.position)
+                self.players[player_idx].size += PLAYER_SIZE_INCREASE
+                self.food_eaten += 1
                 return True
 
         return False
