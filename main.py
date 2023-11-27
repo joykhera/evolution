@@ -34,6 +34,7 @@ env_config = {
     "player_speed": map_size / 100,
     "episode_steps": 200,
     "scale": 5,
+    "mode": "train",
 }
 
 episode_length = 200
@@ -58,6 +59,7 @@ def env_creator(env_config):
         player_speed=env_config["player_speed"],
         episode_steps=env_config["episode_steps"],
         scale=env_config["scale"],
+        mode=env_config["mode"],
     )
 
 
@@ -69,7 +71,7 @@ ray.init()
 # Configure the environment and the PPO agent
 config = {
     "env": "EvolutionEnv",
-    "num_workers": 9,
+    "num_workers": 121,
     "framework": "tf",
     "timesteps_per_iteration": episode_length,
     # "min_sample_timesteps_per_reporting": episode_length,
@@ -99,14 +101,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-test", action="store_true", help="Enable testing mode.")
     parser.add_argument(
-        "-checkpoint", type=str, help="Checkpoint from which to load the model."
+        "-cp", type=str, help="Checkpoint from which to load the model."
     )
+    parser.add_argument("-name", type=str, help="Custom name for the experiment.")
 
     # Parse the command-line arguments
     args = parser.parse_args()
 
-    if args.test and args.checkpoint:
+    if args.test and args.cp:
         # Set up the environment for testing
+        env_config["mode"] = "test"
         env_config["render_mode"] = "human"
         env_config["episode_steps"] = 1000
         config["num_workers"] = 0
@@ -116,7 +120,7 @@ if __name__ == "__main__":
         trainer = PPO(env="EvolutionEnv", config=config)
 
         # Restore from the checkpoint
-        trainer.restore(args.checkpoint)
+        trainer.restore(args.cp)
 
         # Run the testing loop
         for _ in range(10):
@@ -143,11 +147,13 @@ if __name__ == "__main__":
         tune.run(
             PPO,
             config=config,
-            stop={"training_iteration": 100},
+            stop={"training_iteration": 150},
             local_dir=log_dir,
             checkpoint_freq=10,
             checkpoint_at_end=True,
             reuse_actors=True,
+            name=args.name,
+            restore=args.cp,
         )
 
 # Shutdown Ray

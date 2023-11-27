@@ -15,11 +15,5 @@ class Player(GameObject):
     def move(self, direction_vector):
         self.previous_position = self.position
         self.position += direction_vector * self.speed
-        # self.position.x = max(
-        #     self.size, min(self.position.x, self.map_size - self.size)
-        # )
-        # self.position.y = max(
-        #     self.size, min(self.position.y, self.map_size - self.size)
-        # )
         self.position.x = max(0, min(self.position.x, self.map_size))
         self.position.y = max(0, min(self.position.y, self.map_size))

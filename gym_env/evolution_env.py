@@ -7,8 +7,7 @@ import time
 from gymnasium import spaces
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import os
+from matplotlib.widgets import Button
 
 # Constants
 
@@ -17,6 +16,8 @@ WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+PINK = (255, 0, 255)
 BLACK = (0, 0, 0)
 FOOD_COUNT = 50
 FPS = 120
@@ -27,11 +28,6 @@ PLAYER_SPEED = SIZE / 100
 EPISODE_STEPS = 200
 SCALE = 5
 GRID_SIZE = 10
-
-# if os.getpid() == os.getppid():
-# plt.ion()  # Interactive mode on
-# fig, ax = plt.subplots()  # Create a new figure and set of subplots
-# image = ax.imshow(np.zeros((100, 100)), "BrBG")
 
 
 class EvolutionEnv(MultiAgentEnv):
@@ -56,6 +52,7 @@ class EvolutionEnv(MultiAgentEnv):
         player_speed=PLAYER_SPEED,
         episode_steps=EPISODE_STEPS,
         scale=SCALE,
+        mode="train",
     ):
         super().__init__()
         self.num_agents = num_agents
@@ -75,6 +72,8 @@ class EvolutionEnv(MultiAgentEnv):
         self.player_speed = player_speed
         self.episode_steps = episode_steps
         self.scale = scale
+        self.mode = mode
+        self.rewards = np.zeros(self.num_agents)
 
         if self.render_mode == "human":
             pygame.init()
@@ -86,6 +85,63 @@ class EvolutionEnv(MultiAgentEnv):
             pygame.font.init()
             self.font = pygame.font.SysFont(None, 24)
         self.canvas = pygame.Surface((map_size, map_size))
+
+        print("Mode: ", self.mode)
+        if self.mode == "test":
+            plt.ion()  # Interactive mode on
+            (
+                self.fig,
+                self.ax,
+            ) = plt.subplots()  # Create a new figure and set of subplots
+            self.image = self.ax.imshow(np.zeros((100, 100)), "BrBG")
+
+            self.agent_obs_idx = 0
+
+            # Text display for the current agent index
+            self.idx_text = plt.text(
+                0.02,
+                0.95,
+                f"Agent Index: {self.agent_obs_idx}",
+                transform=self.fig.transFigure,
+            )
+
+            self.reward_text = plt.text(
+                0.02,
+                0.915,
+                f"Agent Reward: 0",
+                transform=self.fig.transFigure,
+            )
+
+            # Create a Button and Text widget in Matplotlib
+            ax_button = plt.axes(
+                [0.1, 0.85, 0.05, 0.05]
+            )  # x, y, width, height in relative coordinates
+            self.inc_button = Button(ax_button, ">")
+            # Create a Button and Text widget in Matplotlib
+            ax_button = plt.axes(
+                [0.04, 0.85, 0.05, 0.05]
+            )  # x, y, width, height in relative coordinates
+            self.dec_button = Button(ax_button, "<")
+
+            # Define the button's callback with a lambda function that also updates the text
+            # self.button.on_clicked(
+            #     lambda _: setattr(
+            #         self, "agent_obs_idx", (self.agent_obs_idx + 1) % self.num_agents;
+            #     )
+            # )
+
+            def increment(event):
+                self.agent_obs_idx = (self.agent_obs_idx + 1) % self.num_agents
+                self.idx_text.set_text(f"Agent Index: {self.agent_obs_idx}")
+                # self.fig.canvas.draw_idle()
+
+            def decrement(event):
+                self.agent_obs_idx = (self.agent_obs_idx - 1) % self.num_agents
+                self.idx_text.set_text(f"Agent Index: {self.agent_obs_idx}")
+                # self.fig.canvas.draw_idle()
+
+            self.inc_button.on_clicked(increment)
+            self.dec_button.on_clicked(decrement)
 
         self.players = []
         self.foods = []
@@ -102,7 +158,8 @@ class EvolutionEnv(MultiAgentEnv):
         self._agent_ids = set(range(self.num_agents))
         self.food_eaten = 0
         self.total_reward = 0
-        self.kill_reward = 10
+        self.kill_count = 0
+        self.kill_reward = 5
 
     def step(self, action_dict):
         """Executes a step for each agent in the environment."""
@@ -110,6 +167,8 @@ class EvolutionEnv(MultiAgentEnv):
         rewards = {}
         dones = {}
         infos = {}
+
+        # self.render(scale=self.scale)
 
         for agent_id, action in action_dict.items():
             if self.human_player:
@@ -157,6 +216,8 @@ class EvolutionEnv(MultiAgentEnv):
         self.steps = 0
         self.food_eaten = 0
         self.total_reward = 0
+        self.kill_count = 0
+        self.rewards = np.zeros(self.num_agents)
         return self._get_obs(), {}
 
     def _get_obs(self):
@@ -185,8 +246,17 @@ class EvolutionEnv(MultiAgentEnv):
             bottom_right, (self.map_size, self.map_size)
         ).astype(int)
 
-        # Extract the rectangle of the screen
         self.render(scale=self.scale)
+        self.players[player_idx].draw(self.canvas, 1, BLUE)
+
+        for i, player in enumerate(self.players):
+            if i != player_idx:
+                if int(player.size) < int(self.players[player_idx].size):
+                    player.draw(self.canvas, 1, PINK)
+                elif int(player.size) == int(self.players[player_idx].size):
+                    player.draw(self.canvas, 1, YELLOW)
+
+        # Extract the rectangle of the screen
         screen_pixels = pygame.surfarray.array3d(self.canvas)
         screen_pixels = np.transpose(screen_pixels, axes=(1, 0, 2))
 
@@ -205,15 +275,16 @@ class EvolutionEnv(MultiAgentEnv):
             :,
         ]
         observation_shape = observation_slice.shape
+
         observation[
             top_slice : top_slice + observation_shape[0],
             left_slice : left_slice + observation_shape[1],
             :,
         ] = observation_slice
 
-        # if player_idx == 0:
-        #     image.set_data(observation)
-        #     plt.pause(0.001)
+        if self.mode == "test" and player_idx == self.agent_obs_idx:
+            self.image.set_data(observation)
+            plt.pause(0.001)
 
         # Normalize the observation by 255 to get values between 0 and 1
         return observation / 255.0
@@ -232,6 +303,11 @@ class EvolutionEnv(MultiAgentEnv):
         # Check if the player is touching a wall
         wall_penalty = self._check_wall_collision(player_idx)
         reward += wall_penalty
+
+        self.rewards[player_idx] += reward
+
+        if self.mode == "test" and player_idx == self.agent_obs_idx:
+            self.reward_text.set_text(f"Agent reward: {self.rewards[player_idx]}")
 
         # Combine the rewards
         return reward
@@ -260,11 +336,15 @@ class EvolutionEnv(MultiAgentEnv):
             food_eaten_text_surface = self.font.render(
                 f"Food eaten: {self.food_eaten}", True, self.out_of_bounds_color
             )
-            self.window.blit(food_eaten_text_surface, (10, 10))
+            self.window.blit(food_eaten_text_surface, (5, 10))
+            kill_count_text_surface = self.font.render(
+                f"Kill count: {self.kill_count}", True, self.out_of_bounds_color
+            )
+            self.window.blit(kill_count_text_surface, (5, 25))
             total_reward_text_surface = self.font.render(
                 f"Total reward: {self.total_reward}", True, self.out_of_bounds_color
             )
-            self.window.blit(total_reward_text_surface, (10, 25))
+            self.window.blit(total_reward_text_surface, (5, 40))
 
             pygame.event.pump()
             self.clock.tick(FPS)
@@ -340,36 +420,31 @@ class EvolutionEnv(MultiAgentEnv):
 
         # Assign rewards or penalties for collisions
         rewards = np.zeros(player_sizes.shape)
-        bigger = player_sizes > current_size
-        smaller = player_sizes < current_size
-        rewards[bigger & collisions] = self.kill_reward
-        rewards[smaller & collisions] = -self.kill_reward
+        bigger_than_agent = player_sizes > current_size
+        smaller_than_agent = player_sizes < current_size
+        rewards[smaller_than_agent & collisions] = self.kill_reward * 2
+        rewards[bigger_than_agent & collisions] = -self.kill_reward
+
+        # Respawn any eaten agents
+        for idx, collided in enumerate(smaller_than_agent & collisions):
+            if collided:
+                # Respawn at random location
+                self.players[idx].position = pygame.Vector2(
+                    random.uniform(0, self.map_size), random.uniform(0, self.map_size)
+                )
+                # Reset size to default
+                self.players[idx].size = self.player_size
+
+        # Increase size of the current player
+        for collided in smaller_than_agent & collisions:
+            if collided:
+                self.kill_count += 1
+                self.players[player_idx].size += 1
 
         # Sum up the rewards from collisions
         total_reward = rewards.sum()
 
         return total_reward
-
-    # def _check_collisions_with_food(self, player_idx):
-    #     """Vectorized check for collisions between player and food."""
-    #     # Convert food positions and player position to NumPy arrays for vectorized operations
-    #     food_positions = np.array([food.position for food in self.foods])
-    #     player_position = np.array(self.players[player_idx].position)
-
-    #     # Calculate distances in a vectorized way
-    #     distances = np.linalg.norm(food_positions - player_position, axis=1)
-
-    #     # Find collided food items
-    #     collisions = distances < self.players[player_idx].size
-
-    #     # Update food positions and player size for each collision
-    #     for food_idx, collided in enumerate(collisions):
-    #         if collided:
-    #             # self.foods[food_idx].set_position(...)  # Set new food position
-    #             self.players[player_idx].size += self.player_size_increase
-    #             self.food_eaten += 1
-
-    #     return np.any(collisions)
 
     def _check_collisions_with_food(self, player_idx):
         """Checks for collisions between player and food."""
@@ -392,26 +467,3 @@ class EvolutionEnv(MultiAgentEnv):
         """Checks if the game is finished."""
         return self.steps >= self.episode_steps
         # return self.steps >= self.episode_steps or self.foods == []
-
-    def test_ai(self, nets, num_steps=1000):
-        """Test the AI's performance in the game for a certain number of steps."""
-        self.reset()
-        pygame.display.set_caption("NEAT Test AI")
-        for _ in range(num_steps):
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    quit()
-            self.screen.fill(WHITE)
-
-            observations = self._get_obs()
-
-            actions = [
-                net.activate(obs.flatten()) for net, obs in zip(nets, observations)
-            ]
-
-            self.step(actions)
-            self.render(scale=self.scale)
-            self.clock.tick(self.fps)
-
-            if self._is_done():
-                break
