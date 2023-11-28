@@ -89,10 +89,7 @@ class EvolutionEnv(MultiAgentEnv):
         print("Mode: ", self.mode)
         if self.mode == "test":
             plt.ion()  # Interactive mode on
-            (
-                self.fig,
-                self.ax,
-            ) = plt.subplots()  # Create a new figure and set of subplots
+            (self.fig, self.ax) = plt.subplots()
             self.image = self.ax.imshow(np.zeros((100, 100)), "BrBG")
 
             self.agent_obs_idx = 0
@@ -422,7 +419,7 @@ class EvolutionEnv(MultiAgentEnv):
         rewards = np.zeros(player_sizes.shape)
         bigger_than_agent = player_sizes > current_size
         smaller_than_agent = player_sizes < current_size
-        rewards[smaller_than_agent & collisions] = self.kill_reward * 2
+        rewards[smaller_than_agent & collisions] = self.kill_reward
         rewards[bigger_than_agent & collisions] = -self.kill_reward
 
         # Respawn any eaten agents

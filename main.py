@@ -71,7 +71,7 @@ ray.init()
 # Configure the environment and the PPO agent
 config = {
     "env": "EvolutionEnv",
-    "num_workers": 121,
+    "num_workers": 9,
     "framework": "tf",
     "timesteps_per_iteration": episode_length,
     # "min_sample_timesteps_per_reporting": episode_length,
@@ -147,7 +147,7 @@ if __name__ == "__main__":
         tune.run(
             PPO,
             config=config,
-            stop={"training_iteration": 150},
+            stop={"training_iteration": 100},
             local_dir=log_dir,
             checkpoint_freq=10,
             checkpoint_at_end=True,
