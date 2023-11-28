@@ -161,11 +161,22 @@ class EvolutionEnv(MultiAgentEnv):
         self.kill_count = 0
         self.kill_reward = 5
 
+    def observation_space_contains(self, x):
+        return self.observation_space.contains(x)
+    
+    def observation_space_sample(self):
+        return {
+            agent_id: self.observation_space.sample() for agent_id in self._agent_ids
+        }
+    
+    def action_space_sample(self):
+        return self.action_space.sample()
+
     def step(self, action_dict):
         """Executes a step for each agent in the environment."""
         observations = {}
         rewards = {}
-        dones = {}
+        terminateds = {}
         infos = {}
 
         # self.render(scale=self.scale)
@@ -179,17 +190,17 @@ class EvolutionEnv(MultiAgentEnv):
             self.players[agent_id].move(direction_vector)
             observations[agent_id] = self._get_agent_obs(agent_id)
             rewards[agent_id] = self._get_reward(agent_id)
-            dones[agent_id] = self._is_done()
+            terminateds[agent_id] = self._is_done()
 
-        dones["__all__"] = all(value for value in dones.values())
+        terminateds["__all__"] = all(value for value in terminateds.values())
         self.steps += 1
         self.total_reward += sum(rewards.values())
         cur_time = time.perf_counter()
         # print("Step:", self.steps, " Step time: ", cur_time - self.prev_step_time)
         self.prev_step_time = cur_time
-        return observations, rewards, dones, dones, infos
+        return observations, rewards, terminateds, terminateds, infos
 
-    def reset(self, seed=None, options=None):
+    def reset(self, *, seed=None, options=None):
         """Resets the game to an initial state using vectorized operations."""
         # Generate random positions for the food
         food_positions = np.random.randint(0, self.map_size, size=(self.food_count, 2))
@@ -218,12 +229,36 @@ class EvolutionEnv(MultiAgentEnv):
         self.total_reward = 0
         self.kill_count = 0
         self.rewards = np.zeros(self.num_agents)
+        # print('xz',self._get_obs()[0].dtype, self._get_obs()[0].shape, self._get_obs().keys(), self.observation_space.contains(self._get_obs))
+        print('helZZ')
+        
+        # Initialize variables to hold the overall min and max values
+        overall_min = float('inf')  # Initialize with a high value
+        overall_max = float('-inf')  # Initialize with a low value
+
+        # Iterate through the dictionary values
+        for array in self._get_obs().values():
+            # Calculate the minimum and maximum values for each array
+            array_min = np.min(array)
+            array_max = np.max(array)
+            
+            # Update overall min and max values
+            overall_min = min(overall_min, array_min)
+            overall_max = max(overall_max, array_max)
+
+        # Print the overall minimum and maximum values
+        print("Overall Minimum Value:", overall_min)
+        print("Overall Maximum Value:", overall_max)
+        print('self.observation_space.contains(x)', [self.observation_space.contains(x) for x in self._get_obs().values()])
+        # for x in self._get_obs.values():
+        #     print(self.observation_space.contains(x))
+        # print(self._get_obs().dtype)
         return self._get_obs(), {}
 
     def _get_obs(self):
         # Returns observation for all agents
         return {
-            agent_id: self._get_agent_obs(agent_id)
+            agent_id: self._get_agent_obs(agent_id).astype(np.float32)
             for agent_id in range(self.num_agents)
         }
 
@@ -287,7 +322,7 @@ class EvolutionEnv(MultiAgentEnv):
             plt.pause(0.001)
 
         # Normalize the observation by 255 to get values between 0 and 1
-        return observation / 255.0
+        return (observation / 255.0).astype(np.float32)
 
     def _get_reward(self, player_idx):
         """Returns the reward after an action."""

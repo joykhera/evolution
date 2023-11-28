@@ -1,4 +1,5 @@
 import tensorboard
+import tensorflow as tf
 import ray
 from ray import tune
 from ray.rllib.algorithms.ppo import PPO
@@ -62,35 +63,50 @@ def env_creator(env_config):
         mode=env_config["mode"],
     )
 
-
+check_env(env_creator(env_config))
 register_env("EvolutionEnv", env_creator)
 
 # Initialize Ray
 ray.init()
 
+agent_observation_space = spaces.Box(
+    low=0,
+    high=1,
+    shape=(env_config["grid_size"], env_config["grid_size"], 3),
+    dtype=np.float32,
+)
+agent_action_space = spaces.Discrete(5)
+
 # Configure the environment and the PPO agent
 config = {
     "env": "EvolutionEnv",
-    "num_workers": 121,
+    "num_workers": 11,
     "framework": "tf",
+    # "framework": "torch",
     "timesteps_per_iteration": episode_length,
+    # "num_gpus": 1,
     # "min_sample_timesteps_per_reporting": episode_length,
     # "min_time_s_per_reporting": 1,
     # "rollout_fragment_length": episode_length,  # Ensure that rollout fragments match your episode length
     # "train_batch_size": episode_length,
     "multiagent": {
         "policies": {
-            "policy_0": (
-                None,
-                spaces.Box(
-                    low=0,
-                    high=1,
-                    shape=(env_config["grid_size"], env_config["grid_size"], 3),
-                    dtype=np.float32,
-                ),
-                spaces.Discrete(5),
-                {},
-            ),
+            # "policy_0": (
+            #     None,
+            #     spaces.Box(
+            #         low=0,
+            #         high=1,
+            #         shape=(env_config["grid_size"], env_config["grid_size"], 3),
+            #         dtype=np.float32,
+            #     ),
+            #     spaces.Discrete(5),
+            #     {},
+            # ),
+            "policy_0": {
+                # Define observation and action spaces for each agent
+                agent_id: (None, agent_observation_space, agent_action_space, {})
+                for agent_id in range(env_config["num_agents"])
+            },
         },
         "policy_mapping_fn": lambda agent_id, episode, worker, **kwargs: "policy_0",
     },
