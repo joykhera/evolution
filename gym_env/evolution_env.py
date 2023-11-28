@@ -25,6 +25,7 @@ FOOD_SIZE = SIZE / 50
 PLAYER_SIZE = SIZE / 50
 PLAYER_SIZE_INCREASE = PLAYER_SIZE / 10
 PLAYER_SPEED = SIZE / 100
+DECAY_RATE = 0.01
 EPISODE_STEPS = 200
 SCALE = 5
 GRID_SIZE = 10
@@ -50,6 +51,7 @@ class EvolutionEnv(MultiAgentEnv):
         player_size=PLAYER_SIZE,
         player_size_increase=PLAYER_SIZE_INCREASE,
         player_speed=PLAYER_SPEED,
+        decay_rate=DECAY_RATE,
         episode_steps=EPISODE_STEPS,
         scale=SCALE,
         mode="train",
@@ -70,6 +72,7 @@ class EvolutionEnv(MultiAgentEnv):
         self.player_size = player_size
         self.player_size_increase = player_size_increase
         self.player_speed = player_speed
+        self.decay_rate = decay_rate
         self.episode_steps = episode_steps
         self.scale = scale
         self.mode = mode
@@ -84,6 +87,9 @@ class EvolutionEnv(MultiAgentEnv):
             self.window = pygame.display.set_mode((map_size * scale, map_size * scale))
             pygame.font.init()
             self.font = pygame.font.SysFont(None, 24)
+            self.scaled_canvas = pygame.Surface(
+                (self.map_size * scale, self.map_size * scale)
+            )
         self.canvas = pygame.Surface((map_size, map_size))
 
         print("Mode: ", self.mode)
@@ -109,16 +115,8 @@ class EvolutionEnv(MultiAgentEnv):
                 transform=self.fig.transFigure,
             )
 
-            # Create a Button and Text widget in Matplotlib
-            ax_button = plt.axes(
-                [0.1, 0.85, 0.05, 0.05]
-            )  # x, y, width, height in relative coordinates
-            self.inc_button = Button(ax_button, ">")
-            # Create a Button and Text widget in Matplotlib
-            ax_button = plt.axes(
-                [0.04, 0.85, 0.05, 0.05]
-            )  # x, y, width, height in relative coordinates
-            self.dec_button = Button(ax_button, "<")
+            self.inc_button = Button(plt.axes([0.1, 0.85, 0.05, 0.05]), ">")
+            self.dec_button = Button(plt.axes([0.04, 0.85, 0.05, 0.05]), "<")
 
             # Define the button's callback with a lambda function that also updates the text
             # self.button.on_clicked(
@@ -174,6 +172,10 @@ class EvolutionEnv(MultiAgentEnv):
                 direction_vector = self._get_action_vector(action)
 
             self.players[agent_id].move(direction_vector)
+            if self.players[agent_id].size > self.player_size:
+                self.players[agent_id].size -= (
+                    self.decay_rate * self.players[agent_id].size
+                )
             observations[agent_id] = self._get_agent_obs(agent_id)
             rewards[agent_id] = self._get_reward(agent_id)
             dones[agent_id] = self._is_done()
@@ -319,16 +321,23 @@ class EvolutionEnv(MultiAgentEnv):
             player.draw(self.canvas, 1)
 
         if self.render_mode == "human":
-            scaled_canvas = pygame.Surface(
-                (self.map_size * scale, self.map_size * scale)
-            )
-            scaled_canvas.blit(
-                pygame.transform.scale(
-                    self.canvas, (self.map_size * scale, self.map_size * scale)
-                ),
-                scaled_canvas.get_rect(),
-            )
-            self.window.blit(scaled_canvas, scaled_canvas.get_rect())
+            # scaled_canvas = pygame.Surface(
+            #     (self.map_size * scale, self.map_size * scale)
+            # )
+            # scaled_canvas.blit(
+            #     pygame.transform.scale(
+            #         self.canvas, (self.map_size * scale, self.map_size * scale)
+            #     ),
+            #     scaled_canvas.get_rect(),
+            # )
+            self.scaled_canvas.fill(self.map_color)
+            for food in self.foods:
+                food.draw(self.scaled_canvas, scale)
+
+            for player in self.players:
+                player.draw(self.scaled_canvas, scale)
+
+            self.window.blit(self.scaled_canvas, self.scaled_canvas.get_rect())
 
             food_eaten_text_surface = self.font.render(
                 f"Food eaten: {self.food_eaten}", True, self.out_of_bounds_color
@@ -419,8 +428,16 @@ class EvolutionEnv(MultiAgentEnv):
         rewards = np.zeros(player_sizes.shape)
         bigger_than_agent = player_sizes > current_size
         smaller_than_agent = player_sizes < current_size
-        rewards[smaller_than_agent & collisions] = self.kill_reward
-        rewards[bigger_than_agent & collisions] = -self.kill_reward
+        # rewards[smaller_than_agent & collisions] = self.kill_reward
+        # rewards[bigger_than_agent & collisions] = -self.kill_reward
+
+        # Give the smaller player's size as the reward to the bigger player
+
+        for idx, collided in enumerate(collisions):
+            if collided and smaller_than_agent[idx]:
+                rewards[idx] = player_sizes[idx]
+            elif collided and bigger_than_agent[idx]:
+                rewards[idx] = -player_sizes[player_idx]
 
         # Respawn any eaten agents
         for idx, collided in enumerate(smaller_than_agent & collisions):
