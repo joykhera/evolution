@@ -14,7 +14,7 @@ class GameObject:
             surface,
             color or self.color,
             (int(self.position.x * scale), int(self.position.y * scale)),
-            self.size * scale,  #! change later
+            int(self.size) * scale,
         )
 
     def set_position(self, position):

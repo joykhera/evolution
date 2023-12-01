@@ -1,0 +1,54 @@
+{
+  "env": "EvolutionEnv",
+  "env_config": {
+    "decay_rate": 0.001,
+    "episode_length": 200,
+    "episode_steps": 200,
+    "food_color": [
+      0,
+      255,
+      0
+    ],
+    "food_count": 50,
+    "food_size": 2.0,
+    "fps": 120,
+    "grid_size": 42,
+    "map_color": [
+      255,
+      255,
+      255
+    ],
+    "map_size": 100,
+    "num_agents": 10,
+    "num_envs_per_worker": 8,
+    "out_of_bounds_color": [
+      0,
+      0,
+      0
+    ],
+    "player_color": [
+      255,
+      0,
+      0
+    ],
+    "player_size": 2.0,
+    "player_size_increase": 0.25,
+    "player_speed": 1.0,
+    "render_mode": null,
+    "scale": 5
+  },
+  "framework": "tf",
+  "multiagent": {
+    "policies": {
+      "policy_0": [
+        null,
+        "Box(0.0, 1.0, (42, 42, 3), float32)",
+        "Discrete(5)",
+        {}
+      ]
+    },
+    "policy_mapping_fn": "<function <lambda> at 0x2d5e87790>"
+  },
+  "num_workers": 9,
+  "timesteps_per_iteration": 200
+}

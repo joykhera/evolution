@@ -1,0 +1,31 @@
+Failure # 1 (occurred at 2023-11-29_11-02-55)
+The actor died because of an error raised in its creation task, [36mray::PPO.__init__()[39m (pid=29126, ip=127.0.0.1, actor_id=4532597f3569aaa920f52b8801000000, repr=PPO)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/evaluation/worker_set.py", line 227, in _setup
+    self.add_workers(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/evaluation/worker_set.py", line 593, in add_workers
+    raise result.get()
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/utils/actor_manager.py", line 481, in __fetch_result
+    result = ray.get(r)
+ray.exceptions.RayActorError: The actor died because of an error raised in its creation task, [36mray::RolloutWorker.__init__()[39m (pid=29132, ip=127.0.0.1, actor_id=e818b03bba90b2aaae17a8ed01000000, repr=<ray.rllib.evaluation.rollout_worker.RolloutWorker object at 0x344238df0>)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/evaluation/rollout_worker.py", line 397, in __init__
+    self.env = env_creator(copy.deepcopy(self.env_context))
+  File "/Users/joykhera/Desktop/code/ml/evolution/main.py", line 67, in env_creator
+    return VectorEnv.wrap(lambda _: env, num_envs=env_config["num_envs_per_worker"])
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/utils/deprecation.py", line 118, in _ctor
+    deprecation_warning(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/utils/deprecation.py", line 48, in deprecation_warning
+    raise ValueError(msg)
+ValueError: `wrap` has been deprecated. Use `vectorize_gym_envs` instead.
+
+During handling of the above exception, another exception occurred:
+
+[36mray::PPO.__init__()[39m (pid=29126, ip=127.0.0.1, actor_id=4532597f3569aaa920f52b8801000000, repr=PPO)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/algorithms/algorithm.py", line 517, in __init__
+    super().__init__(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/tune/trainable/trainable.py", line 161, in __init__
+    self.setup(copy.deepcopy(self.config))
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/algorithms/algorithm.py", line 639, in setup
+    self.workers = WorkerSet(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/evaluation/worker_set.py", line 179, in __init__
+    raise e.args[0].args[2]
+ValueError: `wrap` has been deprecated. Use `vectorize_gym_envs` instead.

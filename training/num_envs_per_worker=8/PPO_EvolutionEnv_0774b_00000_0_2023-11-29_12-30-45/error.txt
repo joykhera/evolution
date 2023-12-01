@@ -1,0 +1,27 @@
+Failure # 1 (occurred at 2023-11-29_12-31-13)
+The actor died because of an error raised in its creation task, [36mray::PPO.__init__()[39m (pid=30621, ip=127.0.0.1, actor_id=33454b5c9d4d267968898b2801000000, repr=PPO)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/evaluation/worker_set.py", line 227, in _setup
+    self.add_workers(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/evaluation/worker_set.py", line 593, in add_workers
+    raise result.get()
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/utils/actor_manager.py", line 481, in __fetch_result
+    result = ray.get(r)
+ray.exceptions.RayActorError: The actor died because of an error raised in its creation task, [36mray::RolloutWorker.__init__()[39m (pid=30628, ip=127.0.0.1, actor_id=3b76145cf282a4600b16a21701000000, repr=<ray.rllib.evaluation.rollout_worker.RolloutWorker object at 0x32548bb50>)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/evaluation/rollout_worker.py", line 397, in __init__
+    self.env = env_creator(copy.deepcopy(self.env_context))
+  File "/Users/joykhera/Desktop/code/ml/evolution/main.py", line 71, in env_creator
+    return VectorEnv.vectorize_gym_envs(
+TypeError: vectorize_gym_envs() got an unexpected keyword argument 'make_env_fn'
+
+During handling of the above exception, another exception occurred:
+
+[36mray::PPO.__init__()[39m (pid=30621, ip=127.0.0.1, actor_id=33454b5c9d4d267968898b2801000000, repr=PPO)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/algorithms/algorithm.py", line 517, in __init__
+    super().__init__(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/tune/trainable/trainable.py", line 161, in __init__
+    self.setup(copy.deepcopy(self.config))
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/algorithms/algorithm.py", line 639, in setup
+    self.workers = WorkerSet(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/evaluation/worker_set.py", line 179, in __init__
+    raise e.args[0].args[2]
+TypeError: vectorize_gym_envs() got an unexpected keyword argument 'make_env_fn'

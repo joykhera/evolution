@@ -26,7 +26,7 @@ PLAYER_SIZE = SIZE / 50
 PLAYER_SIZE_INCREASE = PLAYER_SIZE / 10
 PLAYER_SPEED = SIZE / 100
 DECAY_RATE = 0.01
-EPISODE_STEPS = 200
+EPISODE_LENGTH = 200
 SCALE = 5
 GRID_SIZE = 10
 
@@ -52,9 +52,8 @@ class EvolutionEnv(MultiAgentEnv):
         player_size_increase=PLAYER_SIZE_INCREASE,
         player_speed=PLAYER_SPEED,
         decay_rate=DECAY_RATE,
-        episode_steps=EPISODE_STEPS,
+        episode_length=EPISODE_LENGTH,
         scale=SCALE,
-        mode="train",
     ):
         super().__init__()
         self.num_agents = num_agents
@@ -73,10 +72,11 @@ class EvolutionEnv(MultiAgentEnv):
         self.player_size_increase = player_size_increase
         self.player_speed = player_speed
         self.decay_rate = decay_rate
-        self.episode_steps = episode_steps
+        self.episode_length = episode_length
         self.scale = scale
-        self.mode = mode
         self.rewards = np.zeros(self.num_agents)
+
+        self.canvas = pygame.Surface((map_size, map_size))
 
         if self.render_mode == "human":
             pygame.init()
@@ -90,10 +90,7 @@ class EvolutionEnv(MultiAgentEnv):
             self.scaled_canvas = pygame.Surface(
                 (self.map_size * scale, self.map_size * scale)
             )
-        self.canvas = pygame.Surface((map_size, map_size))
 
-        print("Mode: ", self.mode)
-        if self.mode == "test":
             plt.ion()  # Interactive mode on
             (self.fig, self.ax) = plt.subplots()
             self.image = self.ax.imshow(np.zeros((100, 100)), "BrBG")
@@ -281,7 +278,7 @@ class EvolutionEnv(MultiAgentEnv):
             :,
         ] = observation_slice
 
-        if self.mode == "test" and player_idx == self.agent_obs_idx:
+        if self.render_mode == "human" and player_idx == self.agent_obs_idx:
             self.image.set_data(observation)
             plt.pause(0.001)
 
@@ -305,7 +302,7 @@ class EvolutionEnv(MultiAgentEnv):
 
         self.rewards[player_idx] += reward
 
-        if self.mode == "test" and player_idx == self.agent_obs_idx:
+        if self.render_mode == "human" and player_idx == self.agent_obs_idx:
             self.reward_text.set_text(f"Agent reward: {self.rewards[player_idx]}")
 
         # Combine the rewards
@@ -435,9 +432,9 @@ class EvolutionEnv(MultiAgentEnv):
 
         for idx, collided in enumerate(collisions):
             if collided and smaller_than_agent[idx]:
-                rewards[idx] = player_sizes[idx]
+                rewards[idx] = player_sizes[idx] * 5
             elif collided and bigger_than_agent[idx]:
-                rewards[idx] = -player_sizes[player_idx]
+                rewards[idx] = -player_sizes[player_idx] * 5
 
         # Respawn any eaten agents
         for idx, collided in enumerate(smaller_than_agent & collisions):
@@ -448,10 +445,6 @@ class EvolutionEnv(MultiAgentEnv):
                 )
                 # Reset size to default
                 self.players[idx].size = self.player_size
-
-        # Increase size of the current player
-        for collided in smaller_than_agent & collisions:
-            if collided:
                 self.kill_count += 1
                 self.players[player_idx].size += 1
 
@@ -471,7 +464,7 @@ class EvolutionEnv(MultiAgentEnv):
                 food.set_position(
                     (random.randint(0, self.map_size), random.randint(0, self.map_size))
                 )
-                self.players[player_idx].size += self.player_size_increase
+                self.players[player_idx].size += 1
                 self.food_eaten += 1
                 return True
 
@@ -479,5 +472,5 @@ class EvolutionEnv(MultiAgentEnv):
 
     def _is_done(self):
         """Checks if the game is finished."""
-        return self.steps >= self.episode_steps
-        # return self.steps >= self.episode_steps or self.foods == []
+        return self.steps >= self.episode_length
+        # return self.steps >= self.episode_length or self.foods == []
