@@ -1,0 +1,95 @@
+Failure # 1 (occurred at 2024-05-17_10-38-58)
+The actor died unexpectedly before finishing this task.
+	class_name: ImplicitFunc
+	actor_id: a58a329a08a5621517d7ea1301000000
+	pid: 15948
+	namespace: e3d80352-d492-4027-b1a5-67d50d858a7d
+	ip: 127.0.0.1
+The actor is dead because its worker process has died. Worker exit type: SYSTEM_ERROR Worker exit detail: Worker exits unexpectedly. Worker exits with an exit code None. Traceback (most recent call last):
+  File "python/ray/_raylet.pyx", line 1807, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 1908, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 1813, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 1754, in ray._raylet.execute_task.function_executor
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/_private/function_manager.py", line 726, in actor_method_executor
+    return method(__ray_actor, *args, **kwargs)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/util/tracing/tracing_helper.py", line 467, in _resume_span
+    return method(self, *_args, **_kwargs)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/tune/trainable/trainable.py", line 342, in train
+    raise skipped from exception_cause(skipped)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/air/_internal/util.py", line 88, in run
+    self._ret = self._target(*self._args, **self._kwargs)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/tune/trainable/function_trainable.py", line 115, in <lambda>
+    training_func=lambda: self._trainable_func(self.config),
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/util/tracing/tracing_helper.py", line 467, in _resume_span
+    return method(self, *_args, **_kwargs)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/tune/trainable/function_trainable.py", line 332, in _trainable_func
+    output = fn()
+  File "/Users/joykhera/Desktop/code/ml/evolution/grid_search.py", line 44, in trainable
+    trainer = PPOConfig().environment("EvolutionEnv", env_config=env_config).build()
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/algorithms/algorithm_config.py", line 1137, in build
+    return algo_class(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/algorithms/algorithm.py", line 516, in __init__
+    super().__init__(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/tune/trainable/trainable.py", line 161, in __init__
+    self.setup(copy.deepcopy(self.config))
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/algorithms/algorithm.py", line 638, in setup
+    self.workers = WorkerSet(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/evaluation/worker_set.py", line 159, in __init__
+    self._setup(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/evaluation/worker_set.py", line 229, in _setup
+    self.add_workers(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/evaluation/worker_set.py", line 594, in add_workers
+    new_workers = [
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/evaluation/worker_set.py", line 595, in <listcomp>
+    self._make_worker(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/rllib/evaluation/worker_set.py", line 950, in _make_worker
+    worker = cls(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/actor.py", line 641, in remote
+    return self._remote(args=args, kwargs=kwargs, **self._default_options)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/util/tracing/tracing_helper.py", line 388, in _invocation_actor_class_remote_span
+    return method(self, args, kwargs, *_args, **_kwargs)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/actor.py", line 1100, in _remote
+    _actor_launch_hook(
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/train/_internal/session.py", line 543, in _tune_task_and_actor_launch_hook
+    raise RuntimeError(
+RuntimeError: No trial resources are available for launching the actor `ray.rllib.evaluation.rollout_worker.RolloutWorker.__init__`. To resolve this, specify the Tune option:
+
+>  resources_per_trial=tune.PlacementGroupFactory(
+>    [{'CPU': 1.0}] + [{'CPU': 1.0}] * N
+>  )
+
+Where `N` is the number of slots to reserve for trial actors. If you are using a Ray training library, there might be a utility function to set this automatically for you. For more information, refer to https://docs.ray.io/en/latest/tune/tutorials/tune-resources.html
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/cloudpickle/cloudpickle_fast.py", line 733, in dump
+    return Pickler.dump(self, obj)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/cloudpickle/cloudpickle_fast.py", line 826, in reducer_override
+    if sys.version_info[:2] < (3, 7) and _is_parametrized_type_hint(
+RecursionError: maximum recursion depth exceeded in comparison
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "python/ray/_raylet.pyx", line 2206, in ray._raylet.task_execution_handler
+  File "python/ray/_raylet.pyx", line 2102, in ray._raylet.execute_task_with_cancellation_handler
+  File "python/ray/_raylet.pyx", line 1756, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 1757, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 1995, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 1085, in ray._raylet.store_task_errors
+  File "python/ray/_raylet.pyx", line 4377, in ray._raylet.CoreWorker.store_task_outputs
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/_private/serialization.py", line 494, in serialize
+    return self._serialize_to_msgpack(value)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/_private/serialization.py", line 449, in _serialize_to_msgpack
+    value = value.to_bytes()
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/exceptions.py", line 32, in to_bytes
+    serialized_exception=pickle.dumps(self),
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/cloudpickle/cloudpickle_fast.py", line 88, in dumps
+    cp.dump(obj)
+  File "/Users/joykhera/Library/Python/3.9/lib/python/site-packages/ray/cloudpickle/cloudpickle_fast.py", line 739, in dump
+    raise pickle.PicklingError(msg) from e
+_pickle.PicklingError: Could not pickle object as excessively deep recursion required.
+An unexpected internal error occurred while the worker was executing a task.
