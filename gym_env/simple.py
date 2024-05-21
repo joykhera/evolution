@@ -186,7 +186,10 @@ class SimpleEnv(MultiAgentEnv):
 
         observation[top_slice : top_slice + observation_shape[0], left_slice : left_slice + observation_shape[1], :] = observation_slice
 
-        return observation / 255.0
+        observation = observation / 255.0  # Normalize to [0, 1]
+        observation = observation.astype(np.float32)  # Ensure dtype is float32
+
+        return np.clip(observation, self.observation_space.low, self.observation_space.high)
 
     def _get_reward(self, player_idx):
         reward = 0

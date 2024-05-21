@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "evolution"
+version = "0.1.0"
+description = ""
+authors = ["joykhera <joykhera@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+numpy = "^1.26.4"
+argparse = "^1.4.0"
+ray = {extras = ["rllib"], version = "^2.22.0"}
+gymnasium = "0.28.1"
+tensorboard = "^2.16.2"
+pygame = "^2.5.2"
+torch = "^2.3.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
