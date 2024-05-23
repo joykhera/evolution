@@ -183,7 +183,7 @@ class EvolutionEnv(MultiAgentEnv):
 
         observation = observation / 255.0  # Normalize to [0, 1]
         observation = observation.astype(np.float32)  # Ensure dtype is float32
-
+        # print('observation type', np.clip(observation, self.observation_space.low, self.observation_space.high).dtype)
         return np.clip(observation, self.observation_space.low, self.observation_space.high)
 
     def _get_reward(self, player_idx):

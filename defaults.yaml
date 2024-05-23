@@ -19,7 +19,7 @@ env_config:
   wall_penalty: 5
 
 model_config:
-  num_workers: 9
+  num_runners: 9
   training_iterations: 150
 
 short_names:
@@ -37,7 +37,7 @@ short_names:
   decay_rate: "dr"
   episode_length: "el"
   scale: "s"
-  num_workers: "nw"
+  num_runners: "nr"
   training_iterations: "ti"
   food_reward: "fr"
   kill_reward: "kr"

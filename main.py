@@ -8,17 +8,18 @@ from ray.rllib.algorithms.ppo import PPO, PPOConfig
 from ray.tune.registry import register_env
 from gym_env.evolution_env import EvolutionEnv
 from gymnasium import spaces
+from ray.rllib.algorithms.algorithm import Algorithm
 from ray.tune.logger import CSVLoggerCallback, JsonLoggerCallback, TBXLoggerCallback
 
 
-def train_agent(config, log_dir, args):
-    config.num_env_runners = 9
+def train_agent(config, log_dir, args, model_config):
+    config.num_env_runners = model_config["num_runners"]
     tune.run(
         "PPO",
         config=config.to_dict(),
-        stop={"training_iteration": 200},
+        stop={"training_iteration": model_config["training_iterations"]},
         local_dir=log_dir,
-        checkpoint_freq=10,
+        checkpoint_freq=50,
         checkpoint_at_end=True,
         name=args["save_name"],
         restore=args["checkpoint"],
@@ -37,7 +38,7 @@ def test_agent(env, trainer, num_episodes=10):
             obs, rewards, dones, _, _ = env.step(action_dict)
             episode_reward += sum(rewards.values())
             done = all(dones.values())
-        print(f"Episode reward: {episode_reward}")
+        print(f"Episode {episode} reward: {episode_reward}")
 
 
 def main():
@@ -77,19 +78,17 @@ def main():
     )
 
     if args["train"]:
-        train_agent(config, log_dir, args)
+        train_agent(config, log_dir, args, model_config)
 
     elif args["test"]:
-        if not args["checkpoint"]:
-            raise ValueError("Please specify a checkpoint to load the model from with -cp")
-
         print("Testing mode enabled.")
         env_config["render_mode"] = "human"
         # env_config["human_player"] = True
         config.num_env_runners = 0
-        trainer = config.build(env=env_name)
-        print("Trainer built.")
-        trainer.restore(args["checkpoint"])
+        # trainer = config.build(env=env_name)
+        # print("Trainer built.")
+        # trainer.restore(args["checkpoint"])
+        trainer = Algorithm.from_checkpoint(args["checkpoint"])
         print("Restored checkpoint from", args["checkpoint"])
         test_env = env(**env_config)
         test_agent(test_env, trainer)
