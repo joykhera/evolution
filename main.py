@@ -24,7 +24,8 @@ def train_agent(config, log_dir, args, model_config):
         name=args["save_name"],
         restore=args["checkpoint"],
         reuse_actors=True,
-        callbacks=[CSVLoggerCallback(), JsonLoggerCallback(), TBXLoggerCallback()],
+        log_to_file=True,
+        # callbacks=[CSVLoggerCallback(), JsonLoggerCallback(), TBXLoggerCallback()],
     )
 
 
@@ -85,9 +86,6 @@ def main():
         env_config["render_mode"] = "human"
         # env_config["human_player"] = True
         config.num_env_runners = 0
-        # trainer = config.build(env=env_name)
-        # print("Trainer built.")
-        # trainer.restore(args["checkpoint"])
         trainer = Algorithm.from_checkpoint(args["checkpoint"])
         print("Restored checkpoint from", args["checkpoint"])
         test_env = env(**env_config)

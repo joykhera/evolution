@@ -34,6 +34,8 @@ class EvolutionEnv(MultiAgentEnv):
         player_size,
         size_increase,
         player_speed,
+        max_speed,
+        boost_duration,
         decay_rate,
         episode_length,
         scale,
@@ -54,6 +56,8 @@ class EvolutionEnv(MultiAgentEnv):
         self.player_size = player_size
         self.size_increase = size_increase
         self.player_speed = player_speed
+        self.max_speed = max_speed
+        self.boost_duration = boost_duration
         self.decay_rate = decay_rate
         self.episode_length = episode_length
         self.scale = scale
@@ -136,6 +140,9 @@ class EvolutionEnv(MultiAgentEnv):
                 size=self.player_size,
                 speed=self.player_speed,
                 color=PLAYER_COLOR if (not self.human_player or idx != self.human_player_id) else HUMAN_PLAYER_COLOR,
+                boost_color=BLUE,
+                max_speed=self.max_speed,
+                boost_duration=self.boost_duration,
             )
             for idx, pos in enumerate(player_positions)
         ]
