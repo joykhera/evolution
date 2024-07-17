@@ -11,7 +11,7 @@ env_config:
   size_increase: 0.25
   player_speed: 0.5
   max_speed: 1
-  boost_duration: 10
+  max_boost: 10
   decay_rate: 0.001
   episode_length: 200
   scale: 10
@@ -46,4 +46,4 @@ short_names:
   kill_penalty: "kp"
   wall_penalty: "wp"
   max_speed: "msp"
-  boost_duration: "bd"
+  max_boost: "mb"

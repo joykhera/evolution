@@ -35,7 +35,7 @@ class EvolutionEnv(MultiAgentEnv):
         size_increase,
         player_speed,
         max_speed,
-        boost_duration,
+        max_boost,
         decay_rate,
         episode_length,
         scale,
@@ -57,7 +57,7 @@ class EvolutionEnv(MultiAgentEnv):
         self.size_increase = size_increase
         self.player_speed = player_speed
         self.max_speed = max_speed
-        self.boost_duration = boost_duration
+        self.max_boost = max_boost
         self.decay_rate = decay_rate
         self.episode_length = episode_length
         self.scale = scale
@@ -112,11 +112,12 @@ class EvolutionEnv(MultiAgentEnv):
         self.render(scale=self.scale)
 
         for agent_id, action in action_dict.items():
+            direction, boost = action
             if self.human_player and agent_id == self.human_player_id:
                 direction_vector = self._get_input()
             else:
-                direction_vector = self._get_action_vector(action)
-            self.players[agent_id].move(direction_vector)
+                direction_vector = self._get_action_vector(direction)
+            self.players[agent_id].move(direction_vector, boost)
             self.players[agent_id].size = max(self.players[agent_id].size - self.decay_rate * self.players[agent_id].size, self.player_size)
             observations[agent_id] = self._get_agent_obs(agent_id)
             rewards[agent_id] = self._get_reward(agent_id)
@@ -142,7 +143,7 @@ class EvolutionEnv(MultiAgentEnv):
                 color=PLAYER_COLOR if (not self.human_player or idx != self.human_player_id) else HUMAN_PLAYER_COLOR,
                 boost_color=BLUE,
                 max_speed=self.max_speed,
-                boost_duration=self.boost_duration,
+                max_boost=self.max_boost,
             )
             for idx, pos in enumerate(player_positions)
         ]
@@ -191,7 +192,10 @@ class EvolutionEnv(MultiAgentEnv):
         observation = observation / 255.0  # Normalize to [0, 1]
         observation = observation.astype(np.float32)  # Ensure dtype is float32
         # print('observation type', np.clip(observation, self.observation_space.low, self.observation_space.high).dtype)
-        return np.clip(observation, self.observation_space.low, self.observation_space.high)
+        return {
+            "visual": np.clip(observation, self.observation_space.low, self.observation_space.high),
+            "boost_info": np.array([self.players[player_idx].cur_boost / self.max_boost]),
+        }
 
     def _get_reward(self, player_idx):
         reward = 0
@@ -232,7 +236,7 @@ class EvolutionEnv(MultiAgentEnv):
                 if event.type == pygame.QUIT:
                     self.running = False
 
-    def _get_action_vector(self, action):
+    def _get_action_vector(self, direction):
         actions = [
             pygame.Vector2(0, 0),
             pygame.Vector2(1, 0),
@@ -240,7 +244,7 @@ class EvolutionEnv(MultiAgentEnv):
             pygame.Vector2(0, -1),
             pygame.Vector2(0, 1),
         ]
-        return actions[action] if action is not None else pygame.Vector2(0, 0)
+        return actions[direction] if direction is not None else pygame.Vector2(0, 0)
 
     def _get_input(self):
         keys = pygame.key.get_pressed()
@@ -272,12 +276,15 @@ class EvolutionEnv(MultiAgentEnv):
         rewards = np.zeros(player_sizes.shape)
         bigger_than_agent = player_sizes > current_size
         smaller_than_agent = player_sizes < current_size
+        same_size_as_agent = player_sizes == current_size
 
         for idx, collided in enumerate(collisions):
             if collided and smaller_than_agent[idx]:
                 rewards[idx] = player_sizes[idx] * self.kill_reward
             elif collided and bigger_than_agent[idx]:
                 rewards[idx] = -player_sizes[player_idx] * self.kill_penalty
+            elif collided and same_size_as_agent[idx]:
+                rewards[idx] = -1
 
         for idx, collided in enumerate(smaller_than_agent & collisions):
             if collided:

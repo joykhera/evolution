@@ -18,8 +18,8 @@ def train_agent(config, log_dir, args, model_config):
         "PPO",
         config=config.to_dict(),
         stop={"training_iteration": model_config["training_iterations"]},
-        local_dir=log_dir,
-        checkpoint_freq=50,
+        storage_path=log_dir,
+        checkpoint_freq=10,
         checkpoint_at_end=True,
         name=args["save_name"],
         restore=args["checkpoint"],
@@ -68,8 +68,19 @@ def main():
             policies={
                 "policy_0": (
                     None,
-                    spaces.Box(low=0, high=1, shape=(env_config["grid_size"], env_config["grid_size"], 3), dtype=np.float32),
-                    spaces.Discrete(5),
+                    # spaces.Box(low=0, high=1, shape=(env_config["grid_size"], env_config["grid_size"], 3), dtype=np.float32),
+                    spaces.Dict(
+                        {
+                            "visual": spaces.Box(low=0, high=1, shape=(env_config["grid_size"], env_config["grid_size"], 3), dtype=np.float32),
+                            "boost_info": spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32),
+                        }
+                    ),
+                    spaces.Tuple(
+                        [
+                            spaces.Discrete(5),  # Direction to move in
+                            spaces.Discrete(2),  # Boost or not (0 or 1)
+                        ]
+                    ),
                     {},
                 )
             },
