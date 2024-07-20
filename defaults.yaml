@@ -21,8 +21,10 @@ env_config:
   wall_penalty: 5
 
 model_config:
-  num_runners: 9
-  training_iterations: 150
+  # num_runners: 9
+  # training_iterations: 150
+  generations: 100
+  population_size: 50
 
 short_names:
   num_agents: "na"
@@ -47,3 +49,5 @@ short_names:
   wall_penalty: "wp"
   max_speed: "msp"
   max_boost: "mb"
+  generations: "ge"
+  population_size: "po"

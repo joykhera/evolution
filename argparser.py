@@ -22,6 +22,7 @@ def parse_args():
     parser.add_argument("-test", action="store_true", help="Enable testing mode.")
     parser.add_argument("-cp", "--checkpoint", type=str, help="Checkpoint from which to load the model.")
     parser.add_argument("-sn", "--save_name", type=str, default="", help="Custom name for the experiment.")
+    parser.add_argument("-ep", "--episodes", type=int, default=10, help="Number of episodes to run for.")
 
     for key, value in default_args.items():
         parser.add_argument(f"-{short_names[key]}", f"--{key}", type=type(value), default=value, help=f"{key} parameter for the experiment.")
