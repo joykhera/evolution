@@ -1,11 +1,16 @@
 import pygame
+import functools
 import random
 import numpy as np
 from gym_env.food import Food
 from gym_env.player import Player
 import time
 from gymnasium import spaces
-from ray.rllib.env.multi_agent_env import MultiAgentEnv
+from pettingzoo.utils.env import ParallelEnv
+from pettingzoo import AECEnv
+from pettingzoo.utils.agent_selector import agent_selector
+from pettingzoo.utils import wrappers
+from pettingzoo.utils import parallel_to_aec, wrappers
 import threading
 
 MAP_COLOR = (255, 255, 255)
@@ -18,8 +23,25 @@ YELLOW = (255, 255, 0)
 PINK = (255, 0, 255)
 
 
-class EvolutionEnv(MultiAgentEnv):
+def env(config):
+    """
+    The env function often wraps the environment in wrappers by default.
+    You can find full documentation for these methods
+    elsewhere in the developer documentation.
+    """
+    env = Evolution_Env(**config)
+    env = parallel_to_aec(env)
+    # env = raw_env(**config)
+    env = wrappers.OrderEnforcingWrapper(env)
+    env = wrappers.AssertOutOfBoundsWrapper(env)
+    return env
+
+
+class Evolution_Env(ParallelEnv):
+    # class raw_env(AECEnv):
     """Main game class that handles game logic."""
+
+    metadata = {"render.modes": ["human", "rgb_array"], "name": "evolution_v0"}
 
     def __init__(
         self,
@@ -45,7 +67,7 @@ class EvolutionEnv(MultiAgentEnv):
         wall_penalty,
     ):
         super().__init__()
-        self.num_agents = num_agents
+        self.num_agentss = num_agents
         self.render_mode = render_mode
         self.human_player = human_player
         self.map_size = map_size
@@ -66,21 +88,21 @@ class EvolutionEnv(MultiAgentEnv):
         self.kill_penalty = kill_penalty
         self.wall_penalty = wall_penalty
 
-        self.rewards = np.zeros(self.num_agents)
+        self.agents = list(range(self.num_agentss))
+        # self.agents = [f"player_{i}" for i in range(self.num_agentss)]
+        # self.agent_name_mapping = {agent: i for i, agent in enumerate(self.agents)}
+        self._agent_selector = agent_selector(self.agents)
+        self.agent_selection = self._agent_selector.next()
+        self.rewards = None
+        self.dones = None
+        self.infos = None
+        self.observations = None
 
         self.players = []
         self.foods = []
-        self.running = True
         self.steps = 0
         self.prev_step_time = time.perf_counter()
-        self.observation_space = spaces.Box(
-            low=0,
-            high=1,
-            shape=(grid_size, grid_size, 3),
-            dtype=np.float32,
-        )
-        self.action_space = spaces.Discrete(5)
-        self._agent_ids = set(range(self.num_agents))
+
         self.food_eaten = 0
         self.total_reward = 0
         self.kill_count = 0
@@ -95,6 +117,28 @@ class EvolutionEnv(MultiAgentEnv):
         else:
             self.human_player_id = None
 
+    # Observation space should be defined here.
+    # lru_cache allows observation and action spaces to be memoized, reducing clock cycles required to get each agent's space.
+    # If your spaces change over time, remove this line (disable caching).
+    @functools.lru_cache(maxsize=None)
+    def observation_space(self, agent=None):
+        # gymnasium spaces are defined and documented here: https://gymnasium.farama.org/api/spaces/
+        return spaces.Box(
+            low=0,
+            high=1,
+            shape=(self.grid_size, self.grid_size, 3),
+            dtype=np.float32,
+        )
+
+    # Action space should be defined here.
+    # If your spaces change over time, remove this line (disable caching).
+    @functools.lru_cache(maxsize=None)
+    def action_space(self, agent):
+        return spaces.Discrete(5)
+
+    # def possible_agents(self):
+    #     return self.agents
+
     def _init_pygame(self):
         pygame.init()
         self.screen = pygame.display.set_mode((self.map_size * self.scale, self.map_size * self.scale))
@@ -103,7 +147,95 @@ class EvolutionEnv(MultiAgentEnv):
         pygame.font.init()
         self.font = pygame.font.SysFont(None, 24)
 
+    def render(self, scale=1):
+        self.canvas.fill(MAP_COLOR)
+        for food in self.foods:
+            food.draw(self.canvas, 1)
+
+        for player in self.players:
+            player.draw(self.canvas, 1)
+
+        if self.render_mode == "human":
+            self.scaled_canvas = pygame.transform.scale(self.canvas, (self.map_size * scale, self.map_size * scale))
+            self.screen.blit(self.scaled_canvas, (0, 0))
+            food_eaten_text_surface = self.font.render(f"Food eaten: {self.food_eaten}", True, OUT_OF_BOUNDS_COLOR)
+            self.screen.blit(food_eaten_text_surface, (5, 10))
+            kill_count_text_surface = self.font.render(f"Kill count: {self.kill_count}", True, OUT_OF_BOUNDS_COLOR)
+            self.screen.blit(kill_count_text_surface, (5, 25))
+            total_reward_text_surface = self.font.render(f"Total reward: {self.total_reward}", True, OUT_OF_BOUNDS_COLOR)
+            self.screen.blit(total_reward_text_surface, (5, 40))
+            self._handle_events()
+            pygame.display.flip()
+            self.clock.tick(self.fps)
+
+    def _handle_events(self):
+        if threading.current_thread() is threading.main_thread():
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+
+    def close(self):
+        """
+        Close should release any graphical displays, subprocesses, network connections
+        or any other environment data which should not be kept around after the
+        user is no longer using the environment.
+        """
+        pass
+
+    def reset(self, seed=None, options=None):
+        """
+        Reset needs to initialize the following attributes
+        - agents
+        - rewards
+        - _cumulative_rewards
+        - terminations
+        - truncations
+        - infos
+        - agent_selection
+        And must set up the environment so that render(), step(), and observe()
+        can be called without issues.
+        Here it sets up the state dictionary which is used by step() and the observations dictionary which is used by step() and observe()
+        """
+        food_positions = np.random.randint(0, self.map_size, size=(self.food_count, 2))
+        self.foods = [Food(position=tuple(pos), size=self.food_size, color=FOOD_COLOR) for pos in food_positions]
+        player_positions = np.random.randint(0, self.map_size, size=(self.num_agentss, 2))
+        self.players = [
+            Player(
+                position=tuple(pos),
+                map_size=self.map_size,
+                size=self.player_size,
+                speed=self.player_speed,
+                color=PLAYER_COLOR if (not self.human_player or idx != self.human_player_id) else HUMAN_PLAYER_COLOR,
+                boost_color=BLUE,
+                max_speed=self.max_speed,
+                max_boost=self.max_boost,
+            )
+            for idx, pos in enumerate(player_positions)
+        ]
+        self.agents = list(range(self.num_agentss))
+        self.steps = 0
+        self.food_eaten = 0
+        self.total_reward = 0
+        self.kill_count = 0
+        self.rewards = {agent: 0 for agent in self.agents}
+        self.dones = {agent: False for agent in self.agents}
+        # observations = {agent: None for agent in self.agents}
+        observations = self._get_obs()
+        infos = {agent: {} for agent in self.agents}
+        return observations, infos
+
     def step(self, action_dict):
+        """
+        step(action) takes in an action for the current agent (specified by
+        agent_selection) and needs to update
+        - rewards
+        - _cumulative_rewards (accumulating the rewards)
+        - terminations
+        - truncations
+        - infos
+        - agent_selection (to the next agent)
+        And any internal state used by observe() or render()
+        """
         observations = {}
         rewards = {}
         dones = {}
@@ -121,43 +253,21 @@ class EvolutionEnv(MultiAgentEnv):
             self.players[agent_id].move(direction_vector, 0)
             self.players[agent_id].size = max(self.players[agent_id].size - self.decay_rate * self.players[agent_id].size, self.player_size)
             observations[agent_id] = self._get_agent_obs(agent_id)
-            rewards[agent_id] = self._get_reward(agent_id)
             dones[agent_id] = self._is_done()
+            if not dones[agent_id]:
+                rewards[agent_id] = self._get_reward(agent_id)
+            else:
+                rewards[agent_id] = 0
+                self.agents.remove(agent_id)
 
-        dones["__all__"] = all(value for value in dones.values())
+        dones["__all__"] = all(dones.values())
         self.steps += 1
         self.total_reward += sum(rewards.values())
         self.prev_step_time = time.perf_counter()
         return observations, rewards, dones, dones, infos
 
-    def reset(self, seed=None, options=None):
-        food_positions = np.random.randint(0, self.map_size, size=(self.food_count, 2))
-        self.foods = [Food(position=tuple(pos), size=self.food_size, color=FOOD_COLOR) for pos in food_positions]
-
-        player_positions = np.random.randint(0, self.map_size, size=(self.num_agents, 2))
-        self.players = [
-            Player(
-                position=tuple(pos),
-                map_size=self.map_size,
-                size=self.player_size,
-                speed=self.player_speed,
-                color=PLAYER_COLOR if (not self.human_player or idx != self.human_player_id) else HUMAN_PLAYER_COLOR,
-                boost_color=BLUE,
-                max_speed=self.max_speed,
-                max_boost=self.max_boost,
-            )
-            for idx, pos in enumerate(player_positions)
-        ]
-
-        self.steps = 0
-        self.food_eaten = 0
-        self.total_reward = 0
-        self.kill_count = 0
-        self.rewards = np.zeros(self.num_agents)
-        return self._get_obs(), {}
-
     def _get_obs(self):
-        return {agent_id: self._get_agent_obs(agent_id) for agent_id in range(self.num_agents)}
+        return {agent: self._get_agent_obs(idx) for idx, agent in enumerate(self.agents)}
 
     def _get_agent_obs(self, player_idx):
         player_center = self.players[player_idx].position
@@ -197,7 +307,7 @@ class EvolutionEnv(MultiAgentEnv):
         #     "visual": np.clip(observation, self.observation_space.low, self.observation_space.high),
         #     "boost_info": np.array([self.players[player_idx].cur_boost / self.max_boost]),
         # }
-        return np.clip(observation, self.observation_space.low, self.observation_space.high)
+        return np.clip(observation, self.observation_space().low, self.observation_space().high)
 
     def _get_reward(self, player_idx):
         reward = 0
@@ -210,33 +320,6 @@ class EvolutionEnv(MultiAgentEnv):
             self.reward_text.set_text(f"Agent reward: {self.rewards[player_idx]}")
 
         return reward
-
-    def render(self, scale=1):
-        self.canvas.fill(MAP_COLOR)
-        for food in self.foods:
-            food.draw(self.canvas, 1)
-
-        for player in self.players:
-            player.draw(self.canvas, 1)
-
-        if self.render_mode == "human":
-            self.scaled_canvas = pygame.transform.scale(self.canvas, (self.map_size * scale, self.map_size * scale))
-            self.screen.blit(self.scaled_canvas, (0, 0))
-            food_eaten_text_surface = self.font.render(f"Food eaten: {self.food_eaten}", True, OUT_OF_BOUNDS_COLOR)
-            self.screen.blit(food_eaten_text_surface, (5, 10))
-            kill_count_text_surface = self.font.render(f"Kill count: {self.kill_count}", True, OUT_OF_BOUNDS_COLOR)
-            self.screen.blit(kill_count_text_surface, (5, 25))
-            total_reward_text_surface = self.font.render(f"Total reward: {self.total_reward}", True, OUT_OF_BOUNDS_COLOR)
-            self.screen.blit(total_reward_text_surface, (5, 40))
-            self._handle_events()
-            pygame.display.flip()
-            self.clock.tick(self.fps)
-
-    def _handle_events(self):
-        if threading.current_thread() is threading.main_thread():
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
 
     def _get_action_vector(self, direction):
         actions = [
@@ -309,21 +392,3 @@ class EvolutionEnv(MultiAgentEnv):
 
     def _is_done(self):
         return self.steps >= self.episode_length
-
-    def observation_space_sample(self, *args, **kwargs):
-        return {agent_id: self.observation_space.sample() for agent_id in self._agent_ids}
-
-    def action_space_sample(self, *args, **kwargs):
-        return {agent_id: self.action_space.sample() for agent_id in self._agent_ids}
-
-    def observation_space_contains(self, observation):
-        for agent_id, obs in observation.items():
-            if not np.all((obs >= self.observation_space.low) & (obs <= self.observation_space.high)):
-                return False
-        return True
-
-    def action_space_contains(self, action_dict):
-        for agent_id, action in action_dict.items():
-            if not (0 <= action < self.action_space.n):
-                return False
-        return True

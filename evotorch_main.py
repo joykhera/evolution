@@ -44,22 +44,10 @@ def evaluate_solution(solution, env_config):
 
 
 def train_agent(env_config, model_config, log_dir, args):
-    observation_space = spaces.Dict(
-        {
-            "visual": spaces.Box(low=0, high=1, shape=(env_config["grid_size"], env_config["grid_size"], 3), dtype=np.float32),
-            "boost_info": spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32),
-        }
-    )
-    action_space = spaces.Tuple(
-        [
-            spaces.Discrete(5),  # Direction to move in
-            spaces.Discrete(2),  # Boost or not (0 or 1)
-        ]
-    )
-
-    input_dim = np.prod(observation_space["visual"].shape) + np.prod(observation_space["boost_info"].shape)
-    output_dim = sum([space.n for space in action_space])
-
+    observation_space = spaces.Box(low=0, high=1, shape=(env_config["grid_size"], env_config["grid_size"], 3), dtype=np.float32)
+    action_space = spaces.Discrete(5)
+    input_dim = np.prod(observation_space.shape)
+    output_dim = action_space.n
     class PolicyNet(nn.Module):
         def __init__(self):
             super().__init__()
@@ -96,20 +84,9 @@ def train_agent(env_config, model_config, log_dir, args):
 
 
 def test_agent(env_config, checkpoint, num_episodes=10, render=False):
-    observation_space = spaces.Dict(
-        {
-            "visual": spaces.Box(low=0, high=1, shape=(env_config["grid_size"], env_config["grid_size"], 3), dtype=np.float32),
-            "boost_info": spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32),
-        }
-    )
-    action_space = spaces.Tuple(
-        [
-            spaces.Discrete(5),  # Direction to move in
-            spaces.Discrete(2),  # Boost or not (0 or 1)
-        ]
-    )
-
-    input_dim = np.prod(observation_space["visual"].shape) + np.prod(observation_space["boost_info"].shape)
+    observation_space = spaces.Box(low=0, high=1, shape=(env_config["grid_size"], env_config["grid_size"], 3), dtype=np.float32)
+    action_space = spaces.Discrete(5)
+    input_dim = np.prod(observation_space["visual"].shape)
     output_dim = sum([space.n for space in action_space])
 
     class PolicyNet(nn.Module):

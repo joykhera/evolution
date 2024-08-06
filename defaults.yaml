@@ -21,8 +21,8 @@ env_config:
   wall_penalty: 5
 
 model_config:
-  # num_runners: 9
-  # training_iterations: 150
+  num_runners: 9
+  training_iterations: 150
   generations: 100
   population_size: 50
 

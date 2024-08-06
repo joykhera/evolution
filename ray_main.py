@@ -1,16 +1,21 @@
 import tensorboard
 import os
+import supersuit as ss
 from argparser import parse_args
 import numpy as np
 import ray
 from ray import tune
 from ray.rllib.algorithms.ppo import PPO, PPOConfig
 from ray.tune.registry import register_env
-from gym_env.evolution_env import EvolutionEnv
+# from gym_env.evolution_env import EvolutionEnv
+from gym_env.pz_env import env, Evolution_Env
 from gymnasium import spaces
 from ray.rllib.algorithms.algorithm import Algorithm
+from ray.rllib.env.wrappers.pettingzoo_env import ParallelPettingZooEnv
 from ray.tune.logger import CSVLoggerCallback, JsonLoggerCallback, TBXLoggerCallback
+from pettingzoo.test import parallel_api_test
 
+os.environ["RAY_DEDUP_LOGS"] = "0"
 
 def train_agent(config, log_dir, args, model_config):
     config.num_env_runners = model_config["num_runners"]
@@ -44,18 +49,21 @@ def test_agent(env, trainer, num_episodes=10):
 
 def main():
     args, model_config, env_config = parse_args()
-    print(args, model_config, env_config)
+    print("args:", args)
+    print("model_config:", model_config)
+    print("env_config:", env_config)
     log_dir = os.path.join(os.getcwd(), "training")
-    env = EvolutionEnv
-    register_env("EvolutionEnv", lambda config: env(**config))
-    print("Environment registered.")
     env_name = "EvolutionEnv"
+    # env = EvolutionEnv
+    # register_env("EvolutionEnv", lambda config: env(config))
+    register_env(env_name, lambda env_config: ParallelPettingZooEnv(Evolution_Env(**env_config)))
+    print("Environment registered.")
     ray.init()
 
     # Define the PPOConfig using AlgorithmConfig API.
     config = (
         PPOConfig()
-        .environment(env=env_name, env_config=env_config)
+        .environment(env=env_name, env_config=env_config, clip_actions=True)
         .framework("torch")
         .env_runners(rollout_fragment_length="auto")
         .training(
@@ -68,19 +76,20 @@ def main():
             policies={
                 "policy_0": (
                     None,
-                    # spaces.Box(low=0, high=1, shape=(env_config["grid_size"], env_config["grid_size"], 3), dtype=np.float32),
-                    spaces.Dict(
-                        {
-                            "visual": spaces.Box(low=0, high=1, shape=(env_config["grid_size"], env_config["grid_size"], 3), dtype=np.float32),
-                            "boost_info": spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32),
-                        }
-                    ),
-                    spaces.Tuple(
-                        [
-                            spaces.Discrete(5),  # Direction to move in
-                            spaces.Discrete(2),  # Boost or not (0 or 1)
-                        ]
-                    ),
+                    spaces.Box(low=0, high=1, shape=(env_config["grid_size"], env_config["grid_size"], 3), dtype=np.float32),
+                    spaces.Discrete(5),
+                    # spaces.Dict(
+                    #     {
+                    #         "visual": spaces.Box(low=0, high=1, shape=(env_config["grid_size"], env_config["grid_size"], 3), dtype=np.float32),
+                    #         "boost_info": spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32),
+                    #     }
+                    # ),
+                    # spaces.Tuple(
+                    #     [
+                    #         spaces.Discrete(5),  # Direction to move in
+                    #         spaces.Discrete(2),  # Boost or not (0 or 1)
+                    #     ]
+                    # ),
                     {},
                 )
             },
@@ -90,6 +99,8 @@ def main():
     )
 
     if args["train"]:
+        env = Evolution_Env(**env_config)
+        # parallel_api_test(env, num_cycles=1_000_000)
         train_agent(config, log_dir, args, model_config)
 
     elif args["test"]:
@@ -99,7 +110,8 @@ def main():
         config.num_env_runners = 0
         trainer = Algorithm.from_checkpoint(args["checkpoint"])
         print("Restored checkpoint from", args["checkpoint"])
-        test_env = env(**env_config)
+        # test_env = env(**env_config)
+        test_env = Evolution_Env(**env_config)
         test_agent(test_env, trainer)
 
     ray.shutdown()
