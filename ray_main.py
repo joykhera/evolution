@@ -8,7 +8,7 @@ from ray import tune
 from ray.rllib.algorithms.ppo import PPO, PPOConfig
 from ray.tune.registry import register_env
 # from gym_env.evolution_env import EvolutionEnv
-from gym_env.pz_env import env, Evolution_Env
+from env.pz_env import env, EvolutionEnv
 from gymnasium import spaces
 from ray.rllib.algorithms.algorithm import Algorithm
 from ray.rllib.env.wrappers.pettingzoo_env import ParallelPettingZooEnv
@@ -56,7 +56,7 @@ def main():
     env_name = "EvolutionEnv"
     # env = EvolutionEnv
     # register_env("EvolutionEnv", lambda config: env(config))
-    register_env(env_name, lambda env_config: ParallelPettingZooEnv(Evolution_Env(**env_config)))
+    register_env(env_name, lambda env_config: ParallelPettingZooEnv(EvolutionEnv(**env_config)))
     print("Environment registered.")
     ray.init()
 
@@ -99,7 +99,7 @@ def main():
     )
 
     if args["train"]:
-        env = Evolution_Env(**env_config)
+        env = EvolutionEnv(**env_config)
         # parallel_api_test(env, num_cycles=1_000_000)
         train_agent(config, log_dir, args, model_config)
 
@@ -111,7 +111,7 @@ def main():
         trainer = Algorithm.from_checkpoint(args["checkpoint"])
         print("Restored checkpoint from", args["checkpoint"])
         # test_env = env(**env_config)
-        test_env = Evolution_Env(**env_config)
+        test_env = EvolutionEnv(**env_config)
         test_agent(test_env, trainer)
 
     ray.shutdown()

@@ -1,4 +1,4 @@
-from gym_env.game_object import GameObject
+from env.game_object import GameObject
 
 
 class Food(GameObject):

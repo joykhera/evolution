@@ -2,8 +2,8 @@ import pygame
 import functools
 import random
 import numpy as np
-from gym_env.food import Food
-from gym_env.player import Player
+from env.food import Food
+from env.player import Player
 import time
 from gymnasium import spaces
 from pettingzoo.utils.env import ParallelEnv
@@ -29,7 +29,7 @@ def env(config):
     You can find full documentation for these methods
     elsewhere in the developer documentation.
     """
-    env = Evolution_Env(**config)
+    env = EvolutionEnv(**config)
     env = parallel_to_aec(env)
     # env = raw_env(**config)
     env = wrappers.OrderEnforcingWrapper(env)
@@ -37,7 +37,7 @@ def env(config):
     return env
 
 
-class Evolution_Env(ParallelEnv):
+class EvolutionEnv(ParallelEnv):
     # class raw_env(AECEnv):
     """Main game class that handles game logic."""
 

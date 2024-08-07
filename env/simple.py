@@ -1,8 +1,8 @@
 import pygame
 import random
 import numpy as np
-from gym_env.food import Food
-from gym_env.player import Player
+from env.food import Food
+from env.player import Player
 import time
 from gymnasium import spaces
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
