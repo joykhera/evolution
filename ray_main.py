@@ -1,6 +1,5 @@
 import tensorboard
 import os
-import supersuit as ss
 from argparser import parse_args
 import numpy as np
 import ray
@@ -8,7 +7,7 @@ from ray import tune
 from ray.rllib.algorithms.ppo import PPO, PPOConfig
 from ray.tune.registry import register_env
 # from gym_env.evolution_env import EvolutionEnv
-from env.pz_env import env, EvolutionEnv
+from env.pz_env import env_builder, EvolutionEnv
 from gymnasium import spaces
 from ray.rllib.algorithms.algorithm import Algorithm
 from ray.rllib.env.wrappers.pettingzoo_env import ParallelPettingZooEnv
@@ -16,35 +15,6 @@ from ray.tune.logger import CSVLoggerCallback, JsonLoggerCallback, TBXLoggerCall
 from pettingzoo.test import parallel_api_test
 
 os.environ["RAY_DEDUP_LOGS"] = "0"
-
-def train_agent(config, log_dir, args, model_config):
-    config.num_env_runners = model_config["num_runners"]
-    tune.run(
-        "PPO",
-        config=config.to_dict(),
-        stop={"training_iteration": model_config["training_iterations"]},
-        storage_path=log_dir,
-        checkpoint_freq=10,
-        checkpoint_at_end=True,
-        name=args["save_name"],
-        restore=args["checkpoint"],
-        reuse_actors=True,
-        log_to_file=True,
-        # callbacks=[CSVLoggerCallback(), JsonLoggerCallback(), TBXLoggerCallback()],
-    )
-
-
-def test_agent(env, trainer, num_episodes=10):
-    for episode in range(num_episodes):
-        episode_reward = 0
-        done = False
-        obs, _ = env.reset()  # This should return a dictionary of observations
-        while not done:
-            action_dict = {agent_id: trainer.compute_single_action(agent_obs, policy_id="policy_0") for agent_id, agent_obs in obs.items()}
-            obs, rewards, dones, _, _ = env.step(action_dict)
-            episode_reward += sum(rewards.values())
-            done = all(dones.values())
-        print(f"Episode {episode} reward: {episode_reward}")
 
 
 def main():
@@ -56,7 +26,8 @@ def main():
     env_name = "EvolutionEnv"
     # env = EvolutionEnv
     # register_env("EvolutionEnv", lambda config: env(config))
-    register_env(env_name, lambda env_config: ParallelPettingZooEnv(EvolutionEnv(**env_config)))
+    register_env(env_name, lambda env_config: ParallelPettingZooEnv(env_builder(env_config)))
+    # register_env(env_name, lambda env_config: ParallelPettingZooEnv(EvolutionEnv(**env_config)))
     print("Environment registered.")
     ray.init()
 
@@ -78,18 +49,6 @@ def main():
                     None,
                     spaces.Box(low=0, high=1, shape=(env_config["grid_size"], env_config["grid_size"], 3), dtype=np.float32),
                     spaces.Discrete(5),
-                    # spaces.Dict(
-                    #     {
-                    #         "visual": spaces.Box(low=0, high=1, shape=(env_config["grid_size"], env_config["grid_size"], 3), dtype=np.float32),
-                    #         "boost_info": spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32),
-                    #     }
-                    # ),
-                    # spaces.Tuple(
-                    #     [
-                    #         spaces.Discrete(5),  # Direction to move in
-                    #         spaces.Discrete(2),  # Boost or not (0 or 1)
-                    #     ]
-                    # ),
                     {},
                 )
             },
@@ -99,9 +58,21 @@ def main():
     )
 
     if args["train"]:
-        env = EvolutionEnv(**env_config)
         # parallel_api_test(env, num_cycles=1_000_000)
-        train_agent(config, log_dir, args, model_config)
+        config.num_env_runners = model_config["num_runners"]
+        tune.run(
+            "PPO",
+            config=config.to_dict(),
+            stop={"training_iteration": model_config["training_iterations"]},
+            storage_path=log_dir,
+            checkpoint_freq=10,
+            checkpoint_at_end=True,
+            name=args["save_name"],
+            restore=args["checkpoint"],
+            reuse_actors=True,
+            log_to_file=True,
+            # callbacks=[CSVLoggerCallback(), JsonLoggerCallback(), TBXLoggerCallback()],
+        )
 
     elif args["test"]:
         print("Testing mode enabled.")
@@ -110,9 +81,18 @@ def main():
         config.num_env_runners = 0
         trainer = Algorithm.from_checkpoint(args["checkpoint"])
         print("Restored checkpoint from", args["checkpoint"])
-        # test_env = env(**env_config)
-        test_env = EvolutionEnv(**env_config)
-        test_agent(test_env, trainer)
+        test_env = env_builder(env_config)
+        num_episodes = 10
+        for episode in range(num_episodes):
+            episode_reward = 0
+            done = False
+            obs, _ = test_env.reset()  # This should return a dictionary of observations
+            while not done:
+                action_dict = {agent_id: trainer.compute_single_action(agent_obs, policy_id="policy_0") for agent_id, agent_obs in obs.items()}
+                obs, rewards, dones, _, _ = test_env.step(action_dict)
+                episode_reward += sum(rewards.values())
+                done = all(dones.values())
+            print(f"Episode {episode} reward: {episode_reward}")
 
     ray.shutdown()
 

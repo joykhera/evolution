@@ -5,13 +5,11 @@ env_config:
   map_size: 50
   grid_size: 24
   food_count: 20
-  fps: 120
+  fps: 60
   food_size: 1
   player_size: 1
   size_increase: 0.25
   player_speed: 0.5
-  max_speed: 1
-  max_boost: 10
   decay_rate: 0.001
   episode_length: 200
   scale: 10
@@ -47,7 +45,5 @@ short_names:
   kill_reward: "kr"
   kill_penalty: "kp"
   wall_penalty: "wp"
-  max_speed: "msp"
-  max_boost: "mb"
   generations: "ge"
   population_size: "po"
