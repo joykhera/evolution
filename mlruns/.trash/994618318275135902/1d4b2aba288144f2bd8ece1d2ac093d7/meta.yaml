@@ -1,0 +1,16 @@
+artifact_uri: file:///Users/joykhera/Desktop/code/ml/evolution/mlruns/994618318275135902/1d4b2aba288144f2bd8ece1d2ac093d7/artifacts
+deleted_time: 1723217234380
+end_time: 1723146905317
+entry_point_name: ''
+experiment_id: '994618318275135902'
+lifecycle_stage: deleted
+run_id: 1d4b2aba288144f2bd8ece1d2ac093d7
+run_name: PPO_simple_tag_v3_b72b3_00000
+run_uuid: 1d4b2aba288144f2bd8ece1d2ac093d7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1723145465426
+status: 3
+tags: []
+user_id: unknown

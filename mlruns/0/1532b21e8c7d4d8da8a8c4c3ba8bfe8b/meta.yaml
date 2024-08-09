@@ -1,0 +1,16 @@
+artifact_uri: file:///Users/joykhera/Desktop/code/ml/evolution/mlruns/0/1532b21e8c7d4d8da8a8c4c3ba8bfe8b/artifacts
+deleted_time: 1723217234132
+end_time: 1723173375135
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: deleted
+run_id: 1532b21e8c7d4d8da8a8c4c3ba8bfe8b
+run_name: test
+run_uuid: 1532b21e8c7d4d8da8a8c4c3ba8bfe8b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1723172516391
+status: 3
+tags: []
+user_id: joykhera
