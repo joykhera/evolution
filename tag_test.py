@@ -1,10 +1,11 @@
 import os
 import ray
 import time
+import wandb
 from tag_env import TagEnv
 from ray import tune
+from ray.air.integrations.wandb import WandbLoggerCallback
 from ray.tune.registry import register_env
-from ray.air.integrations.mlflow import MLflowLoggerCallback
 from ray.rllib.env import ParallelPettingZooEnv
 from ray.rllib.algorithms.algorithm import Algorithm
 from ray.rllib.algorithms.ppo import PPOConfig
@@ -50,13 +51,8 @@ def train_ppo(observation_spaces, action_spaces):
         storage_path=os.path.join(os.getcwd(), "training"),
         checkpoint_at_end=True,
         checkpoint_freq=0,
-        callbacks=[
-            MLflowLoggerCallback(
-                experiment_name=run_name,
-                save_artifact=True,
-            )
-        ],
-        # verbose=0,
+        callbacks=[WandbLoggerCallback(project=run_name, log_config=True)],
+        verbose=0,
     )
 
     ray.shutdown()
@@ -87,12 +83,11 @@ def test_ppo(env, checkpoint_path):
 
 
 if __name__ == "__main__":
-    run_name = "tagtest"
+    run_name = "tag_norm_obs"
     env = TagEnv()
     observation_spaces = env.observation_spaces
     action_spaces = env.action_spaces
     # results = train_ppo(observation_spaces, action_spaces)
-    # checkpoint = results.get_best_result(metric="episode_reward_mean", mode="max").checkpoint
-    # checkpoint = results.get_best_checkpoint(results.get_last_trial(), mode="max")
-    checkpoint = "training/tagtest/PPO_custom_tag_v0_0b9b4_00000_0_2024-08-09_16-29-15/checkpoint_000000"
+    checkpoint = "training/tag_norm_obs/PPO_custom_tag_v0_fa423_00000_0_2024-08-10_10-58-18/checkpoint_000000"
+    # checkpoint = results.get_best_checkpoint(f'training/{run_name}', metric="episode_reward_mean")
     test_ppo(env, checkpoint)

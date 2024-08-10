@@ -10,9 +10,9 @@ class TagEnv(ParallelEnv):
     def __init__(self):
         self.agents = ["agent_0", "adversary_0", "adversary_1"]
         self.possible_agents = self.agents[:]
-        self.agent_positions = np.zeros((self.num_agents, 2))
+        self.agent_positions = np.zeros((len(self.agents), 2))
         self.grid_size = 50
-        self.max_steps = 200
+        self.max_steps = 400
         self.current_step = 0
 
         # Initialize pygame screen
@@ -21,14 +21,23 @@ class TagEnv(ParallelEnv):
         self.screen = None
 
         # Define observation and action spaces
-        self.observation_spaces = {agent: spaces.Box(low=0, high=self.grid_size, shape=(2,), dtype=np.float32) for agent in self.agents}
+        self.observation_spaces = {agent: spaces.Box(low=0, high=1, shape=(2,), dtype=np.float32) for agent in self.agents}
         self.action_spaces = {agent: spaces.Discrete(5) for agent in self.agents}  # 4 directions + no action
+
+        # Track previous distances
+        self.prev_distances = None
 
     def reset(self, seed=None, return_info=False, options=None):
         self.current_step = 0
         self.agents = self.possible_agents[:]
-        self.agent_positions = np.random.rand(self.num_agents, 2) * self.grid_size
-        observations = {agent: self.agent_positions[i] for i, agent in enumerate(self.agents)}
+        self.agent_positions = np.random.rand(len(self.agents), 2) * self.grid_size
+
+        # Initialize previous distances
+        agent_pos = self.agent_positions[0]
+        adversary_positions = self.agent_positions[1:]
+        self.prev_distances = np.array([np.linalg.norm(agent_pos - pos) for pos in adversary_positions])
+
+        observations = {agent: self.agent_positions[i] / self.grid_size for i, agent in enumerate(self.agents)}
         return observations, {}
 
     def step(self, actions):
@@ -53,19 +62,20 @@ class TagEnv(ParallelEnv):
         agent_pos = self.agent_positions[0]
         adversary_positions = self.agent_positions[1:]
 
-        # Calculate distances
+        # Calculate current distances
         distances = np.array([np.linalg.norm(agent_pos - pos) for pos in adversary_positions])
         min_distance = distances.min()
 
-        # Maximum possible distance in the grid (from one corner to the opposite corner)
-        max_possible_distance = np.sqrt(2) * self.grid_size
+        # Calculate rewards based on distance changes
+        agent_reward = np.sum(distances - self.prev_distances)
+        rewards[self.agents[0]] = agent_reward
 
-        # Agent reward: maximize distance from the closest adversary
-        rewards[self.agents[0]] = min_distance / max_possible_distance
+        for i, (prev_dist, curr_dist) in enumerate(zip(self.prev_distances, distances)):
+            adversary_reward = prev_dist - curr_dist
+            rewards[self.agents[i + 1]] = adversary_reward
 
-        # Adversary rewards: max possible distance - current distance to the agent
-        for i, distance in enumerate(distances):
-            rewards[self.agents[i + 1]] = (max_possible_distance - distance) / max_possible_distance
+        # Update previous distances
+        self.prev_distances = distances
 
         # Implement termination condition: if min_distance < 1 or max steps reached
         if min_distance < 1:
@@ -73,7 +83,7 @@ class TagEnv(ParallelEnv):
         if self.current_step >= self.max_steps:
             truncations = {agent: True for agent in self.agents}
 
-        observations = {agent: self.agent_positions[i] for i, agent in enumerate(self.agents)}
+        observations = {agent: self.agent_positions[i] / self.grid_size for i, agent in enumerate(self.agents)}
         return observations, rewards, terminations, truncations, infos
 
     def render(self, mode="human"):
