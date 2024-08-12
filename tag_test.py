@@ -1,7 +1,7 @@
 import os
 import ray
 import time
-import wandb
+import argparse
 from tag_env import TagEnv
 from ray import tune
 from ray.air.integrations.wandb import WandbLoggerCallback
@@ -24,7 +24,7 @@ def get_policy_mapping_fn(agent_id, episode, **kwargs):
         return "prey_policy"
 
 
-def train_ppo(env_config):
+def train_ppo(env_config, run_name):
     ray.init(ignore_reinit_error=True, log_to_driver=False)
 
     # Create the environment to fetch the observation and action spaces
@@ -42,7 +42,7 @@ def train_ppo(env_config):
         PPOConfig()
         .environment(env="custom_tag_v0", env_config=env_config, clip_actions=True)
         .framework("torch")
-        .rollouts(rollout_fragment_length="auto")
+        .env_runners(rollout_fragment_length="auto")
         .multi_agent(
             policies=policies,
             policy_mapping_fn=get_policy_mapping_fn,
@@ -53,13 +53,16 @@ def train_ppo(env_config):
     results = tune.run(
         "PPO",
         name=run_name,
+        # metric="episode_reward_mean",
+        # mode="max",
         config=config.to_dict(),
-        stop={"training_iteration": 200},
+        stop={"training_iteration": 100},
         storage_path=os.path.join(os.getcwd(), "training"),
         checkpoint_at_end=True,
         checkpoint_freq=0,
-        callbacks=[WandbLoggerCallback(project="custom_tag", log_config=True)],
+        callbacks=[WandbLoggerCallback(project="custom_tag", log_config=True, name=run_name)],
         verbose=0,
+        reuse_actors=True,
     )
 
     ray.shutdown()
@@ -80,7 +83,7 @@ def test_ppo(env_config, checkpoint_path):
         while not done:
             actions = {agent: trainer.compute_single_action(observations[agent], policy_id=get_policy_mapping_fn(agent, None)) for agent in env.agents}
             observations, rewards, terminations, truncations, infos = env.step(actions)
-            # print(observations, actions, rewards)
+            # print(observations)
             episode_predator_reward += sum(rewards[predator] for predator in rewards if "predator" in predator) / env_config["num_predators"]
             episode_prey_reward += sum(rewards[prey] for prey in rewards if "prey" in prey) / env_config["num_prey"]
             env.render()
@@ -92,16 +95,32 @@ def test_ppo(env_config, checkpoint_path):
 
 
 if __name__ == "__main__":
-    run_name = "tag_1each_newobs"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-train", action="store_true", help="Flag to train the model")
+    parser.add_argument("-test", action="store_true", help="Flag to test the model")
+    parser.add_argument('-cp', "--checkpoint", type=str, help="Checkpoint path for testing")
+    args = parser.parse_args()
+
+    run_name = "2pred2prey_newreward1"
     env_config = {
-        "num_prey": 1,  # Only one prey
-        "num_predators": 1,  # Three predators
+        "num_prey": 2,  # Only one prey
+        "num_predators": 2,  # Three predators
+        'prey_speed': 1.5,
+        'predator_speed': 1,
         "grid_size": 50,
-        "max_steps": 500,
+        "max_steps": 200,
         "screen_size": 600,
     }
-    # register_env("custom_tag_v0", lambda config: env_creator(config))
-    # results = train_ppo(env_config)
-    # checkpoint = results.get_best_checkpoint(f"training/{run_name}", metric="episode_reward_mean", mode="max")
-    checkpoint = "training/tag_1each_newobs/PPO_custom_tag_v0_abfb9_00000_0_2024-08-11_11-30-43/checkpoint_000000"
-    test_ppo(env_config, checkpoint)
+
+    if args.train:
+        results = train_ppo(env_config, run_name)
+        # checkpoint = results.get_best_checkpoint(f"training/{run_name}", metric="episode_reward_mean", mode="max")
+        # checkpoint = results.best_checkpoint
+        # print(f"Training complete. Best checkpoint: {checkpoint}")
+    elif args.test:
+        if args.checkpoint is None:
+            print("Checkpoint path must be provided for testing mode.")
+        else:
+            test_ppo(env_config, args.checkpoint)
+    else:
+        print("Please provide either --train or --test flag.")

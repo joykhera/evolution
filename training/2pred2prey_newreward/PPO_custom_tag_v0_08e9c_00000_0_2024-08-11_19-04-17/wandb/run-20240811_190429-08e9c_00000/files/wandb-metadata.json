@@ -1,0 +1,62 @@
+{
+    "os": "macOS-14.6-arm64-arm-64bit",
+    "python": "3.9.6",
+    "heartbeatAt": "2024-08-11T23:04:30.563872",
+    "startedAt": "2024-08-11T23:04:29.707585",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--node-ip-address=127.0.0.1",
+        "--node-manager-port=63841",
+        "--object-store-name=/tmp/ray/session_2024-08-11_19-04-16_137833_17014/sockets/plasma_store",
+        "--raylet-name=/tmp/ray/session_2024-08-11_19-04-16_137833_17014/sockets/raylet",
+        "--redis-address=None",
+        "--metrics-agent-port=65136",
+        "--runtime-env-agent-port=64606",
+        "--logging-rotate-bytes=536870912",
+        "--logging-rotate-backup-count=5",
+        "--runtime-env-agent-port=64606",
+        "--gcs-address=127.0.0.1:64823",
+        "--session-name=session_2024-08-11_19-04-16_137833_17014",
+        "--temp-dir=/tmp/ray",
+        "--webui=",
+        "--cluster-id=7b156af86650f6c2b225f616309efb55d1a83a2aefac0e78162180bd",
+        "--startup-token=21",
+        "--worker-launch-time-ms=1723417465893",
+        "--node-id=3b29729a062cb7511b51a857f4cb974452d9220a52ab0fda6e14a688",
+        "--runtime-env-hash=1"
+    ],
+    "state": "running",
+    "program": "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/_private/workers/default_worker.py",
+    "codePathLocal": null,
+    "host": "joys-mbp.lan",
+    "username": "joykhera",
+    "executable": "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/bin/python3",
+    "cpu_count": 10,
+    "cpu_count_logical": 10,
+    "cpu_freq": {
+        "current": 3228,
+        "min": 600,
+        "max": 3228
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3228,
+            "min": 600,
+            "max": 3228
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 460.4317207336426,
+            "used": 10.09354019165039
+        }
+    },
+    "gpuapple": {
+        "type": "Apple M1 Pro",
+        "vendor": "sppci_vendor_Apple"
+    },
+    "memory": {
+        "total": 16.0
+    }
+}
