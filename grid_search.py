@@ -5,7 +5,7 @@ from ray import tune
 from ray.rllib.algorithms.ppo import PPOConfig
 from ray.tune.registry import register_env
 from ray.tune.schedulers import ASHAScheduler
-from env.simple import SimpleEnv
+from evolution_env.simple import SimpleEnv
 from gymnasium import spaces
 
 env_config = {

@@ -2,174 +2,192 @@ import numpy as np
 from pettingzoo.utils import ParallelEnv
 from gymnasium import spaces
 import pygame
+from tag_agent import Agent
 
 
 class TagEnv(ParallelEnv):
     metadata = {"render.modes": ["human"], "name": "custom_tag_v0"}
 
-    def __init__(self, num_prey=1, num_predators=2, grid_size=50, max_steps=400, screen_size=600, predator_speed=1, prey_speed=1, render_mode=None):
+    def __init__(self, num_prey=1, num_predators=2, map_size=50, max_steps=400, screen_size=600, predator_speed=1, prey_speed=1, grid_size=10, render_mode=None):
         self.num_prey = num_prey
         self.num_predators = num_predators
-        self.grid_size = grid_size
+        self.map_size = map_size
         self.max_steps = max_steps
         self.screen_size = screen_size
         self.predator_speed = predator_speed
         self.prey_speed = prey_speed
+        self.grid_size = grid_size
         self.render_mode = render_mode
-
-        self.agents = [f"prey_{i}" for i in range(num_prey)] + [f"predator_{i}" for i in range(num_predators)]
-        self.possible_agents = self.agents[:]
-        self.agent_positions = np.zeros((len(self.agents), 2))
+        self.agents = {}
+        self.possible_agents = [f"prey_{i}" for i in range(num_prey)] + [f"predator_{i}" for i in range(num_predators)]
         self.current_step = 0
+        self.scale = self.screen_size // self.map_size
+        self.canvas = pygame.Surface((self.map_size, self.map_size))
 
-        # Initialize pygame screen
-        self.scale = self.screen_size // self.grid_size
-        self.screen = None if self.render_mode != "human" else pygame.display.set_mode((self.screen_size, self.screen_size))
+        self.blue_square_size = self.map_size // 2
+        self.blue_square_start = (self.map_size - self.blue_square_size) // 2
+        self.blue_square_end = self.blue_square_start + self.blue_square_size
 
-        # Define observation and action spaces
-        self.observation_spaces = {
-            agent: (
-                spaces.Box(low=-1, high=1, shape=(2 * self.num_predators,), dtype=np.float32)  # Two values (x and y) per predator for each prey
-                if "prey" in agent
-                else spaces.Box(low=-1, high=1, shape=(2 * self.num_prey,), dtype=np.float32)  # Two values (x and y) per prey for each predator
-            )
-            for agent in self.agents
-        }
-        self.action_spaces = {agent: spaces.Discrete(5) for agent in self.agents}  # 4 directions + no action
+        if self.render_mode == "human":
+            pygame.init()
+            self.screen = pygame.display.set_mode((self.screen_size, self.screen_size))
+            self.scaled_canvas = pygame.Surface((self.screen_size, self.screen_size))
+            pygame.font.init()
+            self.font = pygame.font.SysFont(None, 24)
 
-        # Track previous distances for rewards
-        self.prev_distances = None
+        self.observation_spaces = {agent: spaces.Box(low=0, high=4, shape=(grid_size, grid_size), dtype=np.uint8) for agent in self.possible_agents}
+        self.action_spaces = {agent: spaces.Discrete(5) for agent in self.possible_agents}
+
+    def _init_agents(self):
+        for i in range(self.num_prey):
+            position = np.random.rand(2) * self.map_size
+            self.agents[f"prey_{i}"] = Agent(position, size=1, speed=self.prey_speed, color=(0, 255, 0), map_size=self.map_size, grid_size=self.grid_size)
+        for i in range(self.num_predators):
+            position = np.random.rand(2) * self.map_size
+            self.agents[f"predator_{i}"] = Agent(position, size=1, speed=self.predator_speed, color=(255, 0, 0), map_size=self.map_size, grid_size=self.grid_size)
 
     def reset(self, seed=None, return_info=False, options=None):
         self.current_step = 0
-        self.agents = self.possible_agents[:]
-        self.agent_positions = np.random.rand(len(self.agents), 2) * self.grid_size
-
-        # Initialize previous distances
-        prey_positions = self.agent_positions[: self.num_prey]
-        predator_positions = self.agent_positions[self.num_prey :]
-        self.prev_distances = np.array([[np.linalg.norm(prey_pos - pred_pos) for pred_pos in predator_positions] for prey_pos in prey_positions])
+        self._init_agents()
+        self.predator_score = 0
+        self.prey_score = 0
+        self.prey_eaten = 0
 
         observations = self.get_observations()
         return observations, {}
 
     def step(self, actions):
         self.current_step += 1
-        terminations = {agent: False for agent in self.agents}
-        truncations = {agent: False for agent in self.agents}
-        infos = {agent: {} for agent in self.agents}
+        terminations = {agent: False for agent in self.possible_agents}
+        truncations = {agent: False for agent in self.possible_agents}
+        infos = {agent: {} for agent in self.possible_agents}
 
-        # Update positions based on actions
-        for i, agent in enumerate(self.agents):
-            speed = self.prey_speed if "prey" in agent else self.predator_speed
+        for agent_id, action in actions.items():
+            self.agents[agent_id].move(action)
+            # print(f"{agent_id} moved to {self.agents[agent_id].position}")
 
-            if actions[agent] == 1:  # move left
-                self.agent_positions[i][0] = max(self.agent_positions[i][0] - speed, 0)
-            elif actions[agent] == 2:  # move right
-                self.agent_positions[i][0] = min(self.agent_positions[i][0] + speed, self.grid_size)
-            elif actions[agent] == 3:  # move down
-                self.agent_positions[i][1] = max(self.agent_positions[i][1] - speed, 0)
-            elif actions[agent] == 4:  # move up
-                self.agent_positions[i][1] = min(self.agent_positions[i][1] + speed, self.grid_size)
-
-        if self.render_mode == "human":
-            self.render()
-
-        # Compute rewards using the separate reward function
         rewards = self.compute_rewards()
 
-        # Implement truncation condition: if max steps reached
         if self.current_step >= self.max_steps:
-            for agent in self.agents:
+            for agent in self.possible_agents:
                 truncations[agent] = True
+
+        self.render()
+        if self.render_mode == "human":
+            self.render_human()
 
         observations = self.get_observations()
 
         return observations, rewards, terminations, truncations, infos
 
-    def render(self, mode="human"):
-        if self.screen is None:
-            pygame.init()
-            self.screen = pygame.display.set_mode((self.screen_size, self.screen_size))
+    def render(self):
+        self.canvas.fill((255, 255, 255))
 
-        self.screen.fill((255, 255, 255))
+        pygame.draw.rect(
+            self.canvas,
+            (0, 0, 255),
+            (
+                self.blue_square_start,
+                self.blue_square_start,
+                self.blue_square_size,
+                self.blue_square_size,
+            ),
+        )
 
-        # Draw prey
-        for i in range(self.num_prey):
-            pygame.draw.circle(self.screen, (0, 255, 0), (self.agent_positions[i] * self.scale).astype(int), self.scale)
+        for agent in self.agents.values():
+            agent.draw(self.canvas, 1)
 
-        # Draw predators
-        for i in range(self.num_predators):
-            pygame.draw.circle(self.screen, (255, 0, 0), (self.agent_positions[self.num_prey + i] * self.scale).astype(int), self.scale)
+    def render_human(self):
+        self.scaled_canvas.fill((255, 255, 255))
+        pygame.draw.rect(
+            self.scaled_canvas,
+            (0, 0, 255),
+            (
+                self.blue_square_start * self.scale,
+                self.blue_square_start * self.scale,
+                self.blue_square_size * self.scale,
+                self.blue_square_size * self.scale,
+            ),
+        )
 
+        for agent in self.agents.values():
+            agent.draw(self.scaled_canvas, self.scale, draw_grid=True)
+
+        predator_score_text = self.font.render(f"Predator score: {self.predator_score}", True, (0, 0, 0))
+        prey_score_text = self.font.render(f"Prey score: {self.prey_score}", True, (0, 0, 0))
+        prey_eaten_text = self.font.render(f"Prey eaten: {self.prey_eaten}", True, (0, 0, 0))
+        self.screen.blit(self.scaled_canvas, (0, 0))
+        self.screen.blit(predator_score_text, (5, 10))
+        self.screen.blit(prey_score_text, (5, 25))
+        self.screen.blit(prey_eaten_text, (5, 40))
         pygame.display.flip()
 
     def get_observations(self):
         observations = {}
-        prey_positions = self.agent_positions[: self.num_prey]
-        predator_positions = self.agent_positions[self.num_prey :]
-
-        for i, agent in enumerate(self.agents):
-            if "prey" in agent:
-                # Get x and y distances to each predator
-                distances = []
-                for pred_pos in predator_positions:
-                    x_dist = prey_positions[i][0] - pred_pos[0]
-                    y_dist = prey_positions[i][1] - pred_pos[1]
-                    distances.extend([x_dist, y_dist])
-                # Normalize the distances by grid size
-                observations[agent] = np.array(distances, dtype=np.float32) / self.grid_size
-
-            elif "predator" in agent:
-                # Get x and y distances to each prey
-                distances = []
-                for prey_pos in prey_positions:
-                    x_dist = predator_positions[i - self.num_prey][0] - prey_pos[0]
-                    y_dist = predator_positions[i - self.num_prey][1] - prey_pos[1]
-                    distances.extend([x_dist, y_dist])
-                # Normalize the distances by grid size
-                observations[agent] = np.array(distances, dtype=np.float32) / self.grid_size
-
+        for agent_id, agent in self.agents.items():
+            observation = agent.get_observation(self.canvas)
+            normalized_observation = observation / 255
+            observations[agent_id] = normalized_observation
         return observations
 
     def compute_rewards(self):
         rewards = {}
-        terminated_agents = []
+        prey_positions = [self.agents[f"prey_{i}"].position for i in range(self.num_prey)]
+        predator_positions = [self.agents[f"predator_{i}"].position for i in range(self.num_predators)]
+        half_grid = self.grid_size // 2
 
-        prey_positions = self.agent_positions[: self.num_prey]
-        predator_positions = self.agent_positions[self.num_prey :]
-
-        # Calculate current distances
-        distances = np.array([[np.linalg.norm(prey_pos - pred_pos) for pred_pos in predator_positions] for prey_pos in prey_positions])
-
-        prey_rewards = np.zeros(self.num_prey)
-        predator_rewards = np.zeros(self.num_predators)
-
-        # Reward structure
+        # Prey rewards
         for i in range(self.num_prey):
-            closest_predator_idx = np.argmin(distances[i])
-            closest_predator_distance = distances[i][closest_predator_idx]
-            previous_closest_predator_distance = self.prev_distances[i][closest_predator_idx]
+            x, y = prey_positions[i]
+            prey_in_danger = False
+            prey_reward = 0
 
-            # Reward prey for increasing the distance from the closest predator
-            prey_rewards[i] += closest_predator_distance - previous_closest_predator_distance
+            for predator_pos in predator_positions:
+                x_distance = abs(x - predator_pos[0])
+                y_distance = abs(y - predator_pos[1])
 
-            # Reward predator for decreasing the distance to the closest prey
-            predator_rewards[closest_predator_idx] += previous_closest_predator_distance - closest_predator_distance
+                if x_distance < half_grid and y_distance < half_grid:
+                    # Predator is within the grid of the prey
+                    prey_reward = -2  # Penalty if prey and predator see each other
+                    prey_in_danger = True
 
-            # # If the predator catches the prey
-            # if closest_predator_distance < 1:
-            #     prey_rewards[i] -= 100  # Large penalty for getting caught
-            #     predator_rewards[closest_predator_idx] += 100  # Large reward for catching prey
-            #     terminated_agents.append(self.agents[i])  # Mark prey as terminated
+                    if x_distance == 0 and y_distance == 0:  # Predator touches the prey
+                        prey_reward = -10  # Larger penalty for being caught
+                        self.prey_eaten += 1
+                        break
 
-        # Assign rewards to agents
-        for i in range(self.num_prey):
-            if self.agents[i] not in terminated_agents:
-                rewards[self.agents[i]] = prey_rewards[i]
+            if not prey_in_danger:
+                if self.blue_square_start <= x <= self.blue_square_end and self.blue_square_start <= y <= self.blue_square_end:
+                    prey_reward = 1  # Reward for being on the blue square
+                else:
+                    prey_reward = 0.1
 
+            rewards[f"prey_{i}"] = prey_reward
+            self.prey_score += prey_reward
+
+        # Predator rewards
         for i in range(self.num_predators):
-            rewards[self.agents[self.num_prey + i]] = predator_rewards[i]
+            predator_pos = predator_positions[i]
+            predator_reward = 0
+            predator_has_prey_in_view = False
+
+            for prey_pos in prey_positions:
+                x_distance = abs(predator_pos[0] - prey_pos[0])
+                y_distance = abs(predator_pos[1] - prey_pos[1])
+
+                if x_distance < half_grid and y_distance < half_grid:
+                    predator_reward = 1  # Reward if predator sees the prey
+                    predator_has_prey_in_view = True
+
+                    if x_distance == 0 and y_distance == 0:  # Predator touches the prey
+                        predator_reward = 10  # Larger reward for catching the prey
+                        break
+
+            if not predator_has_prey_in_view:
+                predator_reward = 0  # No reward if no prey is in the predator's view
+
+            rewards[f"predator_{i}"] = predator_reward
+            self.predator_score += predator_reward
 
         return rewards
 

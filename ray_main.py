@@ -7,7 +7,7 @@ from ray import tune
 from ray.rllib.algorithms.ppo import PPO, PPOConfig
 from ray.tune.registry import register_env
 # from gym_env.evolution_env import EvolutionEnv
-from env.pz_env import env_builder, EvolutionEnv
+from evolution_env.pz_env import env_builder, EvolutionEnv
 from gymnasium import spaces
 from ray.rllib.algorithms.algorithm import Algorithm
 from ray.rllib.env.wrappers.pettingzoo_env import ParallelPettingZooEnv

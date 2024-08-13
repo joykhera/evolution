@@ -61,7 +61,7 @@ def train_ppo(env_config, run_name):
         checkpoint_at_end=True,
         checkpoint_freq=0,
         callbacks=[WandbLoggerCallback(project="custom_tag", log_config=True, name=run_name)],
-        verbose=0,
+        # verbose=0,
         reuse_actors=True,
     )
 
@@ -86,7 +86,6 @@ def test_ppo(env_config, checkpoint_path):
             # print(observations)
             episode_predator_reward += sum(rewards[predator] for predator in rewards if "predator" in predator) / env_config["num_predators"]
             episode_prey_reward += sum(rewards[prey] for prey in rewards if "prey" in prey) / env_config["num_prey"]
-            env.render()
             time.sleep(0.05)
             done = any(terminations.values()) or any(truncations.values())
         print(f"Episode {episode}, predator reward: {episode_predator_reward}, prey reward: {episode_prey_reward}")
@@ -99,20 +98,22 @@ if __name__ == "__main__":
     parser.add_argument("-train", action="store_true", help="Flag to train the model")
     parser.add_argument("-test", action="store_true", help="Flag to test the model")
     parser.add_argument('-cp', "--checkpoint", type=str, help="Checkpoint path for testing")
+    parser.add_argument("-rn", "--run_name", type=str, help="Run name")
     args = parser.parse_args()
 
-    run_name = "2pred2prey_newreward1"
     env_config = {
-        "num_prey": 2,  # Only one prey
-        "num_predators": 2,  # Three predators
-        'prey_speed': 1.5,
+        "num_prey": 2,
+        "num_predators": 2,
+        'prey_speed': 1,
         'predator_speed': 1,
-        "grid_size": 50,
+        "map_size": 30,
         "max_steps": 200,
         "screen_size": 600,
+        "grid_size": 10,
     }
 
     if args.train:
+        run_name = args.run_name or 'no_name'
         results = train_ppo(env_config, run_name)
         # checkpoint = results.get_best_checkpoint(f"training/{run_name}", metric="episode_reward_mean", mode="max")
         # checkpoint = results.best_checkpoint

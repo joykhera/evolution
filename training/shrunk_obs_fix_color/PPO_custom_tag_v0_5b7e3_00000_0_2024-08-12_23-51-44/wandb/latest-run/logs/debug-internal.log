@@ -1,0 +1,92 @@
+2024-08-12 23:52:08,757 INFO    StreamThr :45603 [internal.py:wandb_internal():85] W&B internal server running at pid: 45603, started at: 2024-08-12 23:52:08.755647
+2024-08-12 23:52:08,757 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: status
+2024-08-12 23:52:08,763 INFO    WriterThread:45603 [datastore.py:open_for_write():87] open: /private/tmp/ray/session_2024-08-12_23-51-42_492343_45016/artifacts/2024-08-12_23-51-44/shrunk_obs_fix_color/driver_artifacts/PPO_custom_tag_v0_5b7e3_00000_0_2024-08-12_23-51-44/wandb/run-20240812_235208-5b7e3_00000/run-5b7e3_00000.wandb
+2024-08-12 23:52:08,763 DEBUG   SenderThread:45603 [sender.py:send():391] send: header
+2024-08-12 23:52:08,765 DEBUG   SenderThread:45603 [sender.py:send():391] send: run
+2024-08-12 23:52:09,029 INFO    SenderThread:45603 [dir_watcher.py:__init__():211] watching files in: /private/tmp/ray/session_2024-08-12_23-51-42_492343_45016/artifacts/2024-08-12_23-51-44/shrunk_obs_fix_color/driver_artifacts/PPO_custom_tag_v0_5b7e3_00000_0_2024-08-12_23-51-44/wandb/run-20240812_235208-5b7e3_00000/files
+2024-08-12 23:52:09,029 INFO    SenderThread:45603 [sender.py:_start_run_threads():1200] run started: 5b7e3_00000 with start time 1723521128.754963
+2024-08-12 23:52:09,036 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: check_version
+2024-08-12 23:52:09,036 DEBUG   SenderThread:45603 [sender.py:send_request():418] send_request: check_version
+2024-08-12 23:52:09,111 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: run_start
+2024-08-12 23:52:09,119 DEBUG   HandlerThread:45603 [system_info.py:__init__():26] System info init
+2024-08-12 23:52:09,119 DEBUG   HandlerThread:45603 [system_info.py:__init__():41] System info init done
+2024-08-12 23:52:09,119 INFO    HandlerThread:45603 [system_monitor.py:start():194] Starting system monitor
+2024-08-12 23:52:09,119 INFO    SystemMonitor:45603 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-08-12 23:52:09,119 INFO    HandlerThread:45603 [system_monitor.py:probe():214] Collecting system info
+2024-08-12 23:52:09,124 INFO    SystemMonitor:45603 [interfaces.py:start():188] Started cpu monitoring
+2024-08-12 23:52:09,129 INFO    SystemMonitor:45603 [interfaces.py:start():188] Started disk monitoring
+2024-08-12 23:52:09,135 INFO    SystemMonitor:45603 [interfaces.py:start():188] Started gpuapple monitoring
+2024-08-12 23:52:09,136 INFO    SystemMonitor:45603 [interfaces.py:start():188] Started memory monitoring
+2024-08-12 23:52:09,137 INFO    SystemMonitor:45603 [interfaces.py:start():188] Started network monitoring
+2024-08-12 23:52:09,604 DEBUG   HandlerThread:45603 [system_info.py:probe():152] Probing system
+2024-08-12 23:52:09,627 DEBUG   HandlerThread:45603 [gitlib.py:_init_repo():56] git repository is invalid
+2024-08-12 23:52:09,627 DEBUG   HandlerThread:45603 [system_info.py:probe():200] Probing system done
+2024-08-12 23:52:09,628 DEBUG   HandlerThread:45603 [system_monitor.py:probe():223] {'os': 'macOS-14.6-arm64-arm-64bit', 'python': '3.9.6', 'heartbeatAt': '2024-08-13T03:52:09.604449', 'startedAt': '2024-08-13T03:52:08.741091', 'docker': None, 'cuda': None, 'args': ('--node-ip-address=127.0.0.1', '--node-manager-port=49226', '--object-store-name=/tmp/ray/session_2024-08-12_23-51-42_492343_45016/sockets/plasma_store', '--raylet-name=/tmp/ray/session_2024-08-12_23-51-42_492343_45016/sockets/raylet', '--redis-address=None', '--metrics-agent-port=64919', '--runtime-env-agent-port=61476', '--logging-rotate-bytes=536870912', '--logging-rotate-backup-count=5', '--runtime-env-agent-port=61476', '--gcs-address=127.0.0.1:51733', '--session-name=session_2024-08-12_23-51-42_492343_45016', '--temp-dir=/tmp/ray', '--webui=', '--cluster-id=4523087654112ed5b9356938a39fe03e55419ab20a1a7f83d8255896', '--startup-token=21', '--worker-launch-time-ms=1723521122766', '--node-id=8637ab03c7922b69a16211fd7c650f1e020747a8690bc082c2d7bee8', '--runtime-env-hash=1'), 'state': 'running', 'program': '/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/_private/workers/default_worker.py', 'codePathLocal': None, 'host': 'joys-mbp.lan', 'username': 'joykhera', 'executable': '/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/bin/python3', 'cpu_count': 10, 'cpu_count_logical': 10, 'cpu_freq': {'current': 3228, 'min': 600, 'max': 3228}, 'cpu_freq_per_core': [{'current': 3228, 'min': 600, 'max': 3228}], 'disk': {'/': {'total': 460.4317207336426, 'used': 10.09354019165039}}, 'gpuapple': {'type': 'Apple M1 Pro', 'vendor': 'sppci_vendor_Apple'}, 'memory': {'total': 16.0}}
+2024-08-12 23:52:09,628 INFO    HandlerThread:45603 [system_monitor.py:probe():224] Finished collecting system info
+2024-08-12 23:52:09,628 INFO    HandlerThread:45603 [system_monitor.py:probe():227] Publishing system info
+2024-08-12 23:52:09,636 INFO    HandlerThread:45603 [system_monitor.py:probe():229] Finished publishing system info
+2024-08-12 23:52:09,649 DEBUG   SenderThread:45603 [sender.py:send():391] send: files
+2024-08-12 23:52:09,649 INFO    SenderThread:45603 [sender.py:_save_file():1466] saving file wandb-metadata.json with policy now
+2024-08-12 23:52:09,725 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: python_packages
+2024-08-12 23:52:09,725 DEBUG   SenderThread:45603 [sender.py:send_request():418] send_request: python_packages
+2024-08-12 23:52:09,726 DEBUG   SenderThread:45603 [sender.py:send():391] send: telemetry
+2024-08-12 23:52:09,726 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:09,726 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-12 23:52:09,726 DEBUG   SenderThread:45603 [sender.py:send_request():418] send_request: stop_status
+2024-08-12 23:52:09,930 DEBUG   SenderThread:45603 [sender.py:send():391] send: telemetry
+2024-08-12 23:52:09,931 DEBUG   SenderThread:45603 [sender.py:send():391] send: config
+2024-08-12 23:52:10,033 INFO    Thread-12 :45603 [dir_watcher.py:_on_file_created():271] file/dir created: /private/tmp/ray/session_2024-08-12_23-51-42_492343_45016/artifacts/2024-08-12_23-51-44/shrunk_obs_fix_color/driver_artifacts/PPO_custom_tag_v0_5b7e3_00000_0_2024-08-12_23-51-44/wandb/run-20240812_235208-5b7e3_00000/files/wandb-metadata.json
+2024-08-12 23:52:10,033 INFO    Thread-12 :45603 [dir_watcher.py:_on_file_created():271] file/dir created: /private/tmp/ray/session_2024-08-12_23-51-42_492343_45016/artifacts/2024-08-12_23-51-44/shrunk_obs_fix_color/driver_artifacts/PPO_custom_tag_v0_5b7e3_00000_0_2024-08-12_23-51-44/wandb/run-20240812_235208-5b7e3_00000/files/requirements.txt
+2024-08-12 23:52:10,042 INFO    wandb-upload_0:45603 [upload_job.py:push():130] Uploaded file /var/folders/g6/n64llwb90ys0ypccxnmz5x0w0000gn/T/tmpztqfoafvwandb/m7e3c4k1-wandb-metadata.json
+2024-08-12 23:52:10,731 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:11,735 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:12,738 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:13,741 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:13,942 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: status_report
+2024-08-12 23:52:14,742 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:15,746 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:16,751 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:17,759 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:18,760 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:19,738 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: status_report
+2024-08-12 23:52:19,764 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:20,767 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:21,771 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:22,774 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:22,867 DEBUG   SenderThread:45603 [sender.py:send():391] send: config
+2024-08-12 23:52:22,868 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-12 23:52:22,879 DEBUG   SenderThread:45603 [sender.py:send():391] send: history
+2024-08-12 23:52:22,879 DEBUG   SenderThread:45603 [sender.py:send_request():418] send_request: summary_record
+2024-08-12 23:52:22,881 INFO    SenderThread:45603 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-12 23:52:23,107 INFO    Thread-12 :45603 [dir_watcher.py:_on_file_created():271] file/dir created: /private/tmp/ray/session_2024-08-12_23-51-42_492343_45016/artifacts/2024-08-12_23-51-44/shrunk_obs_fix_color/driver_artifacts/PPO_custom_tag_v0_5b7e3_00000_0_2024-08-12_23-51-44/wandb/run-20240812_235208-5b7e3_00000/files/wandb-summary.json
+2024-08-12 23:52:23,779 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:24,732 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-12 23:52:24,733 DEBUG   SenderThread:45603 [sender.py:send_request():418] send_request: stop_status
+2024-08-12 23:52:24,781 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:24,828 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: status_report
+2024-08-12 23:52:25,785 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:26,790 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:27,794 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:28,799 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:29,803 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:30,741 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: status_report
+2024-08-12 23:52:30,805 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:31,858 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:32,817 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:33,821 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:34,826 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:35,757 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: status_report
+2024-08-12 23:52:35,830 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:36,833 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:37,856 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:38,844 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:39,736 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-12 23:52:39,737 DEBUG   SenderThread:45603 [sender.py:send_request():418] send_request: stop_status
+2024-08-12 23:52:39,847 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:40,852 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:40,907 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: status_report
+2024-08-12 23:52:41,419 INFO    Thread-12 :45603 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-12_23-51-42_492343_45016/artifacts/2024-08-12_23-51-44/shrunk_obs_fix_color/driver_artifacts/PPO_custom_tag_v0_5b7e3_00000_0_2024-08-12_23-51-44/wandb/run-20240812_235208-5b7e3_00000/files/config.yaml
+2024-08-12 23:52:41,852 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:42,856 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:43,865 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-12 23:52:44,861 DEBUG   HandlerThread:45603 [handler.py:handle_request():158] handle_request: internal_messages

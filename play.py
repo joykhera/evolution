@@ -1,6 +1,6 @@
 import neat
 import os
-from env.gym_env import EvolutionEnv
+from evolution_env.gym_env import EvolutionEnv
 import pygame
 
 env = EvolutionEnv(num_agents=1, human_player=False)
