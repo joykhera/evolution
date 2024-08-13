@@ -5,6 +5,14 @@ import pygame
 from tag_agent import Agent
 
 
+# Color Encoding:
+# 0 for black
+# 1 for white
+# 2 for green
+# 3 for red
+# 4 for blue
+
+
 class TagEnv(ParallelEnv):
     metadata = {"render.modes": ["human"], "name": "custom_tag_v0"}
 
@@ -35,16 +43,34 @@ class TagEnv(ParallelEnv):
             pygame.font.init()
             self.font = pygame.font.SysFont(None, 24)
 
-        self.observation_spaces = {agent: spaces.Box(low=0, high=4, shape=(grid_size, grid_size), dtype=np.uint8) for agent in self.possible_agents}
+        self.observation_spaces = {agent: spaces.Box(low=0, high=1, shape=(grid_size, grid_size), dtype=np.uint8) for agent in self.possible_agents}
         self.action_spaces = {agent: spaces.Discrete(5) for agent in self.possible_agents}
 
     def _init_agents(self):
         for i in range(self.num_prey):
             position = np.random.rand(2) * self.map_size
-            self.agents[f"prey_{i}"] = Agent(position, size=1, speed=self.prey_speed, color=(0, 255, 0), map_size=self.map_size, grid_size=self.grid_size)
+            self.agents[f"prey_{i}"] = Agent(
+                position,
+                size=1,
+                speed=self.prey_speed,
+                color=(0, 255, 0),
+                color_encoding=2,
+                map_size=self.map_size,
+                grid_size=self.grid_size,
+                scale=self.scale,
+            )
         for i in range(self.num_predators):
             position = np.random.rand(2) * self.map_size
-            self.agents[f"predator_{i}"] = Agent(position, size=1, speed=self.predator_speed, color=(255, 0, 0), map_size=self.map_size, grid_size=self.grid_size)
+            self.agents[f"predator_{i}"] = Agent(
+                position,
+                size=1,
+                speed=self.predator_speed,
+                color=(255, 0, 0),
+                color_encoding=3,
+                map_size=self.map_size,
+                grid_size=self.grid_size,
+                scale=self.scale,
+            )
 
     def reset(self, seed=None, return_info=False, options=None):
         self.current_step = 0
@@ -77,15 +103,16 @@ class TagEnv(ParallelEnv):
             self.render_human()
 
         observations = self.get_observations()
+        # print('aaa', observations)
 
         return observations, rewards, terminations, truncations, infos
 
     def render(self):
-        self.canvas.fill((255, 255, 255))
+        self.canvas.fill(1)
 
         pygame.draw.rect(
             self.canvas,
-            (0, 0, 255),
+            4,
             (
                 self.blue_square_start,
                 self.blue_square_start,
@@ -95,7 +122,7 @@ class TagEnv(ParallelEnv):
         )
 
         for agent in self.agents.values():
-            agent.draw(self.canvas, 1)
+            agent.draw(self.canvas)
 
     def render_human(self):
         self.scaled_canvas.fill((255, 255, 255))
@@ -111,7 +138,7 @@ class TagEnv(ParallelEnv):
         )
 
         for agent in self.agents.values():
-            agent.draw(self.scaled_canvas, self.scale, draw_grid=True)
+            agent.draw(self.scaled_canvas, render_mode="human", draw_grid=True)
 
         predator_score_text = self.font.render(f"Predator score: {self.predator_score}", True, (0, 0, 0))
         prey_score_text = self.font.render(f"Prey score: {self.prey_score}", True, (0, 0, 0))
@@ -125,9 +152,7 @@ class TagEnv(ParallelEnv):
     def get_observations(self):
         observations = {}
         for agent_id, agent in self.agents.items():
-            observation = agent.get_observation(self.canvas)
-            normalized_observation = observation / 255
-            observations[agent_id] = normalized_observation
+            observations[agent_id] = agent.get_observation(self.canvas)
         return observations
 
     def compute_rewards(self):
@@ -159,8 +184,8 @@ class TagEnv(ParallelEnv):
             if not prey_in_danger:
                 if self.blue_square_start <= x <= self.blue_square_end and self.blue_square_start <= y <= self.blue_square_end:
                     prey_reward = 1  # Reward for being on the blue square
-                else:
-                    prey_reward = 0.1
+                # else:
+                #     prey_reward = 0.1
 
             rewards[f"prey_{i}"] = prey_reward
             self.prey_score += prey_reward

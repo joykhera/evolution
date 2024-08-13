@@ -320,7 +320,7 @@ policy_map_capacity:
   value: 100
 policy_mapping_fn:
   desc: null
-  value: <function get_policy_mapping_fn at 0x3b28419d0>
+  value: <function get_policy_mapping_fn at 0x3b4d75dc0>
 policies_to_train:
   desc: null
   value: null
@@ -654,6 +654,7 @@ _wandb:
       4: 3.9.6
       5: 0.17.6
       8:
+      - 4
       - 8
       13: darwin-arm64
 trial_log_path:
@@ -670,7 +671,7 @@ trial_id:
   value: 5b7e3_00000
 date:
   desc: null
-  value: 2024-08-12_23-52-18
+  value: 2024-08-13_00-21-27
 pid:
   desc: null
   value: 45178

@@ -43,6 +43,9 @@ def train_ppo(env_config, run_name):
         .environment(env="custom_tag_v0", env_config=env_config, clip_actions=True)
         .framework("torch")
         .env_runners(rollout_fragment_length="auto")
+        .training(
+            lr=tune.grid_search([0.01, 0.001, 0.0001]),
+        )
         .multi_agent(
             policies=policies,
             policy_mapping_fn=get_policy_mapping_fn,
@@ -56,7 +59,7 @@ def train_ppo(env_config, run_name):
         # metric="episode_reward_mean",
         # mode="max",
         config=config.to_dict(),
-        stop={"training_iteration": 100},
+        stop={"training_iteration": 200},
         storage_path=os.path.join(os.getcwd(), "training"),
         checkpoint_at_end=True,
         checkpoint_freq=0,
@@ -83,8 +86,7 @@ def test_ppo(env_config, checkpoint_path):
         while not done:
             actions = {agent: trainer.compute_single_action(observations[agent], policy_id=get_policy_mapping_fn(agent, None)) for agent in env.agents}
             observations, rewards, terminations, truncations, infos = env.step(actions)
-            # print(observations)
-            episode_predator_reward += sum(rewards[predator] for predator in rewards if "predator" in predator) / env_config["num_predators"]
+            # print('sss', observations)
             episode_prey_reward += sum(rewards[prey] for prey in rewards if "prey" in prey) / env_config["num_prey"]
             time.sleep(0.05)
             done = any(terminations.values()) or any(truncations.values())

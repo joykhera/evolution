@@ -1,0 +1,470 @@
+2024-08-13 10:30:04,239 INFO    StreamThr :45859 [internal.py:wandb_internal():85] W&B internal server running at pid: 45859, started at: 2024-08-13 10:30:04.239039
+2024-08-13 10:30:04,240 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status
+2024-08-13 10:30:04,244 INFO    WriterThread:45859 [datastore.py:open_for_write():87] open: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/run-7f9b9_00000.wandb
+2024-08-13 10:30:04,245 DEBUG   SenderThread:45859 [sender.py:send():391] send: header
+2024-08-13 10:30:04,246 DEBUG   SenderThread:45859 [sender.py:send():391] send: run
+2024-08-13 10:30:04,650 INFO    SenderThread:45859 [dir_watcher.py:__init__():211] watching files in: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files
+2024-08-13 10:30:04,650 INFO    SenderThread:45859 [sender.py:_start_run_threads():1200] run started: 7f9b9_00000 with start time 1723559404.239985
+2024-08-13 10:30:04,656 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: check_version
+2024-08-13 10:30:04,657 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: check_version
+2024-08-13 10:30:04,901 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: run_start
+2024-08-13 10:30:04,965 DEBUG   HandlerThread:45859 [system_info.py:__init__():26] System info init
+2024-08-13 10:30:04,965 DEBUG   HandlerThread:45859 [system_info.py:__init__():41] System info init done
+2024-08-13 10:30:04,965 INFO    HandlerThread:45859 [system_monitor.py:start():194] Starting system monitor
+2024-08-13 10:30:04,966 INFO    SystemMonitor:45859 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-08-13 10:30:04,969 INFO    HandlerThread:45859 [system_monitor.py:probe():214] Collecting system info
+2024-08-13 10:30:04,969 INFO    SystemMonitor:45859 [interfaces.py:start():188] Started cpu monitoring
+2024-08-13 10:30:04,973 INFO    SystemMonitor:45859 [interfaces.py:start():188] Started disk monitoring
+2024-08-13 10:30:04,979 INFO    SystemMonitor:45859 [interfaces.py:start():188] Started gpuapple monitoring
+2024-08-13 10:30:04,981 INFO    SystemMonitor:45859 [interfaces.py:start():188] Started memory monitoring
+2024-08-13 10:30:04,981 INFO    SystemMonitor:45859 [interfaces.py:start():188] Started network monitoring
+2024-08-13 10:30:05,816 DEBUG   HandlerThread:45859 [system_info.py:probe():152] Probing system
+2024-08-13 10:30:05,821 DEBUG   HandlerThread:45859 [gitlib.py:_init_repo():56] git repository is invalid
+2024-08-13 10:30:05,822 DEBUG   HandlerThread:45859 [system_info.py:probe():200] Probing system done
+2024-08-13 10:30:05,822 DEBUG   HandlerThread:45859 [system_monitor.py:probe():223] {'os': 'macOS-14.6-arm64-arm-64bit', 'python': '3.9.6', 'heartbeatAt': '2024-08-13T14:30:05.817026', 'startedAt': '2024-08-13T14:30:04.234609', 'docker': None, 'cuda': None, 'args': ('--node-ip-address=127.0.0.1', '--node-manager-port=61274', '--object-store-name=/tmp/ray/session_2024-08-13_10-29-48_001050_45573/sockets/plasma_store', '--raylet-name=/tmp/ray/session_2024-08-13_10-29-48_001050_45573/sockets/raylet', '--redis-address=None', '--metrics-agent-port=63414', '--runtime-env-agent-port=63358', '--logging-rotate-bytes=536870912', '--logging-rotate-backup-count=5', '--runtime-env-agent-port=63358', '--gcs-address=127.0.0.1:61809', '--session-name=session_2024-08-13_10-29-48_001050_45573', '--temp-dir=/tmp/ray', '--webui=', '--cluster-id=cf4caadfd61be89124a041562989ce473a8f6d381140ceeb3fae846b', '--startup-token=21', '--worker-launch-time-ms=1723559400159', '--node-id=a6c00163d693ca79fcdf69c03d7592598c6b0a958627eee7f1155e0d', '--runtime-env-hash=1'), 'state': 'running', 'program': '/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/_private/workers/default_worker.py', 'codePathLocal': None, 'host': 'joys-mbp.lan', 'username': 'joykhera', 'executable': '/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/bin/python3', 'cpu_count': 10, 'cpu_count_logical': 10, 'cpu_freq': {'current': 3228, 'min': 600, 'max': 3228}, 'cpu_freq_per_core': [{'current': 3228, 'min': 600, 'max': 3228}], 'disk': {'/': {'total': 460.4317207336426, 'used': 10.09354019165039}}, 'gpuapple': {'type': 'Apple M1 Pro', 'vendor': 'sppci_vendor_Apple'}, 'memory': {'total': 16.0}}
+2024-08-13 10:30:05,822 INFO    HandlerThread:45859 [system_monitor.py:probe():224] Finished collecting system info
+2024-08-13 10:30:05,822 INFO    HandlerThread:45859 [system_monitor.py:probe():227] Publishing system info
+2024-08-13 10:30:05,822 INFO    HandlerThread:45859 [system_monitor.py:probe():229] Finished publishing system info
+2024-08-13 10:30:05,831 DEBUG   SenderThread:45859 [sender.py:send():391] send: files
+2024-08-13 10:30:05,831 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-metadata.json with policy now
+2024-08-13 10:30:05,899 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: python_packages
+2024-08-13 10:30:05,900 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: python_packages
+2024-08-13 10:30:05,901 DEBUG   SenderThread:45859 [sender.py:send():391] send: telemetry
+2024-08-13 10:30:05,901 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:05,902 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:30:05,902 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:30:06,138 DEBUG   SenderThread:45859 [sender.py:send():391] send: telemetry
+2024-08-13 10:30:06,138 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:30:06,204 INFO    wandb-upload_0:45859 [upload_job.py:push():130] Uploaded file /var/folders/g6/n64llwb90ys0ypccxnmz5x0w0000gn/T/tmp388hbaccwandb/eg89u788-wandb-metadata.json
+2024-08-13 10:30:06,695 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_created():271] file/dir created: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-metadata.json
+2024-08-13 10:30:06,695 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_created():271] file/dir created: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/requirements.txt
+2024-08-13 10:30:06,903 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:07,908 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:08,910 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:09,911 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:10,151 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:30:10,916 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:11,918 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:12,929 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:13,926 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:14,001 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:30:14,001 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:30:14,011 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:30:14,012 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:30:14,019 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:30:14,720 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_created():271] file/dir created: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:30:14,936 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:15,905 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:30:15,930 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:16,933 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:17,936 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:18,940 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:19,941 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:20,905 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:30:20,905 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:30:20,906 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:30:20,946 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:21,950 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:22,952 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:23,482 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:30:23,483 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:30:23,486 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:30:23,487 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:30:23,490 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:30:23,750 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:30:23,954 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:24,956 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:25,908 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:30:25,957 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:26,961 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:27,962 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:28,964 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:29,967 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:30,912 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:30:30,968 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:31,973 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:32,930 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:30:32,930 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:30:32,934 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:30:32,934 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:30:32,936 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:30:32,980 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:33,797 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:30:33,983 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:34,990 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:35,908 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:30:35,908 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:30:35,985 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:36,010 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:30:36,989 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:37,831 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/config.yaml
+2024-08-13 10:30:37,992 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:38,996 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:40,000 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:41,000 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:42,002 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:42,817 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:30:42,818 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:30:42,818 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:30:42,821 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:30:42,822 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:30:42,824 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:30:42,834 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:30:43,005 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:44,008 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:45,011 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:46,015 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:47,017 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:47,929 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:30:48,021 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:49,023 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:50,028 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:50,911 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:30:50,912 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:30:51,030 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:52,035 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:52,282 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:30:52,283 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:30:52,286 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:30:52,287 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:30:52,288 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:30:52,871 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:30:53,036 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:53,290 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:30:54,039 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:55,042 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:56,046 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:57,051 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:58,052 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:30:58,937 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:30:59,055 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:00,058 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:01,061 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:01,962 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:31:01,963 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:31:01,966 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:31:01,967 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:31:01,969 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:31:02,064 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:02,908 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:31:03,067 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:03,972 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:31:04,071 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:04,987 DEBUG   SystemMonitor:45859 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-08-13 10:31:04,987 DEBUG   SenderThread:45859 [sender.py:send():391] send: telemetry
+2024-08-13 10:31:04,987 DEBUG   SenderThread:45859 [sender.py:send():391] send: stats
+2024-08-13 10:31:05,077 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:05,917 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:31:05,917 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:31:06,080 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:07,085 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:08,090 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:09,093 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:31:09,093 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:09,937 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/config.yaml
+2024-08-13 10:31:10,099 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:11,099 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:11,798 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:31:11,798 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:31:11,801 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:31:11,802 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:31:11,802 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:31:11,947 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:31:12,106 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:13,109 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:14,110 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:14,812 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:31:15,113 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:16,117 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:17,120 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:18,123 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:19,125 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:19,954 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:31:20,130 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:20,922 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:31:20,922 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:31:21,132 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:21,803 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:31:21,804 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:31:21,811 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:31:21,815 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:31:21,816 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:31:22,004 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:31:22,135 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:23,142 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:24,139 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:25,141 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:25,885 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:31:26,145 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:27,174 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:28,171 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:29,172 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:30,174 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:30,945 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:31:31,178 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:32,183 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:33,186 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:34,191 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:34,899 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:31:34,900 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:31:34,903 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:31:34,903 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:31:34,904 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:31:34,994 DEBUG   SenderThread:45859 [sender.py:send():391] send: stats
+2024-08-13 10:31:35,075 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:31:35,194 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:35,925 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:31:35,926 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:31:36,093 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:31:36,198 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:37,204 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:38,206 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:39,208 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:40,212 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:41,212 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:41,961 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:31:42,094 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/config.yaml
+2024-08-13 10:31:42,217 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:43,221 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:44,225 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:45,227 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:45,966 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:31:45,966 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:31:45,969 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:31:45,970 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:31:45,971 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:31:46,109 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:31:46,230 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:47,233 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:47,979 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:31:48,237 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:49,239 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:50,241 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:50,928 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:31:50,929 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:31:51,244 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:52,248 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:53,044 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:31:53,253 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:54,255 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:55,257 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:56,260 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:57,231 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:31:57,232 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:31:57,235 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:31:57,236 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:31:57,237 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:31:57,262 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:58,181 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:31:58,247 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:31:58,268 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:31:59,272 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:00,279 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:01,281 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:02,285 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:03,286 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:03,980 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:32:04,291 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:05,000 DEBUG   SenderThread:45859 [sender.py:send():391] send: stats
+2024-08-13 10:32:05,296 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:05,932 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:32:05,932 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:32:06,299 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:07,245 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:32:07,246 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:32:07,249 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:32:07,249 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:32:07,251 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:32:07,306 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:08,214 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:32:08,306 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:09,258 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:32:09,308 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:10,313 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:11,317 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:12,320 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:13,324 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:14,329 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:14,993 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:32:15,243 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/config.yaml
+2024-08-13 10:32:15,330 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:16,333 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:17,335 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:17,757 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:32:17,758 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:32:17,761 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:32:17,762 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:32:17,763 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:32:18,256 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:32:18,342 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:19,345 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:20,350 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:20,773 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:32:20,937 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:32:20,938 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:32:21,354 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:22,358 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:23,362 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:24,366 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:25,368 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:25,983 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:32:26,372 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:27,376 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:28,382 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:28,401 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:32:28,402 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:32:28,405 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:32:28,405 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:32:28,406 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:32:29,298 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:32:29,384 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:30,387 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:30,986 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:32:31,390 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:32,392 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:33,398 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:34,400 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:35,006 DEBUG   SenderThread:45859 [sender.py:send():391] send: stats
+2024-08-13 10:32:35,404 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:35,939 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:32:35,939 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:32:36,103 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:32:36,409 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:37,410 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:38,415 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:39,418 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:40,407 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:32:40,407 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:32:40,415 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:32:40,416 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:32:40,418 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:32:40,423 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:41,360 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:32:41,433 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:42,002 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:32:42,430 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:43,435 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:44,437 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:45,443 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:46,447 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:47,009 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:32:47,371 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/config.yaml
+2024-08-13 10:32:47,453 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:48,455 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:49,459 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:50,464 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:50,940 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:32:50,940 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:32:51,468 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:52,163 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:32:52,164 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:32:52,164 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:32:52,168 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:32:52,168 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:32:52,169 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:32:52,395 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:32:52,477 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:53,478 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:54,482 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:55,486 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:56,491 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:57,493 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:58,017 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:32:58,495 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:32:59,500 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:00,504 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:01,508 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:02,513 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:03,020 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:33:03,515 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:04,520 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:04,570 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:33:04,571 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:33:04,575 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:33:04,575 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:33:04,576 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:33:05,010 DEBUG   SenderThread:45859 [sender.py:send():391] send: stats
+2024-08-13 10:33:05,454 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:33:05,551 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:05,944 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:33:05,945 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:33:06,528 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:07,533 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:08,094 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:33:08,538 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:09,540 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:10,545 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:11,549 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:12,550 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:13,560 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:14,036 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:33:14,560 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:15,562 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:16,183 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:33:16,184 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:33:16,187 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:33:16,188 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:33:16,188 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:33:16,500 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:33:16,572 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:17,568 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:18,573 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:19,208 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:33:19,508 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/config.yaml
+2024-08-13 10:33:19,578 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:20,579 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:20,949 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:33:20,950 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:33:21,586 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:22,589 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:23,591 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:24,595 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:25,096 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:33:25,599 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:26,601 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:27,603 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:27,915 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:33:27,916 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:33:27,919 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:33:27,920 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:33:27,921 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:33:28,543 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:33:28,608 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:29,612 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:30,615 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:30,929 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:33:31,619 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:32,621 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:33,713 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:34,631 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:35,016 DEBUG   SenderThread:45859 [sender.py:send():391] send: stats
+2024-08-13 10:33:35,732 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:35,955 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:33:35,955 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:33:36,079 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:33:36,711 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:37,777 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:38,726 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:39,730 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:40,738 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:41,131 DEBUG   SenderThread:45859 [sender.py:send():391] send: config
+2024-08-13 10:33:41,132 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: partial_history
+2024-08-13 10:33:41,136 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:33:41,136 DEBUG   SenderThread:45859 [sender.py:send():391] send: history
+2024-08-13 10:33:41,137 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: summary_record
+2024-08-13 10:33:41,149 INFO    SenderThread:45859 [sender.py:_save_file():1466] saving file wandb-summary.json with policy end
+2024-08-13 10:33:41,694 INFO    Thread-12 :45859 [dir_watcher.py:_on_file_modified():288] file/dir modified: /private/tmp/ray/session_2024-08-13_10-29-48_001050_45573/artifacts/2024-08-13_10-29-50/optuna_lr_0.001414434352388078/driver_artifacts/PPO_custom_tag_v0_7f9b9_00000_0_2024-08-13_10-29-50/wandb/run-20240813_103004-7f9b9_00000/files/wandb-summary.json
+2024-08-13 10:33:41,747 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:42,743 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:43,744 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:44,749 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:45,750 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:46,755 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:47,047 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: status_report
+2024-08-13 10:33:47,754 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:48,756 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:49,760 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:50,763 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages
+2024-08-13 10:33:50,956 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: stop_status
+2024-08-13 10:33:50,957 DEBUG   SenderThread:45859 [sender.py:send_request():418] send_request: stop_status
+2024-08-13 10:33:51,763 DEBUG   HandlerThread:45859 [handler.py:handle_request():158] handle_request: internal_messages

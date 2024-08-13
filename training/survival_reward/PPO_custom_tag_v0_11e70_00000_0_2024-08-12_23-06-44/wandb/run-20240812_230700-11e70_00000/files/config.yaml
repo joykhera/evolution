@@ -320,7 +320,7 @@ policy_map_capacity:
   value: 100
 policy_mapping_fn:
   desc: null
-  value: <function get_policy_mapping_fn at 0x3b2b963a0>
+  value: <function get_policy_mapping_fn at 0x3b3f6f1f0>
 policies_to_train:
   desc: null
   value: null
@@ -671,7 +671,7 @@ trial_id:
   value: 11e70_00000
 date:
   desc: null
-  value: 2024-08-12_23-51-18
+  value: 2024-08-13_00-45-50
 pid:
   desc: null
   value: 3814

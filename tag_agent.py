@@ -3,13 +3,15 @@ import pygame
 
 
 class Agent:
-    def __init__(self, position, size, speed, color, map_size, grid_size):
+    def __init__(self, position, size, speed, color, color_encoding, map_size, grid_size, scale):
         self.position = np.array(position, dtype=np.float32)
         self.size = size
         self.speed = speed
         self.color = color
+        self.color_encoding = color_encoding
         self.map_size = map_size
         self.grid_size = grid_size
+        self.scale = scale
 
     def move(self, action):
         # print(action, self.position)
@@ -22,61 +24,52 @@ class Agent:
         elif action == 4:  # move up
             self.position[1] = min(self.position[1] + self.speed, self.map_size)
 
-    def draw(self, screen, scale, draw_grid=False):
-        position = (self.position * scale).astype(int)
-        pygame.draw.circle(screen, self.color, position, self.size * scale)
+    def draw(self, screen, render_mode=None, draw_grid=False):
+        if render_mode == "human":
+            position = (self.position * self.scale).astype(int)
+            pygame.draw.circle(screen, self.color, position, self.size * self.scale)
 
-        if draw_grid:
-            half_grid = 5 * scale
-            pygame.draw.rect(screen, self.color, (position[0] - half_grid, position[1] - half_grid, 2 * half_grid, 2 * half_grid), 1)
+            if draw_grid:
+                half_grid = 5 * self.scale
+                pygame.draw.rect(screen, self.color, (position[0] - half_grid, position[1] - half_grid, 2 * half_grid, 2 * half_grid), 1)
+        else:
+            position = self.position
+            pygame.draw.circle(screen, self.color_encoding, position, self.size)
 
     def get_observation(self, observation_canvas):
-        x = self.position[0]
-        y = self.position[1]
+        x, y = self.position.astype(int)
         half_grid = self.grid_size // 2
 
-        # Ensure the observation window stays within the observation canvas boundaries
+        # Determine the observation window bounds within the map
         top_left_x = max(x - half_grid, 0)
         top_left_y = max(y - half_grid, 0)
         bottom_right_x = min(x + half_grid, self.map_size)
         bottom_right_y = min(y + half_grid, self.map_size)
 
+        # Calculate the width and height of the valid observation area
         width = bottom_right_x - top_left_x
         height = bottom_right_y - top_left_y
 
+        # Initialize a blank observation grid with zeros
+        observation_array = np.zeros((self.grid_size, self.grid_size), dtype=np.uint8)
+
         if width > 0 and height > 0:
-            # Create a surface for the agent's field of view
-            sub_surface = pygame.Surface((width, height))
-            sub_surface.blit(observation_canvas, (0, 0), pygame.Rect(top_left_x, top_left_y, width, height))
-            sub_surface = pygame.transform.scale(sub_surface, (self.grid_size, self.grid_size))
-            observation = pygame.surfarray.array3d(sub_surface)
-            observation = np.transpose(observation, (1, 0, 2))  # Convert to (grid_size, grid_size, 3)
+            # Directly extract the relevant section of the observation canvas
+            observation = pygame.surfarray.pixels2d(observation_canvas)[top_left_x:bottom_right_x, top_left_y:bottom_right_y]
 
-            # Flatten the observation to a 2D array of tuples for fast comparison
-            flat_observation = observation.reshape(-1, 3)
+            # Determine where to place the observation in the grid
+            start_x = half_grid - (x - top_left_x)
+            start_y = half_grid - (y - top_left_y)
 
-            # Define the color mapping
-            color_map = {
-                (0, 0, 0): 0,        # Black
-                (255, 255, 255): 1,  # White
-                (0, 255, 0): 2,      # Green
-                (255, 0, 0): 3,      # Red
-                (0, 0, 255): 4,      # Blue
-            }
+            # Resize the observation to fit into the grid
+            observation_surface = pygame.transform.scale(pygame.surfarray.make_surface(observation), (width, height))
 
-            # Create an array of zeros
-            discrete_observation = np.zeros(flat_observation.shape[0], dtype=np.uint8)
+            # Convert the surface back to a 2D numpy array
+            observation_resized = pygame.surfarray.pixels2d(observation_surface)
 
-            # Vectorized comparison and assignment
-            for color, value in color_map.items():
-                mask = np.all(flat_observation == color, axis=-1)
-                discrete_observation[mask] = value
+            # Place the resized observation in the appropriate location in the observation grid
+            observation_array[start_x:start_x + width, start_y:start_y + height] = observation_resized
+            observation_array_normalized = observation_array / 4.0
+        # print(observation_array, observation_array_normalized)
 
-            # Reshape the flat array back to the grid size
-            discrete_observation = discrete_observation.reshape(self.grid_size, self.grid_size)
-
-            return discrete_observation
-        else:
-            # Return a blank observation if something goes wrong
-            return np.zeros((self.grid_size, self.grid_size), dtype=np.uint8)
-
+        return observation_array_normalized
