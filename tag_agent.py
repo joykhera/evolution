@@ -3,14 +3,16 @@ import pygame
 
 
 class Agent:
-    def __init__(self, position, size, speed, color, color_encoding, map_size, grid_size, scale):
+
+    def __init__(self, agent_type, position, size, speed, color, color_encoding, map_size, view_size, scale):
+        self.agent_type = agent_type
         self.position = np.array(position, dtype=np.float32)
         self.size = size
         self.speed = speed
         self.color = color
         self.color_encoding = color_encoding
         self.map_size = map_size
-        self.grid_size = grid_size
+        self.view_size = view_size
         self.scale = scale
 
     def move(self, action):
@@ -30,7 +32,7 @@ class Agent:
             pygame.draw.circle(screen, self.color, position, self.size * self.scale)
 
             if draw_grid:
-                half_grid = 5 * self.scale
+                half_grid = self.scale * self.view_size // 2
                 pygame.draw.rect(screen, self.color, (position[0] - half_grid, position[1] - half_grid, 2 * half_grid, 2 * half_grid), 1)
         else:
             position = self.position
@@ -38,7 +40,7 @@ class Agent:
 
     def get_observation(self, observation_canvas):
         x, y = self.position.astype(int)
-        half_grid = self.grid_size // 2
+        half_grid = self.view_size // 2
 
         # Determine the observation window bounds within the map
         top_left_x = max(x - half_grid, 0)
@@ -51,7 +53,7 @@ class Agent:
         height = bottom_right_y - top_left_y
 
         # Initialize a blank observation grid with zeros
-        observation_array = np.zeros((self.grid_size, self.grid_size), dtype=np.uint8)
+        observation_array = np.zeros((self.view_size, self.view_size), dtype=np.uint8)
 
         if width > 0 and height > 0:
             # Directly extract the relevant section of the observation canvas

@@ -81,7 +81,7 @@ def objective(config):
         "prey_speed": 1,
         "predator_speed": 1,
         "map_size": 30,
-        "max_steps": 200,
+        "max_steps": 100,
         "screen_size": 600,
         "grid_size": 10,
     }

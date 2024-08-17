@@ -1,0 +1,264 @@
+2024-08-14 10:02:19,907 INFO    StreamThr :21978 [internal.py:wandb_internal():85] W&B internal server running at pid: 21978, started at: 2024-08-14 10:02:19.906422
+2024-08-14 10:02:19,908 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status
+2024-08-14 10:02:19,911 INFO    WriterThread:21978 [datastore.py:open_for_write():87] open: /private/tmp/ray/session_2024-08-14_10-02-01_441868_21752/artifacts/2024-08-14_10-02-02/spawn_together_gs/driver_artifacts/PPO_custom_tag_v0_c7e6b_00000_0_lr=0.0100_2024-08-14_10-02-02/wandb/run-20240814_100219-c7e6b_00000/run-c7e6b_00000.wandb
+2024-08-14 10:02:19,912 DEBUG   SenderThread:21978 [sender.py:send():391] send: header
+2024-08-14 10:02:19,913 DEBUG   SenderThread:21978 [sender.py:send():391] send: run
+2024-08-14 10:02:23,339 INFO    SenderThread:21978 [retry.py:__call__():172] Retry attempt failed:
+Traceback (most recent call last):
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/urllib3/connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/urllib3/util/connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/socket.py", line 953, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 8] nodename nor servname provided, or not known
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/urllib3/connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/urllib3/connectionpool.py", line 491, in _make_request
+    raise new_e
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/urllib3/connectionpool.py", line 467, in _make_request
+    self._validate_conn(conn)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/urllib3/connectionpool.py", line 1099, in _validate_conn
+    conn.connect()
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/urllib3/connection.py", line 616, in connect
+    self.sock = sock = self._new_conn()
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/urllib3/connection.py", line 205, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: <urllib3.connection.HTTPSConnection object at 0x1076dc340>: Failed to resolve 'api.wandb.ai' ([Errno 8] nodename nor servname provided, or not known)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/requests/adapters.py", line 589, in send
+    resp = conn.urlopen(
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/urllib3/connectionpool.py", line 847, in urlopen
+    retries = retries.increment(
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/urllib3/util/retry.py", line 515, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.wandb.ai', port=443): Max retries exceeded with url: /graphql (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x1076dc340>: Failed to resolve 'api.wandb.ai' ([Errno 8] nodename nor servname provided, or not known)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 345, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/wandb/sdk/lib/gql_request.py", line 58, in execute
+    request = self.session.post(self.url, **post_args)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/requests/sessions.py", line 637, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/requests/adapters.py", line 622, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='api.wandb.ai', port=443): Max retries exceeded with url: /graphql (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x1076dc340>: Failed to resolve 'api.wandb.ai' ([Errno 8] nodename nor servname provided, or not known)"))
+2024-08-14 10:02:24,934 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:02:29,954 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:02:34,977 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:02:39,991 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:02:45,009 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:02:50,026 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:02:55,039 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:03:00,058 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:03:05,075 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:03:10,094 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:03:15,113 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:03:20,133 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:03:25,143 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:03:30,161 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:03:35,175 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:03:40,193 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:03:45,205 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: keepalive
+2024-08-14 10:03:50,220 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: cancel
+2024-08-14 10:03:50,221 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: cancel
+2024-08-14 10:03:50,221 DEBUG   SenderThread:21978 [sender.py:send():400] Record cancelled: run
+2024-08-14 10:03:50,221 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:03:55,239 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:04:00,255 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:04:05,276 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:04:10,296 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:04:15,315 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:04:20,337 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:04:25,355 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:04:30,371 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:04:35,389 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:04:40,410 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:04:45,428 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:04:50,445 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:04:55,464 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:05:00,484 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:05:05,501 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:05:10,519 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:05:15,539 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:05:20,550 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:05:25,568 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:05:30,585 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:05:35,606 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:05:40,621 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:05:45,642 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:05:50,656 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:05:55,671 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:06:00,708 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:11:52,379 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:11:57,395 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:12:02,405 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:12:07,428 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:12:12,446 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:12:17,457 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:12:22,473 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:12:27,488 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:12:32,510 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:12:37,528 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:12:42,545 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:12:47,553 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:12:52,567 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:12:57,591 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:13:02,615 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:13:07,634 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:13:12,651 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:13:17,686 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:13:22,686 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:13:27,698 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:13:32,712 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:13:37,734 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:13:42,750 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:13:47,769 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:13:52,788 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:13:57,803 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:14:02,820 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:14:07,839 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:14:12,851 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:14:17,867 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:14:22,888 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:14:27,905 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:14:32,922 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:14:37,941 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:14:42,960 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:14:47,978 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:14:52,992 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:14:58,008 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:15:03,030 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:15:08,039 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:15:13,059 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:15:18,077 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:15:23,091 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:15:28,105 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:15:33,122 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:15:38,138 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:15:43,156 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:15:48,176 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:15:53,192 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:15:58,207 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:16:03,229 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:16:08,244 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:16:13,266 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:16:18,285 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:16:23,296 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:16:28,314 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:16:33,333 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:16:38,347 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:16:43,360 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:16:48,381 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:16:53,391 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:16:58,412 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:17:03,446 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:17:08,471 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:17:13,503 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:17:18,539 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:17:23,574 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:17:28,608 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:17:33,651 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:17:38,686 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:17:43,709 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:17:48,742 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:17:53,777 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:17:58,819 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:18:03,857 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:18:08,895 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:18:13,936 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:18:18,983 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:18:24,023 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:18:29,054 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:18:34,096 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:18:39,127 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:18:44,169 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:18:49,199 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:18:54,217 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:18:59,233 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:19:04,252 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:19:09,271 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:19:14,293 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:19:19,309 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:19:24,330 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:19:29,342 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:19:34,356 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:19:39,369 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:19:44,382 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:19:49,394 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:19:54,411 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:19:59,430 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:20:04,451 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:20:09,473 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:20:14,487 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:20:19,502 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:20:24,518 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:20:29,540 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:20:34,560 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:20:39,577 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:20:44,593 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:20:49,616 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:20:54,635 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:20:59,654 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:21:04,669 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:21:09,685 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:21:14,701 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:21:19,717 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:21:24,734 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:21:29,754 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:21:34,774 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:21:39,790 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:21:44,812 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:21:49,827 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:21:54,850 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:21:59,866 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:22:04,881 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:22:09,904 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:22:14,924 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:22:19,942 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:22:24,957 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:22:29,972 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:22:34,993 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:22:40,010 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:22:45,024 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:22:50,045 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:22:55,064 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:23:00,081 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:23:05,097 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:23:10,115 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:23:15,128 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:23:20,146 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:23:25,162 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:23:30,176 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:23:35,196 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:23:40,215 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:23:45,236 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:23:50,252 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:23:55,268 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:24:00,288 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:24:05,302 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:24:10,320 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:24:15,341 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:24:20,356 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:24:25,375 DEBUG   HandlerThread:21978 [handler.py:handle_request():158] handle_request: status_report
+2024-08-14 10:24:29,378 INFO    MainThread:21978 [internal.py:handle_exit():75] Internal process exited

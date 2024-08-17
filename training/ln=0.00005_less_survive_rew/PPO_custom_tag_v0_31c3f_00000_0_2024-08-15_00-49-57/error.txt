@@ -1,0 +1,66 @@
+Failure # 1 (occurred at 2024-08-15_00-50-09)
+[36mray::PPO.train()[39m (pid=81916, ip=127.0.0.1, actor_id=28001f42f89ec139c5bcfb2301000000, repr=PPO)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/tune/trainable/trainable.py", line 331, in train
+    raise skipped from exception_cause(skipped)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/tune/trainable/trainable.py", line 328, in train
+    result = self.step()
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/algorithms/algorithm.py", line 962, in step
+    train_results, train_iter_ctx = self._run_one_training_iteration()
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/algorithms/algorithm.py", line 3492, in _run_one_training_iteration
+    training_step_results = self.training_step()
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/algorithms/ppo/ppo.py", line 426, in training_step
+    return self._training_step_old_and_hybrid_api_stacks()
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/algorithms/ppo/ppo.py", line 539, in _training_step_old_and_hybrid_api_stacks
+    train_batch = synchronous_parallel_sample(
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/execution/rollout_ops.py", line 100, in synchronous_parallel_sample
+    sampled_data = worker_set.foreach_worker(
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/env/env_runner_group.py", line 926, in foreach_worker
+    _handle_remote_call_result_errors(
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/env/env_runner_group.py", line 1264, in _handle_remote_call_result_errors
+    raise r.get()
+ray.exceptions.RayTaskError(ValueError): [36mray::RolloutWorker.apply()[39m (pid=81951, ip=127.0.0.1, actor_id=83442adb61454e8d9561866401000000, repr=<ray.rllib.evaluation.rollout_worker.RolloutWorker object at 0x17b620cd0>)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/utils/actor_manager.py", line 192, in apply
+    raise e
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/utils/actor_manager.py", line 181, in apply
+    return func(self, *args, **kwargs)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/execution/rollout_ops.py", line 102, in <lambda>
+    (lambda w: w.sample(**random_action_kwargs))
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/evaluation/rollout_worker.py", line 676, in sample
+    batches = [self.input_reader.next()]
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/evaluation/sampler.py", line 91, in next
+    batches = [self.get_data()]
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/evaluation/sampler.py", line 273, in get_data
+    item = next(self._env_runner)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/evaluation/env_runner_v2.py", line 348, in run
+    outputs = self.step()
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/evaluation/env_runner_v2.py", line 374, in step
+    active_envs, to_eval, outputs = self._process_observations(
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/evaluation/env_runner_v2.py", line 641, in _process_observations
+    processed = policy.agent_connectors(acd_list)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/connectors/agent/pipeline.py", line 41, in __call__
+    ret = c(ret)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/connectors/connector.py", line 265, in __call__
+    return [self.transform(d) for d in acd_list]
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/connectors/connector.py", line 265, in <listcomp>
+    return [self.transform(d) for d in acd_list]
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/connectors/agent/obs_preproc.py", line 55, in transform
+    d[SampleBatch.NEXT_OBS] = self._preprocessor.transform(
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/models/preprocessors.py", line 213, in transform
+    self.check_shape(observation)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/models/preprocessors.py", line 71, in check_shape
+    raise ValueError(
+ValueError: Observation ([[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]] dtype=uint8) outside given space (Box(0, 1, (10, 10), uint8))!
