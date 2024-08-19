@@ -61,9 +61,11 @@ class TagEnv(ParallelEnv):
         self.observation_spaces = {}
         for agent in self.possible_agents:
             if "prey" in agent:
-                self.observation_spaces[agent] = spaces.Box(low=0, high=1, shape=(prey_view_size, prey_view_size), dtype=np.uint8)
+                # self.observation_spaces[agent] = spaces.Box(low=0, high=1, shape=(prey_view_size, prey_view_size), dtype=np.uint8)
+                self.observation_spaces[agent] = spaces.Box(low=0, high=1, shape=(prey_view_size, prey_view_size, 3), dtype=np.uint8)
             elif "predator" in agent:
-                self.observation_spaces[agent] = spaces.Box(low=0, high=1, shape=(predator_view_size, predator_view_size), dtype=np.uint8)
+                # self.observation_spaces[agent] = spaces.Box(low=0, high=1, shape=(predator_view_size, predator_view_size), dtype=np.uint8)
+                self.observation_spaces[agent] = spaces.Box(low=0, high=1, shape=(predator_view_size, predator_view_size, 3), dtype=np.uint8)
         self.action_spaces = {agent: spaces.Discrete(5) for agent in self.possible_agents}
 
     def _init_agents(self):

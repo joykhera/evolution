@@ -4,11 +4,13 @@ import time
 import argparse
 from tag_env import TagEnv
 from ray import tune
+from ray.rllib.models import ModelCatalog
 from ray.air.integrations.wandb import WandbLoggerCallback
 from ray.tune.registry import register_env
 from ray.rllib.env import ParallelPettingZooEnv
 from ray.rllib.algorithms.algorithm import Algorithm
 from ray.rllib.algorithms.ppo import PPOConfig
+from ray.rllib.models.torch.visionnet import VisionNetwork
 
 
 # Register the environment
@@ -17,7 +19,7 @@ def env_creator(config):
 
 
 register_env("custom_tag_v0", env_creator)
-
+ModelCatalog.register_custom_model("custom_cnn", VisionNetwork)
 
 def get_policy_mapping_fn(agent_id, episode, **kwargs):
     if "predator" in agent_id:
@@ -46,8 +48,18 @@ def train_ppo(env_config, run_name):
         .framework("torch")
         .env_runners(rollout_fragment_length="auto")
         .training(
-            # lr=tune.grid_search([0.01, 0.001, 0.0001]),
-            lr=0.00001
+            lr=0.0001,
+            model={
+                "custom_model": "custom_cnn",
+                "conv_filters": [
+                    [32, [4, 4], 2],  # 4x4 filters, stride 2
+                    [64, [3, 3], 2],  # 3x3 filters, stride 2
+                    [128, [3, 3], 1],  # 3x3 filters, stride 1
+                ],
+                "conv_activation": "relu",
+                "post_fcnet_hiddens": [256, 256],
+                "post_fcnet_activation": "relu",
+            },
         )
         .multi_agent(
             policies=policies,
