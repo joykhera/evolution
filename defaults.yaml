@@ -1,49 +1,60 @@
 env_config:
-  num_agents: 10
+  prey_count: 2
+  prey_speed: 1.0
+  prey_view_size: 10
+  prey_size: 1
+  prey_color: [0, 255, 0]  # Green
+  prey_kill_reward: -10
+  prey_alive_reward: 0.1
+  prey_reward_sqr_reward: 1
+
+  predator_count: 2
+  predator_speed: 1.0
+  predator_view_size: 10
+  predator_size: 1
+  predator_color: [255, 0, 0]  # Red
+  predator_kill_reward: 10
+
+  map_size: 40
+  max_steps: 400
+  screen_size: 600
   render_mode: None
-  human_player: False
-  map_size: 50
-  grid_size: 24
-  food_count: 20
   fps: 60
-  food_size: 1
-  player_size: 1
-  size_increase: 0.25
-  player_speed: 0.5
-  decay_rate: 0.001
-  episode_length: 200
-  scale: 10
-  food_reward: 10
-  kill_reward: 20
-  kill_penalty: 10
-  wall_penalty: 5
 
 model_config:
-  num_runners: 9
-  training_iterations: 150
-  generations: 100
-  population_size: 50
+  learning_rate: 0.0001
+  training_iterations: 100
+  num_env_runners: 9
+  num_envs_per_env_runner: 8
+  train_batch_size_per_learner: 4000
+  num_sgd_iter: 30
 
 short_names:
-  num_agents: "na"
-  render_mode: "rm"
-  human_player: "hp"
+  prey_count: "prc"
+  prey_speed: "prsp"
+  prey_view_size: "prv"
+  prey_size: "prs"
+  prey_color: "prco"
+  prey_kill_reward: "prkr"
+  prey_alive_reward: "prar"
+  prey_reward_sqr_reward: "prrr"
+
+  predator_count: "pdc"
+  predator_speed: "pdsp"
+  predator_view_size: "pdv"
+  predator_size: "pds"
+  predator_color: "pdco"
+  predator_kill_reward: "pdkr"
+
   map_size: "ms"
-  grid_size: "gs"
-  food_count: "fc"
+  max_steps: "mxs"
+  screen_size: "ss"
+  render_mode: "rm"
   fps: "fps"
-  food_size: "fs"
-  player_size: "ps"
-  size_increase: "si"
-  player_speed: "sp"
-  decay_rate: "dr"
-  episode_length: "el"
-  scale: "s"
-  num_runners: "nr"
+
+  learning_rate: "lr"
   training_iterations: "ti"
-  food_reward: "fr"
-  kill_reward: "kr"
-  kill_penalty: "kp"
-  wall_penalty: "wp"
-  generations: "ge"
-  population_size: "po"
+  num_env_runners: "nr"
+  num_envs_per_env_runner: 'npr'
+  train_batch_size_per_learner: 'bs'
+  num_sgd_iter: 'ns'
