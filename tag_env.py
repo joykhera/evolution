@@ -225,7 +225,7 @@ class TagEnv(ParallelEnv):
             elif self.blue_square_start <= prey_pos[0] <= self.blue_square_end and self.blue_square_start <= prey_pos[1] <= self.blue_square_end:
                 prey_reward += 1  # Reward for being on the blue square
             else:
-                prey_reward += 0.01  # Small positive reward for staying alive
+                prey_reward += 0.1  # Small positive reward for staying alive
 
             rewards[f"prey_{i}"] = prey_reward
             self.prey_score += prey_reward

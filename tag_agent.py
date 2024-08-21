@@ -68,6 +68,6 @@ class Agent:
             observation_array = pygame.surfarray.array3d(observation_surface)
 
             # Normalize the observation array to the range [0, 1]
-            observation_array = observation_array / 255.0
+            observation_array = observation_array.astype(np.float32) / 255.0
 
         return observation_array

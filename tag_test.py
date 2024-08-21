@@ -4,14 +4,16 @@ import time
 import argparse
 from tag_env import TagEnv
 from ray import tune
-from ray.rllib.models import ModelCatalog
+from custom_cnn import CustomCNNModel
 from ray.air.integrations.wandb import WandbLoggerCallback
 from ray.tune.registry import register_env
 from ray.rllib.env import ParallelPettingZooEnv
 from ray.rllib.algorithms.algorithm import Algorithm
 from ray.rllib.algorithms.ppo import PPOConfig
+from ray.rllib.models import ModelCatalog
 from ray.rllib.models.torch.visionnet import VisionNetwork
 
+os.environ["RAY_DEDUP_LOGS"] = "0"
 
 # Register the environment
 def env_creator(config):
@@ -19,6 +21,7 @@ def env_creator(config):
 
 
 register_env("custom_tag_v0", env_creator)
+# ModelCatalog.register_custom_model("custom_cnn_with_embedding", CustomCNNModel)
 ModelCatalog.register_custom_model("custom_cnn", VisionNetwork)
 
 def get_policy_mapping_fn(agent_id, episode, **kwargs):
@@ -46,20 +49,24 @@ def train_ppo(env_config, run_name):
         PPOConfig()
         .environment(env="custom_tag_v0", env_config=env_config, clip_actions=True)
         .framework("torch")
-        .env_runners(rollout_fragment_length="auto")
+        .env_runners(
+            rollout_fragment_length="auto",
+            num_env_runners=12,  # Updated to use the new parameter name
+            num_envs_per_env_runner=8,  # Updated to use the new parameter name
+            remote_worker_envs=True,  # Enable async sampling
+        )
         .training(
             lr=0.0001,
             model={
                 "custom_model": "custom_cnn",
-                "conv_filters": [
-                    [32, [4, 4], 2],  # 4x4 filters, stride 2
-                    [64, [3, 3], 2],  # 3x3 filters, stride 2
-                    [128, [3, 3], 1],  # 3x3 filters, stride 1
-                ],
-                "conv_activation": "relu",
-                "post_fcnet_hiddens": [256, 256],
-                "post_fcnet_activation": "relu",
             },
+            train_batch_size_per_learner=4000,  # New setting for batch size per learner
+            num_sgd_iter=30,
+        )
+        .resources(
+            num_gpus=0,  # Set to the number of GPUs available (if any)
+            num_cpus_per_worker=1,  # Adjust based on your CPU availability
+            num_learner_workers=4,  # Number of learner workers
         )
         .multi_agent(
             policies=policies,
@@ -74,13 +81,14 @@ def train_ppo(env_config, run_name):
         # metric="episode_reward_mean",
         # mode="max",
         config=config.to_dict(),
-        stop={"training_iteration": 100},
+        stop={"training_iteration": 80},
         storage_path=os.path.join(os.getcwd(), "training"),
         checkpoint_at_end=True,
         checkpoint_freq=0,
         callbacks=[WandbLoggerCallback(project="custom_tag", log_config=True, name=run_name)],
         # verbose=0,
         reuse_actors=True,
+        progress_reporter=tune.CLIReporter(max_report_frequency=60),
     )
 
     ray.shutdown()
@@ -88,10 +96,11 @@ def train_ppo(env_config, run_name):
 
 
 def test_ppo(env_config, checkpoint_path):
-    ray.init(ignore_reinit_error=True, log_to_driver=False)
+    ray.init(local_mode=True, ignore_reinit_error=True, log_to_driver=False, logging_level="WARNING")
     trainer = Algorithm.from_checkpoint(checkpoint_path)
     env_config["render_mode"] = "human"
     env = TagEnv(**env_config)
+    print('model initialized')
 
     for episode in range(10):
         episode_predator_reward = 0
@@ -102,7 +111,7 @@ def test_ppo(env_config, checkpoint_path):
             actions = {agent: trainer.compute_single_action(observations[agent], policy_id=get_policy_mapping_fn(agent, None)) for agent in env.agents}
             observations, rewards, terminations, truncations, infos = env.step(actions)
             # print('sss', observations)
-            print('sss', rewards)
+            # print("sss", rewards)
             episode_prey_reward += sum(rewards[prey] for prey in rewards if "prey" in prey) / env_config["num_prey"]
             episode_predator_reward += sum(rewards[predator] for predator in rewards if "predator" in predator) / env_config["num_predators"]
             time.sleep(0.05)
