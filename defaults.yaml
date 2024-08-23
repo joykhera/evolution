@@ -19,15 +19,17 @@ env_config:
   max_steps: 400
   screen_size: 600
   render_mode: None
-  fps: 60
+  fps: 30
 
 model_config:
   learning_rate: 0.0001
+  gamma: 0.99
   training_iterations: 100
   num_env_runners: 9
-  num_envs_per_env_runner: 8
-  train_batch_size_per_learner: 4000
-  num_sgd_iter: 30
+  num_envs_per_env_runner: 10
+  train_batch_size_per_learner: 16000
+  num_sgd_iter: 15
+  max_report_frequency: 300
 
 short_names:
   prey_count: "prc"
@@ -53,8 +55,10 @@ short_names:
   fps: "fps"
 
   learning_rate: "lr"
+  gamma: 'ga'
   training_iterations: "ti"
   num_env_runners: "nr"
   num_envs_per_env_runner: 'npr'
   train_batch_size_per_learner: 'bs'
   num_sgd_iter: 'ns'
+  max_report_frequency: 'mr'

@@ -14,8 +14,6 @@ class Agent:
         map_size,
         view_size,
         scale,
-        fps,
-        clock,
     ):
         self.agent_type = agent_type
         self.position = np.array(position, dtype=np.float32)
@@ -25,8 +23,6 @@ class Agent:
         self.map_size = map_size
         self.view_size = view_size
         self.scale = scale
-        self.fps = fps
-        self.clock = clock
 
     def move(self, action):
         # print(action, self.position)
@@ -47,7 +43,6 @@ class Agent:
             if draw_grid:
                 half_grid = self.scale * self.view_size // 2
                 pygame.draw.rect(screen, self.color, (position[0] - half_grid, position[1] - half_grid, 2 * half_grid, 2 * half_grid), 1)
-            self.clock.tick(self.fps)
         else:
             position = self.position
             pygame.draw.circle(screen, self.color, position, self.size)

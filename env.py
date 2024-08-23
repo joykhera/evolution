@@ -97,8 +97,6 @@ class TagEnv(ParallelEnv):
                 map_size=self.map_size,
                 view_size=self.prey_view_size,
                 scale=self.scale,
-                fps=self.fps,
-                clock=self.clock,
             )
         for i in range(self.predator_count):
             if self.prey_count <= self.predator_count:
@@ -119,8 +117,6 @@ class TagEnv(ParallelEnv):
                 map_size=self.map_size,
                 view_size=self.predator_view_size,
                 scale=self.scale,
-                fps=self.fps,
-                clock=self.clock,
             )
 
     def reset(self, seed=None, return_info=False, options=None):
@@ -199,6 +195,7 @@ class TagEnv(ParallelEnv):
         self.screen.blit(prey_score_text, (5, 25))
         self.screen.blit(prey_eaten_text, (5, 40))
         pygame.display.flip()
+        self.clock.tick(self.fps)
 
     def get_observations(self):
         observations = {}

@@ -11,9 +11,11 @@ from ray.rllib.algorithms.ppo import PPOConfig
 from ray.rllib.models import ModelCatalog
 from ray.rllib.models.torch.visionnet import VisionNetwork
 
+
 # Register the environment
 def env_creator(config):
     return ParallelPettingZooEnv(TagEnv(**config))
+
 
 def get_policy_mapping_fn(agent_id, episode, **kwargs):
     if "predator" in agent_id:
@@ -41,13 +43,13 @@ def train_ppo(args, model_config, env_config, env_name):
         .environment(env=env_name, env_config=env_config, clip_actions=True)
         .framework("torch")
         .env_runners(
-            rollout_fragment_length="auto",
             num_env_runners=model_config["num_env_runners"],  # Updated to use the new parameter name
             num_envs_per_env_runner=model_config["num_envs_per_env_runner"],  # Updated to use the new parameter name
             remote_worker_envs=True,  # Enable async sampling
         )
         .training(
             lr=model_config["learning_rate"],
+            gamma=model_config["gamma"],
             model={
                 "custom_model": "custom_cnn",
             },
@@ -59,7 +61,7 @@ def train_ppo(args, model_config, env_config, env_name):
             policy_mapping_fn=get_policy_mapping_fn,
         )
     )
-    print("Starting training for run:", args['save_name'])
+    print("Starting training for run:", args["save_name"])
     results = tune.run(
         "PPO",
         name=args["save_name"],
@@ -72,31 +74,41 @@ def train_ppo(args, model_config, env_config, env_name):
             WandbLoggerCallback(
                 project="custom_tag",
                 name=args["save_name"],
-                save_code=False,
-                log_config_interval=10,
+                # save_code=False,
+                # log_config_interval=10,
             )
         ],
         # verbose=0,
         reuse_actors=True,
-        # progress_reporter=tune.CLIReporter(max_report_frequency=100),
+        progress_reporter=tune.CLIReporter(max_report_frequency=model_config["max_report_frequency"]),
     )
 
     ray.shutdown()
-    print('Saved model at:', results.get_best_checkpoint(results.get_best_trial(metric="episode_reward_mean"), metric="episode_reward_mean"))
+
+    # Get the best checkpoint based on the "episode_reward_mean" metric
+    best_checkpoint = results.get_best_checkpoint(
+        results.get_best_trial(metric="env_runners/episode_reward_mean", mode="max"),
+        metric="env_runners/episode_reward_mean",
+        mode="max",
+    )
+
+    print("Saved model at:", best_checkpoint)
     return results
+
 
 def test_ppo(args, env_config):
     ray.init(local_mode=True, ignore_reinit_error=True, log_to_driver=False)
-    trainer = Algorithm.from_checkpoint(args['checkpoint'])
+    trainer = Algorithm.from_checkpoint(args["checkpoint"])
     env_config["render_mode"] = "human"
     env = TagEnv(**env_config)
-    print('model initialized')
+    print("model initialized")
 
-    for episode in range(args['test_episodes']):
+    for episode in range(args["test_episodes"]):
         episode_predator_reward = 0
         episode_prey_reward = 0
         done = False
         observations, infos = env.reset()
+        # print("observations['prey_0'].dtype", observations["prey_0"].dtype)
         while not done:
             actions = {agent: trainer.compute_single_action(observations[agent], policy_id=get_policy_mapping_fn(agent, None)) for agent in env.agents}
             observations, rewards, terminations, truncations, infos = env.step(actions)
@@ -121,9 +133,9 @@ if __name__ == "__main__":
     ModelCatalog.register_custom_model("custom_cnn", VisionNetwork)
     print("Environment registered:", env_name)
 
-    if args['train']:
+    if args["train"]:
         results = train_ppo(args, model_config, env_config, env_name)
-    elif args['test']:
+    elif args["test"]:
         test_ppo(args, env_config)
     else:
         print("Please provide either --train or --test flag.")
