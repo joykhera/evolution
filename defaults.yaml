@@ -1,6 +1,6 @@
 env_config:
-  prey_count: 2
-  prey_speed: 1.0
+  prey_count: 5
+  prey_speed: 1.25
   prey_view_size: 10
   prey_size: 1
   prey_color: [0, 255, 0]  # Green
@@ -8,7 +8,7 @@ env_config:
   prey_alive_reward: 0.1
   prey_reward_sqr_reward: 1
 
-  predator_count: 2
+  predator_count: 3
   predator_speed: 1.0
   predator_view_size: 10
   predator_size: 1
@@ -19,17 +19,24 @@ env_config:
   max_steps: 400
   screen_size: 600
   render_mode: None
-  fps: 30
+  fps: 20
 
 model_config:
-  learning_rate: 0.0001
-  gamma: 0.99
+  min_learning_rate: 0.00001
+  max_learning_rate: 0.001
+  gamma: 0.999
   training_iterations: 100
   num_env_runners: 9
   num_envs_per_env_runner: 10
   train_batch_size_per_learner: 16000
   num_sgd_iter: 15
   max_report_frequency: 300
+
+  num_weights: 1000
+  population_size: 50
+  generations: 20
+  cxpb: 0.5
+  mutpb: 0.2
 
 short_names:
   prey_count: "prc"
@@ -39,7 +46,7 @@ short_names:
   prey_color: "prco"
   prey_kill_reward: "prkr"
   prey_alive_reward: "prar"
-  prey_reward_sqr_reward: "prrr"
+  prey_reward_sqr_reward: "prsr"
 
   predator_count: "pdc"
   predator_speed: "pdsp"
@@ -54,7 +61,8 @@ short_names:
   render_mode: "rm"
   fps: "fps"
 
-  learning_rate: "lr"
+  min_learning_rate: "mnlr"
+  max_learning_rate: "mxlr"
   gamma: 'ga'
   training_iterations: "ti"
   num_env_runners: "nr"
@@ -62,3 +70,8 @@ short_names:
   train_batch_size_per_learner: 'bs'
   num_sgd_iter: 'ns'
   max_report_frequency: 'mr'
+  num_weights: 'nw'
+  population_size: 'ps'
+  generations: 'ge'
+  cxpb: cx
+  mutpb: mu

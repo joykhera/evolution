@@ -26,6 +26,11 @@ def get_policy_mapping_fn(agent_id, episode, **kwargs):
         return "prey_policy"
 
 
+def trial_name_creator(trial):
+    """Creates a descriptive name for each trial based on the hyperparameter values."""
+    return f"lr_{trial.config['lr']:.2e}_gamma_{trial.config['gamma']:.3f}"
+
+
 def train_ppo(args, model_config, env_config, env_name):
     ray.init(ignore_reinit_error=True, log_to_driver=False)
 
@@ -68,13 +73,18 @@ def train_ppo(args, model_config, env_config, env_name):
     )
 
     # Set up a scheduler and search algorithm
-    scheduler = ASHAScheduler(metric="env_runners/episode_reward_mean", mode="max", max_t=model_config["training_iterations"], grace_period=10, reduction_factor=2)
+    scheduler = ASHAScheduler(
+        metric="env_runners/episode_reward_mean",
+        mode="max",
+        max_t=model_config["training_iterations"],
+        grace_period=20,
+        reduction_factor=3,
+    )
     search_alg = HyperOptSearch(metric="env_runners/episode_reward_mean", mode="max")
 
-    print("Starting hyperparameter tuning for run:", args["save_name"])
+    print("Starting hyperparameter tuning for run", args["save_name"])
     results = tune.run(
         "PPO",
-        name=args["save_name"],
         config=config.to_dict(),
         stop={"training_iteration": model_config["training_iterations"]},
         storage_path=args["log_dir"],
@@ -83,12 +93,14 @@ def train_ppo(args, model_config, env_config, env_name):
         callbacks=[
             WandbLoggerCallback(
                 project="custom_tag",
-                name=args["save_name"],
+                name=tune.sample_from(lambda spec: trial_name_creator(spec["trial"])),
+                log_config=True,
             )
-        ],
+        ],  # Use trial name for Wandb run
         scheduler=scheduler,
         search_alg=search_alg,
-        num_samples=model_config["num_samples"],  # Number of samples for hyperparameter search
+        num_samples=8,  # Number of samples for hyperparameter search
+        trial_name_creator=trial_name_creator,
         progress_reporter=tune.CLIReporter(max_report_frequency=model_config["max_report_frequency"]),
     )
 
@@ -96,8 +108,8 @@ def train_ppo(args, model_config, env_config, env_name):
 
     # Get the best checkpoint based on the "episode_reward_mean" metric
     best_checkpoint = results.get_best_checkpoint(
-        results.get_best_trial(metric="episode_reward_mean", mode="max"),
-        metric="episode_reward_mean",
+        results.get_best_trial(metric="env_runners/episode_reward_mean", mode="max"),
+        metric="env_runners/episode_reward_mean",
         mode="max",
     )
 

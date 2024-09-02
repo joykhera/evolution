@@ -1,0 +1,53 @@
+Failure # 1 (occurred at 2024-08-24_08-40-48)
+[36mray::PPO.train()[39m (pid=13551, ip=127.0.0.1, actor_id=cd29b78aa549aad97870bf8446000000, repr=PPO)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/tune/trainable/trainable.py", line 331, in train
+    raise skipped from exception_cause(skipped)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/tune/trainable/trainable.py", line 328, in train
+    result = self.step()
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/algorithms/algorithm.py", line 962, in step
+    train_results, train_iter_ctx = self._run_one_training_iteration()
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/algorithms/algorithm.py", line 3492, in _run_one_training_iteration
+    training_step_results = self.training_step()
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/algorithms/ppo/ppo.py", line 426, in training_step
+    return self._training_step_old_and_hybrid_api_stacks()
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/algorithms/ppo/ppo.py", line 539, in _training_step_old_and_hybrid_api_stacks
+    train_batch = synchronous_parallel_sample(
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/execution/rollout_ops.py", line 100, in synchronous_parallel_sample
+    sampled_data = worker_set.foreach_worker(
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/env/env_runner_group.py", line 926, in foreach_worker
+    _handle_remote_call_result_errors(
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/env/env_runner_group.py", line 1264, in _handle_remote_call_result_errors
+    raise r.get()
+ray.exceptions.RayTaskError(KeyError): [36mray::RolloutWorker.apply()[39m (pid=13585, ip=127.0.0.1, actor_id=69b6e6605aea3b2b0e0ebda246000000, repr=<ray.rllib.evaluation.rollout_worker.RolloutWorker object at 0x17c0c2c10>)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/utils/actor_manager.py", line 192, in apply
+    raise e
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/utils/actor_manager.py", line 181, in apply
+    return func(self, *args, **kwargs)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/execution/rollout_ops.py", line 102, in <lambda>
+    (lambda w: w.sample(**random_action_kwargs))
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/evaluation/rollout_worker.py", line 676, in sample
+    batches = [self.input_reader.next()]
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/evaluation/sampler.py", line 91, in next
+    batches = [self.get_data()]
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/evaluation/sampler.py", line 273, in get_data
+    item = next(self._env_runner)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/evaluation/env_runner_v2.py", line 348, in run
+    outputs = self.step()
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/evaluation/env_runner_v2.py", line 367, in step
+    ) = self._base_env.poll()
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/env/remote_base_env.py", line 190, in poll
+    raise e
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/env/remote_base_env.py", line 170, in poll
+    ret = ray.get(obj_ref)
+ray.exceptions.RayTaskError(KeyError): [36mray::_RemoteMultiAgentEnv.step()[39m (pid=14028, ip=127.0.0.1, actor_id=d9c929aab08fa1ff731bd06d46000000, repr=<ray.rllib.env.remote_base_env._RemoteMultiAgentEnv object at 0x101e615b0>)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/env/remote_base_env.py", line 414, in step
+    return self.env.step(action_dict)
+  File "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/rllib/env/wrappers/pettingzoo_env.py", line 218, in step
+    obss, rews, terminateds, truncateds, infos = self.par_env.step(action_dict)
+  File "/Users/joykhera/Desktop/code/ml/evolution/env.py", line 143, in step
+    rewards = self.compute_rewards(terminations)
+  File "/Users/joykhera/Desktop/code/ml/evolution/env.py", line 229, in compute_rewards
+    prey_positions = [self.agents[f"prey_{i}"].position for i in range(self.prey_count)]
+  File "/Users/joykhera/Desktop/code/ml/evolution/env.py", line 229, in <listcomp>
+    prey_positions = [self.agents[f"prey_{i}"].position for i in range(self.prey_count)]
+KeyError: 'prey_2'

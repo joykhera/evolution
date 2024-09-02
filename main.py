@@ -48,8 +48,14 @@ def train_ppo(args, model_config, env_config, env_name):
             remote_worker_envs=True,  # Enable async sampling
         )
         .training(
-            lr=model_config["learning_rate"],
+            lr=model_config["min_learning_rate"],
             gamma=model_config["gamma"],
+            lr_schedule=[
+                (0, model_config["max_learning_rate"]),  # At timestep 0, lr = max_learning_rate
+                (1e6, model_config["min_learning_rate"]),  # At timestep 1 million, lr = min_learning_rate
+            ],
+            # lr=tune.grid_search([1e-5, 1e-4, 1e-3]),  # Grid search for learning rate
+            # gamma=tune.grid_search([0.9, 0.99, 0.999]),  # Grid search for gamma
             model={
                 "custom_model": "custom_cnn",
             },
@@ -61,6 +67,10 @@ def train_ppo(args, model_config, env_config, env_name):
             policy_mapping_fn=get_policy_mapping_fn,
         )
     )
+
+    def generate_run_name(spec):
+        return f"lr_{spec.config.lr}_gamma_{spec.config.gamma}"
+
     print("Starting training for run:", args["save_name"])
     results = tune.run(
         "PPO",
@@ -74,6 +84,9 @@ def train_ppo(args, model_config, env_config, env_name):
             WandbLoggerCallback(
                 project="custom_tag",
                 name=args["save_name"],
+                # name=generate_run_name,
+                log_config=True,
+                sync_tensorboard=True,
                 # save_code=False,
                 # log_config_interval=10,
             )
@@ -114,7 +127,7 @@ def test_ppo(args, env_config):
             observations, rewards, terminations, truncations, infos = env.step(actions)
             episode_prey_reward += sum(rewards[prey] for prey in rewards if "prey" in prey) / env_config["prey_count"]
             episode_predator_reward += sum(rewards[predator] for predator in rewards if "predator" in predator) / env_config["predator_count"]
-            done = any(terminations.values()) or any(truncations.values())
+            done = all(terminations.values()) or all(truncations.values())
         print(f"Episode {episode}, predator reward: {episode_predator_reward}, prey reward: {episode_prey_reward}")
 
     ray.shutdown()

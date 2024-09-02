@@ -1,0 +1,2 @@
+Failure # 1 (occurred at 2024-08-25_00-01-57)
+Trainable runner reuse requires reset_config() to be implemented and return True.
