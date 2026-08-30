@@ -2,7 +2,8 @@ import numpy as np
 from pettingzoo.utils import ParallelEnv
 from gymnasium import spaces
 import pygame
-from agent import Agent
+from prey import Prey
+from predator import Predator
 
 
 class TagEnv(ParallelEnv):
@@ -17,7 +18,10 @@ class TagEnv(ParallelEnv):
         prey_color=(0, 255, 0),  # Green
         prey_kill_reward=-10,
         prey_alive_reward=0.1,
-        prey_reward_sqr_reward=1,
+        max_water_level=100,
+        water_decrease_rate=1,
+        water_reward=1,
+        thirst_reward=-1,
         predator_count=1,
         predator_speed=1,
         predator_view_size=10,
@@ -38,7 +42,12 @@ class TagEnv(ParallelEnv):
         self.prey_color = prey_color
         self.prey_kill_reward = prey_kill_reward
         self.prey_alive_reward = prey_alive_reward
-        self.prey_reward_sqr_reward = prey_reward_sqr_reward
+
+        # Water-related initialization
+        self.max_water_level = max_water_level
+        self.water_decrease_rate = water_decrease_rate
+        self.water_reward = water_reward
+        self.thirst_reward = thirst_reward
 
         # Predator-specific initialization
         self.predator_count = predator_count
@@ -88,8 +97,7 @@ class TagEnv(ParallelEnv):
     def _init_agents(self):
         for i in range(self.prey_count):
             position = np.random.randint(0, self.map_size, size=2)
-            self.agents[f"prey_{i}"] = Agent(
-                agent_type="prey",
+            self.agents[f"prey_{i}"] = Prey(
                 position=position,
                 size=self.prey_size,
                 speed=self.prey_speed,
@@ -97,20 +105,12 @@ class TagEnv(ParallelEnv):
                 map_size=self.map_size,
                 view_size=self.prey_view_size,
                 scale=self.scale,
+                water_level=self.max_water_level,  # Initialize with full water level
+                max_water_level=self.max_water_level,
             )
         for i in range(self.predator_count):
-            # if self.prey_count <= self.predator_count:
-            #     prey_pos = self.agents[f"prey_{i % self.prey_count}"].position
-            # else:
-            #     prey_pos = self.agents[f"prey_{np.random.randint(self.prey_count)}"].position
-            # half_view_size = self.predator_view_size // 2
-            # position = [
-            #     np.random.randint(max(0, prey_pos[0] - half_view_size), min(self.map_size, prey_pos[0] + half_view_size)),
-            #     np.random.randint(max(0, prey_pos[1] - half_view_size), min(self.map_size, prey_pos[1] + half_view_size)),
-            # ]
             position = np.random.randint(0, self.map_size, size=2)
-            self.agents[f"predator_{i}"] = Agent(
-                agent_type="predator",
+            self.agents[f"predator_{i}"] = Predator(
                 position=position,
                 size=self.predator_size,
                 speed=self.predator_speed,
@@ -136,9 +136,15 @@ class TagEnv(ParallelEnv):
         truncations = {agent: False for agent in self.agents}
         infos = {agent: {} for agent in self.agents}
 
+        # Move agents based on their actions
         for agent_id, action in actions.items():
             self.agents[agent_id].move(action)
-            # print(f"{agent_id} moved to {self.agents[agent_id].position}")
+
+        # Decrease water level for prey agents and update their color
+        for agent_id, agent in self.agents.items():
+            if isinstance(agent, Prey):
+                agent.update_water_level(self.water_decrease_rate)
+                agent.update_color()
 
         rewards = self.compute_rewards(terminations)
 
@@ -147,7 +153,7 @@ class TagEnv(ParallelEnv):
         for agent_id, terminated in list(terminations.items()):
             if terminated:
                 del self.agents[agent_id]
-            elif "prey" in agent_id:
+            elif isinstance(self.agents[agent_id], Prey):
                 prey_left = True
 
         # Check if all prey are caught (no prey left)
@@ -164,13 +170,11 @@ class TagEnv(ParallelEnv):
             self.render_human()
 
         observations = self.get_observations()
-        # print('aaa', observations)
 
         return observations, rewards, terminations, truncations, infos
 
     def render(self):
-        # self.canvas.fill((255, 255, 255))
-        self.canvas.fill(1)
+        self.canvas.fill((255, 255, 255))
 
         pygame.draw.rect(
             self.canvas,
@@ -200,7 +204,6 @@ class TagEnv(ParallelEnv):
         )
 
         for agent in self.agents.values():
-            # agent.draw(self.scaled_canvas, render_mode="human", draw_grid=True)
             agent.draw(self.scaled_canvas, render_mode="human")
 
         predator_score_text = self.font.render(f"Predator score: {round(self.predator_score)}", True, (0, 0, 0))
@@ -220,7 +223,7 @@ class TagEnv(ParallelEnv):
         return observations
 
     def calculate_min_distance(self, agent_pos, other_agents_positions, half_view_size):
-        min_distance = float('inf')
+        min_distance = self.map_size
 
         for other_pos in other_agents_positions:
             x_distance = abs(agent_pos[0] - other_pos[0])
@@ -241,36 +244,46 @@ class TagEnv(ParallelEnv):
 
         # Collect positions of alive prey and predators in lists for direct access
         for agent_id, agent in self.agents.items():
-            if "prey" in agent_id:
+            if isinstance(agent, Prey):
                 alive_preys.append((agent_id, agent.position))
-            elif "predator" in agent_id:
+            elif isinstance(agent, Predator):
                 alive_predators.append((agent_id, agent.position))
-        # print(alive_predators, alive_preys)
+
         # Prey rewards
         for prey_id, prey_pos in alive_preys:
+            prey = self.agents[prey_id]
             prey_half_grid = self.prey_view_size // 2  # Use prey's view size
             prey_reward = 0
 
             # Calculate the minimum distance to any predator
-            min_distance_to_predator = float('inf')
+            min_distance_to_predator = self.map_size
             for _, predator_pos in alive_predators:
                 distance = self.calculate_min_distance(prey_pos, [predator_pos], prey_half_grid)
                 min_distance_to_predator = min(min_distance_to_predator, distance)
 
-                if min_distance_to_predator == 0:  # Stop further checks if a predator catches the prey
+                if min_distance_to_predator == 0:  # Predator catches the prey
                     break
 
             # Determine prey reward based on proximity to predators
-            if min_distance_to_predator == 0:  # Predator touches the prey
-                prey_reward = self.prey_kill_reward  # Larger negative reward for being caught
+            if min_distance_to_predator == 0:
+                prey_reward = self.prey_kill_reward  # Negative reward for being caught
                 terminations[prey_id] = True  # Mark prey as terminated
                 self.prey_eaten += 1
-            elif min_distance_to_predator < float('inf'):
-                prey_reward -= prey_half_grid / min_distance_to_predator
-            elif self.reward_square_start <= prey_pos[0] <= self.reward_square_end and self.reward_square_start <= prey_pos[1] <= self.reward_square_end:
-                prey_reward += self.prey_reward_sqr_reward  # Reward for being on the blue square
+            elif min_distance_to_predator < self.map_size:
+                prey_reward -= prey_half_grid / (min_distance_to_predator**2)
             else:
                 prey_reward += self.prey_alive_reward  # Small positive reward for staying alive
+
+            # Water-related rewards
+            in_water = self.reward_square_start <= prey_pos[0] <= self.reward_square_end and self.reward_square_start <= prey_pos[1] <= self.reward_square_end
+            if in_water and prey.water_level < self.max_water_level:
+                prey_reward += self.water_reward  # Reward for being in water
+                # Increase water level
+                prey.water_level += self.water_decrease_rate * 2  # Refill rate
+                if prey.water_level > self.max_water_level:
+                    prey.water_level = self.max_water_level
+            elif prey.water_level == 0:
+                prey_reward += self.thirst_reward  # Negative reward when dehydrated
 
             rewards[prey_id] = prey_reward
             self.prey_score += prey_reward
@@ -281,19 +294,19 @@ class TagEnv(ParallelEnv):
             predator_reward = 0
 
             # Calculate the minimum distance to any prey
-            min_distance_to_prey = float('inf')
+            min_distance_to_prey = self.map_size
             for _, prey_pos in alive_preys:
                 distance = self.calculate_min_distance(predator_pos, [prey_pos], predator_half_grid)
                 min_distance_to_prey = min(min_distance_to_prey, distance)
 
-                if min_distance_to_prey == 0:  # Stop further checks if a predator catches the prey
+                if min_distance_to_prey == 0:  # Predator catches the prey
                     break
 
             # Determine predator reward based on proximity to preys
-            if min_distance_to_prey == 0:  # Predator touches the prey
-                predator_reward = self.predator_kill_reward  # Larger reward for catching the prey
-            elif min_distance_to_prey < float('inf'):
-                predator_reward += predator_half_grid / min_distance_to_prey
+            if min_distance_to_prey == 0:
+                predator_reward = self.predator_kill_reward  # Reward for catching the prey
+            elif min_distance_to_prey < self.map_size:
+                predator_reward += predator_half_grid / (min_distance_to_prey**2)
 
             rewards[predator_id] = predator_reward
             self.predator_score += predator_reward

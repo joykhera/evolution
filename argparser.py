@@ -25,7 +25,8 @@ def parse_args():
     parser.add_argument("-cp", "--checkpoint", type=str, help="Checkpoint from which to load the model.")
     parser.add_argument("-sn", "--save_name", type=str, default="", help="Custom name for the experiment.")
     parser.add_argument("-te", "--test_episodes", type=int, default=10, help="Number of episodes to run for.")
-    parser.add_argument("-ld", "--log_dir", type=str, default='training', help="Log and checkpoint directory.")
+    parser.add_argument("-ld", "--log_dir", type=str, default="training", help="Log and checkpoint directory.")
+    parser.add_argument("--no_log", action="store_true", help="Won't log to wandb.")
 
     for key, value in default_args.items():
         parser.add_argument(f"-{short_names[key]}", f"--{key}", type=type(value), default=value, help=f"{key} parameter for the experiment.")

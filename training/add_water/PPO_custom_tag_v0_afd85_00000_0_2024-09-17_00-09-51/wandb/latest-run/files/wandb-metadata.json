@@ -1,0 +1,62 @@
+{
+    "os": "macOS-14.6.1-arm64-arm-64bit",
+    "python": "3.9.6",
+    "heartbeatAt": "2024-09-17T04:14:53.852947",
+    "startedAt": "2024-09-17T04:14:52.750090",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--node-ip-address=127.0.0.1",
+        "--node-manager-port=59334",
+        "--object-store-name=/tmp/ray/session_2024-09-17_00-09-50_359992_72131/sockets/plasma_store",
+        "--raylet-name=/tmp/ray/session_2024-09-17_00-09-50_359992_72131/sockets/raylet",
+        "--redis-address=None",
+        "--metrics-agent-port=59705",
+        "--runtime-env-agent-port=60421",
+        "--logging-rotate-bytes=536870912",
+        "--logging-rotate-backup-count=5",
+        "--runtime-env-agent-port=60421",
+        "--gcs-address=127.0.0.1:61564",
+        "--session-name=session_2024-09-17_00-09-50_359992_72131",
+        "--temp-dir=/tmp/ray",
+        "--webui=",
+        "--cluster-id=d4fec62835bacf1a5b684ba20b232dbbcae8a74d6a47001347b496d7",
+        "--startup-token=111",
+        "--worker-launch-time-ms=1726546471805",
+        "--node-id=6b1cd74de8f64e7d9cb7c93aa217d0d22dbf3f6052355f02a0c47df6",
+        "--runtime-env-hash=1"
+    ],
+    "state": "running",
+    "program": "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/lib/python3.9/site-packages/ray/_private/workers/default_worker.py",
+    "codePathLocal": null,
+    "host": "Joys-MacBook-Pro.local",
+    "username": "joykhera",
+    "executable": "/Users/joykhera/Library/Caches/pypoetry/virtualenvs/evolution-E7IEFu2R-py3.9/bin/python3",
+    "cpu_count": 10,
+    "cpu_count_logical": 10,
+    "cpu_freq": {
+        "current": 3228,
+        "min": 600,
+        "max": 3228
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3228,
+            "min": 600,
+            "max": 3228
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 460.4317207336426,
+            "used": 9.560142517089844
+        }
+    },
+    "gpuapple": {
+        "type": "Apple M1 Pro",
+        "vendor": "sppci_vendor_Apple"
+    },
+    "memory": {
+        "total": 16.0
+    }
+}

@@ -4,16 +4,20 @@ env_config:
   prey_view_size: 10
   prey_size: 1
   prey_color: [0, 255, 0]  # Green
-  prey_kill_reward: -10
+  prey_kill_reward: -20
   prey_alive_reward: 0.1
-  prey_reward_sqr_reward: 1
 
   predator_count: 3
   predator_speed: 1.0
   predator_view_size: 10
   predator_size: 1
   predator_color: [255, 0, 0]  # Red
-  predator_kill_reward: 10
+  predator_kill_reward: 20
+
+  max_water_level: 100
+  water_decrease_rate: 1.0
+  thirst_reward: -1.0
+  water_reward: 1.0
 
   map_size: 40
   max_steps: 400
@@ -54,6 +58,11 @@ short_names:
   predator_size: "pds"
   predator_color: "pdco"
   predator_kill_reward: "pdkr"
+
+  max_water_level: "mw"
+  water_decrease_rate: "wd"
+  water_reward: "wr"
+  thirst_reward: "tr"
 
   map_size: "ms"
   max_steps: "mxs"

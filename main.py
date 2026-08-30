@@ -90,7 +90,7 @@ def train_ppo(args, model_config, env_config, env_name):
                 # save_code=False,
                 # log_config_interval=10,
             )
-        ],
+        ] if not args["no_log"] else None,
         # verbose=0,
         reuse_actors=True,
         progress_reporter=tune.CLIReporter(max_report_frequency=model_config["max_report_frequency"]),
